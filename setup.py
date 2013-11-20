@@ -35,7 +35,7 @@ setup(
     include_package_data=True,
     url='https://bitbucket.org/tailordev/django-tailordev-biblio',
     license='MIT',
-    description=u' '.join(__import__('td_biblio').__doc__.splitlines()).strip(),
+    description=u' '.join(__import__('td_biblio').__doc__.splitlines()).strip(),  # NOPEP8
     long_description=read_file('README.md'),
     classifiers=[
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',

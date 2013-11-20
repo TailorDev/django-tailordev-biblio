@@ -1,3 +1,7 @@
-"<Include a description of your project>"
+"""TailorDev Biblio
 
-__version__ = '0.0.0'
+.. moduleauthor:: Julien Maupetit <julien@tailordev.com>
+
+"""
+
+__version__ = '0.0.1'
