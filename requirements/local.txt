@@ -7,4 +7,11 @@
 Sphinx
 
 # Testing
+coverage
+pep8
+pyflakes
+pylint
+tox
 
+# Fixtures
+factory-boy

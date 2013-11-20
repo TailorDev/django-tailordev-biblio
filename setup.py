@@ -1,5 +1,9 @@
+# -*- coding: utf-8 -*-
 import os
+
+from pip.req import parse_requirements
 from setuptools import setup, find_packages
+
 
 REQUIREMENTS = (
     'requirements/production.txt',
@@ -18,22 +22,18 @@ def read_file(filename):
 
 def get_dependencies(requirements):
     """Return project dependencies as read from the requirements file"""
-
-    dependencies = []
-    for f in requirements:
-        lines = read_file(f).split("\n")
-        dependencies += [d for d in lines if d and d[0] not in ('#', '-')]
-    return dependencies
+    r = parse_requirements(requirements)
+    return [str(d.req) for d in r]
 
 
 setup(
-    name='django-td_biblio',
+    name='django-tailordev-biblio',
     version=__import__('td_biblio').__version__,
     author='Julien Maupetit',
-    author_email='julien@comsource.fr',
+    author_email='julien@tailordev.com',
     packages=find_packages(),
     include_package_data=True,
-    url='<Include Link to Project>',
+    url='https://bitbucket.org/tailordev/django-tailordev-biblio',
     license='MIT',
     description=u' '.join(__import__('td_biblio').__doc__.splitlines()).strip(),
     long_description=read_file('README.md'),

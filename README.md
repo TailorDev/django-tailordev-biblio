@@ -1,11 +1,11 @@
-{{ app_name }}
-========================
+TailorDev Biblio
+================
 
-Welcome to the documentation for django-{{ app_name }}!
+A scientific bibliography management reusable django application.
 
 ## Dependencies
 
-CHANGE ME
+For now, Django>=1.5 is required for this project to run on production, with python>=2.6. Currently, this application is not compatible with python 3.3. We are working on it.
 
 ## Installation
 
@@ -17,20 +17,19 @@ If you intend to test or improve this application, also install the local depend
 
     $ pip install -r requirements/local.txt
 
-Add `{{ app_name }}` and its dependencies to your `INSTALLED_APPS`:
+Add `td_biblio` and its dependencies to your `INSTALLED_APPS`:
 
     INSTALLED_APPS = (
     ...
-        '{{ app_name }}',
+        'td_biblio',
     ...
     )
 
-
-Add `{{ app_name }}` urls to your project url patterns:
+Add `td_biblio` urls to your project url patterns:
 
     urlpatterns = patterns('',
         ...
-        url(r'^mypattern/', include('{{ app_name }}.urls')),
+        url(r'^mypattern/', include('td_biblio.urls')),
         ...
     )
 
