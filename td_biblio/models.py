@@ -71,7 +71,7 @@ class AbstractEntity(models.Model):
         return self.name
 
 
-class Journal():
+class Journal(AbstractEntity):
     """Peer reviewed journal"""
 
     class Meta:
@@ -79,7 +79,7 @@ class Journal():
         verbose_name_plural = _("Journals")
 
 
-class Publisher():
+class Publisher(AbstractEntity):
     """Journal or book publisher"""
 
     class Meta:
@@ -90,7 +90,7 @@ class Publisher():
 class Entry(models.Model):
     """The core model for references
 
-    Largely inspired by the BibTeX file format (see
+    Largely guided by the BibTeX file format (see
     http://en.wikipedia.org/wiki/BibTeX).
 
     Unsupported fields (for now):
