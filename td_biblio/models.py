@@ -27,7 +27,7 @@ class AbstractHuman(models.Model):
         """Set initials before saving"""
 
         self._set_first_name_initials()
-        super(Author, self).save(*args, **kwargs)
+        super(AbstractHuman, self).save(*args, **kwargs)
 
     def _set_first_name_initials(self, force=False):
         """Set author initials"""
