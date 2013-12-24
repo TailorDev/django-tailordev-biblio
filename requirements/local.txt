@@ -15,3 +15,5 @@ tox
 
 # Fixtures
 factory-boy
+names
+loremipsum
