@@ -1,9 +1,22 @@
 # -*- coding: utf-8 -*-
+import factory
 import names
 
 from factory.django import DjangoModelFactory
 
 from . import models
+
+
+JOURNAL_CHOICES = [
+    ('Bioinformatics', 'Bioinformatics'),
+    ('BMC Bioinf.', 'BMC Bioinformatics'),
+    ('JACS', 'Journal of the American Chemical Society'),
+    ('J. Comput. Chem.', 'Journal of Computational Chemistry'),
+    ('Nat. Biotechnol.', 'Nature Biotechnology'),
+    ('Nucleic Acids Res.', 'Nucleic Acids Research'),
+    ('PNAS', 'Proceedings of the National Academy of Sciences of the United States of America'),  # NOPEP8
+    ('Proteins Struct. Funct. Bioinf.', 'Proteins: Structure, Function, and Bioinformatics'),  # NOPEP8
+]
 
 
 class AbstractHuman(DjangoModelFactory):
@@ -29,6 +42,10 @@ class AbstractEntityFactory(DjangoModelFactory):
 
 class JournalFactory(AbstractEntityFactory):
     FACTORY_FOR = models.Journal
+    FACTORY_DJANGO_GET_OR_CREATE = ('abbreviation',)
+
+    name = factory.Iterator(JOURNAL_CHOICES, getter=lambda c: c[1])
+    abbreviation = factory.Iterator(JOURNAL_CHOICES, getter=lambda c: c[0])
 
 
 class PublisherFactory(AbstractEntityFactory):
