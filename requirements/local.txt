@@ -8,12 +8,9 @@ Sphinx
 
 # Testing
 coverage
-pep8
-pyflakes
-pylint
+flake8
 tox
 
 # Fixtures
 factory-boy
 names
-loremipsum
