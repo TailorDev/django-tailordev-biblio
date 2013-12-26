@@ -7,7 +7,7 @@ Test models.
 from django.test import TestCase
 
 from ..factories import (AuthorFactory, EditorFactory, JournalFactory,
-    PublisherFactory, EntryFactory, CollectionFactory)
+                         PublisherFactory, EntryFactory, CollectionFactory)
 from ..models import Author, Editor, Journal, Publisher, Entry, Collection
 
 
