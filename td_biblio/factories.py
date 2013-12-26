@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+import datetime
 import factory
 import names
+import random
 
 from factory.django import DjangoModelFactory
+from factory.fuzzy import BaseFuzzyAttribute
 
 from . import models
 
@@ -18,13 +21,52 @@ JOURNAL_CHOICES = [
     ('Proteins Struct. Funct. Bioinf.', 'Proteins: Structure, Function, and Bioinformatics'),  # NOPEP8
 ]
 
+ENTRY_TYPES_RAW_CHOICES = [c[0] for c in models.Entry.ENTRY_TYPES_CHOICES]
 
+
+# Custom fuzzy attributes definition
+#
+class FuzzyFirstName(BaseFuzzyAttribute):
+    """Random first name"""
+
+    def fuzz(self):
+        return names.get_first_name()
+
+
+class FuzzyLastName(BaseFuzzyAttribute):
+    """Random last name"""
+
+    def fuzz(self):
+        return names.get_last_name()
+
+
+class FuzzyPages(BaseFuzzyAttribute):
+    """Random pages numbers separated by double-hyphens"""
+
+    def __init__(self, low, high=None, **kwargs):
+        if high is None:
+            high = low
+            low = 1
+
+        self.low = low
+        self.high = high
+
+        super(FuzzyPages, self).__init__(**kwargs)
+
+    def fuzz(self):
+        start = random.randint(self.low, self.high)
+        end = random.randint(start, self.high)
+        return "%d--%d" % (start, end)
+
+
+# Factories
+#
 class AbstractHuman(DjangoModelFactory):
     FACTORY_FOR = models.AbstractHuman
     ABSTRACT_FACTORY = True
 
-    first_name = names.get_first_name()
-    last_name = names.get_last_name()
+    first_name = FuzzyFirstName()
+    last_name = FuzzyLastName()
 
 
 class AuthorFactory(AbstractHuman):
@@ -54,6 +96,26 @@ class PublisherFactory(AbstractEntityFactory):
 
 class EntryFactory(DjangoModelFactory):
     FACTORY_FOR = models.Entry
+
+    type = factory.fuzzy.FuzzyChoice(ENTRY_TYPES_RAW_CHOICES)
+    title = factory.Sequence(lambda n: 'Entry title %s' % n)
+    journal = factory.SubFactory(JournalFactory)
+    publication_date = factory.fuzzy.FuzzyDate(datetime.date(1942, 1, 1))
+    volume = factory.fuzzy.FuzzyInteger(1, 10)
+    number = factory.fuzzy.FuzzyInteger(1, 50)
+    pages = FuzzyPages(1, 2000)
+
+    # Many to many
+    @factory.post_generation
+    def authors(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            # A list of groups were passed in, use them
+            for author in extracted:
+                self.authors.add(author)
 
 
 class CollectionFactory(DjangoModelFactory):
