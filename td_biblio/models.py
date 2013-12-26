@@ -12,7 +12,7 @@ class AbstractHuman(models.Model):
 
     first_name = models.CharField(_("First name"), max_length=100)
     last_name = models.CharField(_("Last name"), max_length=100)
-    initials = models.CharField(_("Initials"), max_length=10, blank=True)
+    first_initial = models.CharField(_("First Initial(s)"), max_length=10, blank=True)
 
     # This is a django user
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
@@ -26,20 +26,20 @@ class AbstractHuman(models.Model):
     def save(self, *args, **kwargs):
         """Set initials before saving"""
 
-        self._set_first_name_initials()
+        self._set_first_initial()
         super(AbstractHuman, self).save(*args, **kwargs)
 
-    def _set_first_name_initials(self, force=False):
-        """Set author initials"""
+    def _set_first_initial(self, force=False):
+        """Set author first name initial"""
 
-        if self.initials and not force:
-            return self.initials
-        self.initials = u" ".join([c[0] for c in self.first_name.split()])
+        if self.first_initial and not force:
+            return self.first_initial
+        self.first_initial = u" ".join([c[0] for c in self.first_name.split()])
 
-    def get_full_name(self):
+    def get_formatted_name(self):
         """Return author formated full name, e.g. Maupetit J"""
 
-        return u"%s %s" % (self.last_name, self.initials)
+        return u"%s %s" % (self.last_name, self.first_initial)
 
 
 class Author(AbstractHuman):
@@ -175,7 +175,7 @@ class Entry(models.Model):
 
     # Misc
     editors = models.ManyToManyField('Editor', related_name='entries')
-    publisher = models.ForeignKey('Publisher', related_name='entries')
+    publisher = models.ForeignKey('Publisher', related_name='entries', null=True)
     address = models.CharField(_("Address"), max_length=250, blank=True, help_text=_("Publisher's address (usually just the city, but can be the full address for lesser-known publishers)"))
     annote = models.CharField(_("Annote"), max_length=250, blank=True, help_text=_("An annotation for annotated bibliography styles (not typical)"))
     note = models.TextField(_("Note"), blank=True, help_text=_("Miscellaneous extra information"))
