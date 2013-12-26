@@ -13,6 +13,8 @@ if not settings.configured:
             }
         },
         INSTALLED_APPS=(
+            'django.contrib.auth',
+            'django.contrib.contenttypes',
             'td_biblio',
         ),
         SITE_ID=1,
