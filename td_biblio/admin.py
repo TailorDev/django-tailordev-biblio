@@ -6,6 +6,7 @@ from .models import Author, Editor, Journal, Publisher, Entry, Collection
 
 class AbstractHumanAdmin(admin.ModelAdmin):
     list_display = ('last_name', 'first_name')
+    ordering = ('last_name', 'first_name')
 
 
 class AuthorAdmin(AbstractHumanAdmin):
@@ -16,11 +17,15 @@ class EditorAdmin(AbstractHumanAdmin):
     pass
 
 
-class JournalAdmin(admin.ModelAdmin):
+class AbstractEntityAdmin(admin.ModelAdmin):
+    ordering = ('name',)
+
+
+class JournalAdmin(AbstractEntityAdmin):
     pass
 
 
-class PublisherAdmin(admin.ModelAdmin):
+class PublisherAdmin(AbstractEntityAdmin):
     pass
 
 
@@ -28,6 +33,7 @@ class EntryAdmin(admin.ModelAdmin):
     list_display = ('title', 'type', 'publication_date', 'journal')
     list_filter = ('publication_date', 'journal', 'authors')
     date_hierarchy = 'publication_date'
+    ordering = ('-publication_date',)
 
 
 class CollectionAdmin(admin.ModelAdmin):
