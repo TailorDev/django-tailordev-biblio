@@ -1,5 +1,6 @@
 include AUTHORS
 include LICENSE
 include README.md
-recursive-include {{ app_name }}/static *
-recursive-include {{ app_name }}/templates *
+include CHANGELOG.md
+#recursive-include td_biblio/static *
+#recursive-include td_biblio/templates *

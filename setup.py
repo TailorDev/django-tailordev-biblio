@@ -5,9 +5,7 @@ from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
 
-REQUIREMENTS = (
-    'requirements/production.txt',
-)
+REQUIREMENTS = 'requirements.txt'
 
 
 def read_file(filename):
