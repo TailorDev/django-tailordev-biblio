@@ -61,7 +61,7 @@ class FuzzyPages(BaseFuzzyAttribute):
 
 # Factories
 #
-class AbstractHuman(DjangoModelFactory):
+class AbstractHumanFactory(DjangoModelFactory):
     FACTORY_FOR = models.AbstractHuman
     ABSTRACT_FACTORY = True
 
@@ -69,11 +69,11 @@ class AbstractHuman(DjangoModelFactory):
     last_name = FuzzyLastName()
 
 
-class AuthorFactory(AbstractHuman):
+class AuthorFactory(AbstractHumanFactory):
     FACTORY_FOR = models.Author
 
 
-class EditorFactory(AbstractHuman):
+class EditorFactory(AbstractHumanFactory):
     FACTORY_FOR = models.Editor
 
 
@@ -120,3 +120,18 @@ class EntryFactory(DjangoModelFactory):
 
 class CollectionFactory(DjangoModelFactory):
     FACTORY_FOR = models.Collection
+
+    name = factory.Sequence(lambda n: 'Collection name %s' % n)
+    short_description = factory.fuzzy.FuzzyText(length=42)
+
+    # Many to many
+    @factory.post_generation
+    def entries(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            # A list of groups were passed in, use them
+            for entry in extracted:
+                self.entries.add(entry)
