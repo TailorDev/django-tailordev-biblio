@@ -58,21 +58,6 @@ class AbstractHumanModelTestMixin(ModelTestMixin):
         human = self.factory()
         self.assertEqual(unicode(human), human.get_formatted_name())
 
-    def test_saving_and_retrieving_items(self):
-        """
-        Test saving and retrieving two Humans with different names
-        """
-        saved_human1 = self.model.objects.create(first_name="John",
-                                                 last_name="McClane")
-        saved_human2 = self.model.objects.create(first_name="Holly",
-                                                 last_name="Gennero")
-
-        humans = self.model.objects.all()
-        self.assertEqual(humans.count(), 2)
-
-        self.assertEqual(humans[0], saved_human1)
-        self.assertEqual(humans[1], saved_human2)
-
     def test_set_first_initial(self):
         """
         Test the _set_first_initial method
