@@ -3,20 +3,20 @@
 
 {% block left_sidebar_extras %}
 
-{% regroup entry_list by publication_date.year as entry_years %}
-
 <h3>{% trans "Filters" %}</h3>
+
+<h5>{% trans "Publications" %} {{ n_publications_filter }}/{{ n_publications_total }}</h4>
 
 <form method="get" action="" class="publication-filters-form custom">
 
     <label for="filter-year">{% trans "Year" %}</label>
     <select name="year" id="filter-year">
-        <option value="all" selected="selected">
+        <option value="">
             {% trans "All" %}
         </option>
-        {% for entry_year in entry_years %}
-        <option value="{{ entry_year.grouper }}">
-            {{ entry_year.grouper }}
+        {% for publication_year in publication_years %}
+        <option value="{{ publication_year.year }}" {% if publication_year.year == current_publication_year.year %}selected="selected"{% endif %}>
+            {{ publication_year.year }} {{ current_year }}
         </option>
         {% endfor %}
     </select>
@@ -27,7 +27,6 @@
 {% block main_content %}
 
 <h2>{% trans "Publications" %}</h2>
-<h4>{{ entry_list|length }} publications</h4>
 
 {% regroup entry_list by publication_date.year as entry_years %}
 
@@ -46,6 +45,23 @@
     </li>
 {% endfor %}
 </ul>
+
+{% if is_paginated %}
+<div class="pagination-centered">
+
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="arrow"><a href="?page={{ page_obj.previous_page_number }}" class="pagination">&laquo;</a></li>
+        {% endif %}
+        <li class="current">
+            <a href="">{{ page_obj.number }}</a>
+            {{ page_obj.start_index }} - {{ page_obj.end_index }}</li>
+        {% if page_obj.has_next %}
+        <li class="arrow"><a href="?page={{ page_obj.next_page_number }}" class="pagination">&raquo;</a></li>
+        {% endif %}
+    </ul>
+</div>
+{% endif %}
 
 {% endblock main_content %}
 
