@@ -1,0 +1,12 @@
+/*
+    TailorDev Biblio, 2013
+
+    author: Julien Maupetit
+ */
+$( document ).ready(function() {
+
+    // Publication list filters form
+    $('.publication-filters-form > *').change(function(){
+        $(this).parent('form').submit();
+    });
+});
