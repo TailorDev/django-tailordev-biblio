@@ -186,9 +186,18 @@ class Entry(models.Model):
     class Meta:
         verbose_name = _("Entry")
         verbose_name_plural = _("Entries")
+        ordering = ('-publication_date',)
 
     def __unicode__(self):
         return self.title
+
+    def first_author(self):
+        """
+        Get this entry first author
+        """
+        if not self.authors.count():
+            return ''
+        return self.authors.all()[0]
 
 
 class Collection(models.Model):

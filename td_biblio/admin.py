@@ -30,7 +30,8 @@ class PublisherAdmin(AbstractEntityAdmin):
 
 
 class EntryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'type', 'publication_date', 'journal')
+    list_display = ('title', 'first_author', 'type', 'publication_date',
+                    'journal')
     list_filter = ('publication_date', 'journal', 'authors')
     date_hierarchy = 'publication_date'
     ordering = ('-publication_date',)
