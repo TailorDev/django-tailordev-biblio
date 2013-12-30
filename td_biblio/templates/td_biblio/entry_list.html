@@ -1,0 +1,50 @@
+{% extends "td_biblio/layouts/two_cols_left_sidebar.html" %}
+{% load i18n %}
+
+{% block left_sidebar_extras %}
+
+{% regroup entry_list by publication_date.year as entry_years %}
+
+<h3>{% trans "Filters" %}</h3>
+
+<form action="" class="publication-filters-form custom">
+
+    <label for="filter-year">{% trans "Year" %}</label>
+    <select name="year" id="filter-year">
+        <option value="all" selected="selected">
+            {% trans "All" %}
+        </option>
+        {% for entry_year in entry_years %}
+        <option value="{{ entry_year.grouper }}">
+            {{ entry_year.grouper }}
+        </option>
+        {% endfor %}
+    </select>
+</form>
+
+{% endblock left_sidebar_extras %}
+
+{% block main_content %}
+
+<h2>{% trans "Publications" %}</h2>
+<h4>{{ entry_list|length }} publications</h4>
+
+{% regroup entry_list by publication_date.year as entry_years %}
+
+<ul class="publication-list-years">
+{% for entry_year in entry_years %}
+    <li class="publication-list-year">
+        <a name="{{ entry_year.grouper }}"></a>
+        <span>{{ entry_year.grouper }}</span>
+        <ul class="publication-list">
+        {% for entry in entry_year.list %}
+            <li class="publication">
+                {{ entry }}
+            </li>
+        {% endfor %}
+        </ul>
+    </li>
+{% endfor %}
+</ul>
+
+{% endblock main_content %}

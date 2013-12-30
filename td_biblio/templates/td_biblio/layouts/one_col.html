@@ -1,0 +1,9 @@
+{% extends "_layouts/base.html" %}
+
+{% block content %}
+<div id="content-wrapper">
+    <div id="main-content" class="{% block main_content_class %}{% endblock main_content_class %}">
+        {% block main_content %}{% endblock main_content %}
+    </div>
+</div>
+{% endblock content %}
