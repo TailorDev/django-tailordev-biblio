@@ -6,7 +6,7 @@
 $( document ).ready(function() {
 
     // Publication list filters form
-    $('.publication-filters-form > *').change(function(){
+    $('form#publication-list-filters > *').change(function(){
         $(this).parent('form').submit();
     });
 });

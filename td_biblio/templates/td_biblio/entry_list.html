@@ -1,13 +1,21 @@
 {% extends "td_biblio/layouts/two_cols_left_sidebar.html" %}
 {% load i18n %}
 
+{% block page_title %}{% trans "Publications" %}{% endblock page_title %}
+
+{% block page_class %}page biblio{% endblock page_class %}
+
 {% block left_sidebar_extras %}
+
+<h3>{% trans "Metrics" %}</h3>
+
+<div id="publications-stats">
+    {% trans "Publications" %} <span class="counter">{{ n_publications_filter }}</span> / {{ n_publications_total }}
+</div>
 
 <h3>{% trans "Filters" %}</h3>
 
-<h5>{% trans "Publications" %} {{ n_publications_filter }}/{{ n_publications_total }}</h4>
-
-<form method="get" action="" class="publication-filters-form custom">
+<form method="get" action="" id="publication-list-filters" class="custom">
 
     <label for="filter-year">{% trans "Year" %}</label>
     <select name="year" id="filter-year">
@@ -20,6 +28,7 @@
         </option>
         {% endfor %}
     </select>
+
 </form>
 
 {% endblock left_sidebar_extras %}
