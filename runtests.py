@@ -17,6 +17,7 @@ if not settings.configured:
             'django.contrib.contenttypes',
             'td_biblio',
         ),
+        ROOT_URLCONF='td_biblio.urls',
         SITE_ID=1,
         SECRET_KEY='this-is-just-for-tests-so-not-that-secret',
     )

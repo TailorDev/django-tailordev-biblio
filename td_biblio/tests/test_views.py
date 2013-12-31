@@ -1,0 +1,157 @@
+# -*- coding: utf-8 -*-
+"""
+Django TailorDev Biblio
+
+Test views
+"""
+import datetime
+import random
+
+from django.core.urlresolvers import reverse
+from django.test import TestCase
+
+from ..factories import AuthorFactory, EntryFactory
+from ..models import Author
+
+
+class EntryListViewTests(TestCase):
+    """
+    Tests for the EntryListViewTests
+    """
+    def setUp(self):
+        """
+        Generate Author and Entry fixtures & set object level vars
+        """
+        self.url = reverse('entry_list')
+        self.paginate_by = 20
+        self.n_authors = 10
+        self.n_publications_per_year = 3
+        self.start_year = 2000
+        self.end_year = 2014
+        self.n_publications = (self.end_year - self.start_year) * self.n_publications_per_year  # NOPEP8
+        self.publications_years = []  # publications years
+        # The maximal page number
+        self.max_page_num = self.n_publications / self.paginate_by
+        if self.n_publications % self.paginate_by:
+            self.max_page_num += 1
+
+        # Author (10)
+        for a in xrange(self.n_authors):
+            AuthorFactory()
+
+        # Entry (14 * 3 = 42)
+        for y in xrange(self.start_year, self.end_year, 1):
+            for i in xrange(1, 1 + self.n_publications_per_year):
+                n_authors = random.randrange(2, 5)
+                authors = random.sample(Author.objects.all(), n_authors)
+                date = datetime.date(y, i, 1)
+                EntryFactory(publication_date=date, authors=authors)
+                self.publications_years.append(y)
+
+    def test_get(self):
+        """
+        Test the EntryListViewTests get method
+        """
+        response = self.client.get(self.url)
+
+        # Standard response
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('td_biblio/entry_list.html')
+
+    def _test_one_page(self, page=1, **kwargs):
+        """
+        Test the get request pagination for one page.
+
+        Use **kwargs to add request parameters.
+        """
+        params = {'page': page}
+        params.update(kwargs)
+        response = self.client.get(self.url, params)
+
+        # Check the requested page number is within the proper range
+        if page > self.max_page_num:
+            self.assertEqual(response.status_code, 404)
+            return
+
+        # Standard response
+        self.assertEqual(response.status_code, 200)
+
+        # Publication list
+        publication_block = u'<li class="publication-list-year">'
+        start = self.paginate_by * (page - 1)
+        end = self.paginate_by * page
+        if end > self.n_publications:
+            end = self.n_publications
+        expected_count = len(set(self.publications_years[start:end]))
+        self.assertContains(response, publication_block,
+                            count=expected_count)
+
+        publication_block = u'<li class="publication">'
+        self.assertContains(response, publication_block,
+                            count=end - start)
+
+        # Pagination
+        self.assertTrue(response.context['is_paginated'])
+
+        pagination_block = u'<div class="pagination-centered">'
+        self.assertContains(response, pagination_block)
+
+        pagination_block = u'<a href="">%d</a>' % page
+        self.assertContains(response, pagination_block)
+
+    def test_pagination(self):
+        """
+        Test the get request pagination for 4 pages
+        """
+        for page in xrange(1, 5):
+            self._test_one_page(page=page)
+
+    def test_pagination_for_a_year(self):
+        """
+        Test the get request with a year parameter
+        """
+        self._test_one_page(page=1, year=2012)
+
+    def test_get_queryset(self):
+        """
+        Test the EntryListViewTests get_queryset method
+        """
+        year = 2012
+        response = self.client.get(self.url, {'year': year})
+        self.assertEqual(response.status_code, 200)
+
+        # Context
+        date = datetime.date(year, 1, 1)
+        self.assertEqual(response.context['current_publication_year'], date)
+
+        self.assertEqual(
+            response.context['n_publications_filter'],
+            self.n_publications_per_year)
+
+    def test_get_context_data(self):
+        """
+        Test the EntryListViewTests get_context_data method
+        """
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+        # Get all different publication years
+        start = self.end_year - 1
+        end = self.start_year - 1
+        years_range = xrange(start, end, -1)
+        publication_years = [datetime.date(y, 1, 1) for y in years_range]
+
+        # Context
+        self.assertEqual(
+            response.context['n_publications_total'],
+            self.n_publications)
+
+        self.assertEqual(
+            response.context['n_publications_filter'],
+            self.n_publications)
+
+        self.assertListEqual(
+            list(response.context['publication_years']),
+            publication_years)
+
+        self.assertEqual(response.context['current_publication_year'], None)
