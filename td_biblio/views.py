@@ -12,11 +12,8 @@ class EntryListView(ListView):
     paginate_by = 20
     template = 'td_biblio/entry_list.html'
 
-    def get_queryset(self):
-        """
-        Add GET requests filters
-        """
-        filters = dict()
+    def get(self, request, *args, **kwargs):
+        """Check GET request parameters validity and store them"""
 
         # -- Publication year
         year = self.request.GET.get('year', None)
@@ -25,7 +22,18 @@ class EntryListView(ListView):
             self.current_publication_date = datetime.date(int(year), 1, 1)
         except:
             self.current_publication_date = None
-        if year:
+
+        return super(EntryListView, self).get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        """
+        Add GET requests filters
+        """
+        filters = dict()
+
+        # Publication date
+        if self.current_publication_date:
+            year = self.current_publication_date.year
             filters['publication_date__year'] = year
 
         # Base queryset
