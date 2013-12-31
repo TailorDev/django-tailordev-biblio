@@ -4,6 +4,8 @@ TailorDev Bibliography
 
 Test models.
 """
+import datetime
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
@@ -152,6 +154,32 @@ class EntryModelTest(ModelTestMixin, TestCase):
         """
         entry = self.factory()
         self.assertEqual(unicode(entry), entry.title)
+
+    def test_saving_and_retrieving_items(self):
+        """
+        Test saving and retrieving two different objects
+        """
+        saved1 = self.factory(publication_date=datetime.date(2012, 1, 2))
+        saved2 = self.factory(publication_date=datetime.date(2011, 3, 12))
+
+        qs = self.model.objects.all()
+        self.assertEqual(qs.count(), 2)
+
+        self.assertEqual(qs[0], saved1)
+        self.assertEqual(qs[1], saved2)
+
+    def test_ordering(self):
+        """
+        Test ordering when saving and retrieving two different objects
+        """
+        saved1 = self.factory(publication_date=datetime.date(2011, 1, 2))
+        saved2 = self.factory(publication_date=datetime.date(2012, 3, 12))
+
+        qs = self.model.objects.all()
+        self.assertEqual(qs.count(), 2)
+
+        self.assertEqual(qs[0], saved2)
+        self.assertEqual(qs[1], saved1)
 
 
 class CollectionModelTest(ModelTestMixin, TestCase):
