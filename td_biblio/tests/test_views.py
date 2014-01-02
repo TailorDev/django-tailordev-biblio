@@ -194,4 +194,12 @@ class EntryListViewTests(TestCase):
             list(response.context['publication_years']),
             publication_years)
 
+        self.assertEqual(
+            response.context['n_authors_total'],
+            self.n_authors)
+
+        self.assertEqual(
+            response.context['publication_authors'].count(),
+            self.n_authors)
+
         self.assertEqual(response.context['current_publication_year'], None)
