@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from ..factories import AuthorFactory, EntryFactory
-from ..models import Author
+from ..models import Author, Entry
 
 
 class EntryListViewTests(TestCase):
@@ -99,6 +99,19 @@ class EntryListViewTests(TestCase):
         pagination_block = u'<a href="">%d</a>' % page
         self.assertContains(response, pagination_block)
 
+    def _test_filtering(self, **kwargs):
+        """Test entry list filtering"""
+        params = dict()
+        params.update(kwargs)
+        response = self.client.get(self.url, params)
+
+        # Standard response
+        self.assertEqual(response.status_code, 200)
+
+        # Display at list a publication
+        publication_block = u'<li class="publication">'
+        self.assertContains(response, publication_block)
+
     def test_pagination(self):
         """
         Test the get request pagination for 4 pages
@@ -106,11 +119,38 @@ class EntryListViewTests(TestCase):
         for page in xrange(1, 5):
             self._test_one_page(page=page)
 
-    def test_pagination_for_a_year(self):
+    def test_year_filtering(self):
         """
         Test the get request with a year parameter
         """
-        self._test_one_page(page=1, year=2012)
+        # Get a valid date
+        entry = Entry.objects.get(id=1)
+        params = {'year': entry.publication_date.year}
+
+        self._test_filtering(**params)
+
+    def test_author_filtering(self):
+        """
+        Test the get request with an author parameter
+        """
+        # Get a valid date
+        entry = Entry.objects.get(id=1)
+        params = {'author': entry.first_author().id}
+
+        self._test_filtering(**params)
+
+    def test_author_year_filtering(self):
+        """
+        Test the get request with an author parameter
+        """
+        # Get a valid date
+        entry = Entry.objects.get(id=1)
+        params = {
+            'author': entry.first_author().id,
+            'year': entry.publication_date.year,
+        }
+
+        self._test_filtering(**params)
 
     def test_get_queryset(self):
         """
