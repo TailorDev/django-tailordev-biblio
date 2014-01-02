@@ -33,7 +33,7 @@ class AbstractHuman(models.Model):
         """Set author first name initial"""
 
         if self.first_initial and not force:
-            return self.first_initial
+            return
         self.first_initial = u" ".join([c[0] for c in self.first_name.split()])
 
     def get_formatted_name(self):
