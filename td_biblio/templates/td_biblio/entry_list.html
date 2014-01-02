@@ -40,10 +40,13 @@
 {% regroup entry_list by publication_date.year as entry_years %}
 
 <ul class="publication-list-years">
+
 {% for entry_year in entry_years %}
     <li class="publication-list-year">
+
         <a name="{{ entry_year.grouper }}"></a>
-        <span>{{ entry_year.grouper }}</span>
+        <div class="year">{{ entry_year.grouper }}</div>
+
         <ul class="publication-list">
         {% for entry in entry_year.list %}
             <li class="publication">
@@ -51,6 +54,7 @@
             </li>
         {% endfor %}
         </ul>
+
     </li>
 {% endfor %}
 </ul>
