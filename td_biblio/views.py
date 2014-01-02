@@ -80,8 +80,10 @@ class EntryListView(ListView):
 
         # -- Filters
         # publication date
-        ctx['publication_years'] = Entry.objects.dates('publication_date',
-                                                       'year', order='DESC')
+        ctx['publication_years'] = self.get_queryset().dates(
+            'publication_date',
+            'year', order='DESC'
+        )
         ctx['current_publication_year'] = self.current_publication_date
         authors_order = ('last_name', 'first_name')
         ctx['publication_authors'] = filtered_authors.order_by(*authors_order)
