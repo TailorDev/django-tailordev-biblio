@@ -3,7 +3,7 @@ import datetime
 
 from django.views.generic import ListView
 
-from .models import Entry
+from .models import Author, Entry
 
 
 class EntryListView(ListView):
@@ -23,6 +23,14 @@ class EntryListView(ListView):
         except:
             self.current_publication_date = None
 
+        # -- Publication author
+        author = self.request.GET.get('author', None)
+        # Is it an integer?
+        try:
+            self.current_publication_author = int(author)
+        except:
+            self.current_publication_author = None
+
         return super(EntryListView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -36,6 +44,10 @@ class EntryListView(ListView):
             year = self.current_publication_date.year
             filters['publication_date__year'] = year
 
+        # Publication date
+        if self.current_publication_author:
+            filters['authors__id'] = self.current_publication_author
+
         # Base queryset
         qs = super(EntryListView, self).get_queryset()
 
@@ -48,12 +60,25 @@ class EntryListView(ListView):
         """
         ctx = super(EntryListView, self).get_context_data(**kwargs)
 
-        # -- Filters
-        # publication date
+        # -- Metrics
+        # Publications (Entries)
         ctx['n_publications_total'] = Entry.objects.count()
         ctx['n_publications_filter'] = self.get_queryset().count()
+
+        # Authors (from selected entries)
+        ctx['n_authors_total'] = Author.objects.count()
+        author_ids = self.get_queryset().values_list('authors__id', flat=True)
+        author_ids = list(set(author_ids))
+        filtered_authors = Author.objects.filter(id__in=author_ids)
+        ctx['n_authors_filter'] = filtered_authors.count()
+
+        # -- Filters
+        # publication date
         ctx['publication_years'] = Entry.objects.dates('publication_date',
                                                        'year', order='DESC')
         ctx['current_publication_year'] = self.current_publication_date
+        authors_order = ('last_name', 'first_name')
+        ctx['publication_authors'] = filtered_authors.order_by(*authors_order)
+        ctx['current_publication_author'] = self.current_publication_author
 
         return ctx

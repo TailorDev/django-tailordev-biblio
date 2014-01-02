@@ -9,9 +9,18 @@
 
 <h3>{% trans "Metrics" %}</h3>
 
-<div id="publications-stats">
-    {% trans "Publications" %} <span class="counter">{{ n_publications_filter }}</span> / {{ n_publications_total }}
-</div>
+<table id="publications-stats">
+    <tr class="metric">
+        <td>{% trans "Publications" %}</td>
+        <td><span class="counter">{{ n_publications_filter }}</span></td>
+        <td>{{ n_publications_total }}</td>
+    </tr>
+    <tr class="metric">
+        <td>{% trans "Authors" %}</td>
+        <td><span class="counter">{{ n_authors_filter }}</span></td>
+        <td>{{ n_authors_total }}</td>
+    </tr>
+</table>
 
 <h3>{% trans "Filters" %}</h3>
 
@@ -24,11 +33,22 @@
         </option>
         {% for publication_year in publication_years %}
         <option value="{{ publication_year.year }}" {% if publication_year.year == current_publication_year.year %}selected="selected"{% endif %}>
-            {{ publication_year.year }} {{ current_year }}
+            {{ publication_year.year }}
         </option>
         {% endfor %}
     </select>
 
+    <label for="filter-author">{% trans "Author" %}</label>
+    <select name="author" id="filter-author">
+        <option value="">
+            {% trans "All" %}
+        </option>
+        {% for author in publication_authors %}
+        <option value="{{ author.id }}" {% if author.id == current_publication_author %}selected="selected"{% endif %}>
+            {{ author.get_formatted_name }}
+        </option>
+        {% endfor %}
+    </select>
 </form>
 
 {% endblock left_sidebar_extras %}
