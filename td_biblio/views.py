@@ -3,7 +3,7 @@ import datetime
 
 from django.views.generic import ListView
 
-from .models import Author, Entry
+from .models import Author, Entry, Journal
 
 
 class EntryListView(ListView):
@@ -71,6 +71,12 @@ class EntryListView(ListView):
         author_ids = list(set(author_ids))
         filtered_authors = Author.objects.filter(id__in=author_ids)
         ctx['n_authors_filter'] = filtered_authors.count()
+
+        # Journals (Entries)
+        ctx['n_journals_total'] = Journal.objects.count()
+        journal_ids = self.get_queryset().values_list('journal__id', flat=True)
+        journal_ids = list(set(journal_ids))
+        ctx['n_journals_filter'] = len(journal_ids)
 
         # -- Filters
         # publication date
