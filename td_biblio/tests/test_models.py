@@ -28,7 +28,7 @@ class ModelTestMixin(object):
         self.concrete_setup()
         super(ModelTestMixin, self).__init__(*args, **kwargs)
 
-    def concrete_setup(self):
+    def concrete_setup(self):   # pragma: no cover
         """
         This is where you should work!
         """
@@ -71,6 +71,14 @@ class AbstractHumanModelTestMixin(ModelTestMixin):
         human = self.factory(first_name="John Jack Junior",
                              last_name="McClane")
         self.assertEqual(human.first_initial, "J J J")
+
+        human.first_name = "Jumping Jack Flash"
+        human._set_first_initial()
+        self.assertEqual(human.first_initial, "J J J")
+
+        human.first_name = "Jumping Jack Flash"
+        human._set_first_initial(force=True)
+        self.assertEqual(human.first_initial, "J J F")
 
     def test_get_formatted_name(self):
         """
@@ -180,6 +188,21 @@ class EntryModelTest(ModelTestMixin, TestCase):
 
         self.assertEqual(qs[0], saved2)
         self.assertEqual(qs[1], saved1)
+
+    def test_first_author(self):
+        """
+        Test the first_author method
+        """
+        entry = self.factory()
+        self.assertEqual(entry.first_author(), '')
+
+        # Generate authors
+        author1 = AuthorFactory()
+        for i in range(2):
+            AuthorFactory()
+
+        entry = self.factory(authors=Author.objects.all())
+        self.assertEqual(entry.first_author(), author1)
 
 
 class CollectionModelTest(ModelTestMixin, TestCase):
