@@ -108,7 +108,7 @@ class EntryFactory(DjangoModelFactory):
     # Many to many
     @factory.post_generation
     def authors(self, create, extracted, **kwargs):
-        if not create:
+        if not create:  # pragma: no cover
             # Simple build, do nothing.
             return
 
@@ -127,7 +127,7 @@ class CollectionFactory(DjangoModelFactory):
     # Many to many
     @factory.post_generation
     def entries(self, create, extracted, **kwargs):
-        if not create:
+        if not create:  # pragma: no cover
             # Simple build, do nothing.
             return
 
