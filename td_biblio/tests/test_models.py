@@ -160,8 +160,21 @@ class EntryModelTest(ModelTestMixin, TestCase):
         """
         Test __unicode__ method
         """
-        entry = self.factory()
-        self.assertEqual(unicode(entry), entry.title)
+        AuthorFactory(first_name='John', last_name='McClane')
+        AuthorFactory(first_name='Holly', last_name='Gennero')
+        journal = JournalFactory(name='Die Hard', abbreviation='Die Hard')
+
+        entry = self.factory(
+            authors=Author.objects.all(),
+            title='Yippee-ki-yay, motherfucker',
+            journal=journal,
+            volume='1',
+            pages='1--132',
+            publication_date=datetime.date(1988, 7, 15)
+        )
+        expected = 'McClane J, and Gennero H, "Yippee-ki-yay, motherfucker", '
+        expected += 'in Die Hard, vol. 1, pp. 1--132, July 1988.'
+        self.assertEqual(unicode(entry), expected)
 
     def test_saving_and_retrieving_items(self):
         """

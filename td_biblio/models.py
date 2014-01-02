@@ -189,7 +189,24 @@ class Entry(models.Model):
         ordering = ('-publication_date',)
 
     def __unicode__(self):
-        return self.title
+        """Format entry with a default bibliography style"""
+        # Authors
+        author_str = '%(last_name)s %(first_initial)s'
+        s = ', '.join([author_str % a.__dict__ for a in self.authors.all()])
+        s = ', and '.join(s.rsplit(', ', 1))  # last author case
+        s += ', '
+
+        # Title
+        s += '"%(title)s", ' % self.__dict__
+
+        # Journal
+        s += 'in %(abbreviation)s, ' % self.journal.__dict__
+
+        # Misc
+        s += 'vol. %(volume)s, pp. %(pages)s, ' % self.__dict__
+        s += '%s.' % self.publication_date.strftime('%B %Y')
+
+        return s
 
     def first_author(self):
         """
