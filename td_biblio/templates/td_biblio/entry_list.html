@@ -9,23 +9,29 @@
 
 <h3>{% trans "Metrics" %}</h3>
 
-<table id="publications-stats">
-    <tr class="metric">
-        <td>{% trans "Publications" %}</td>
-        <td><span class="counter">{{ n_publications_filter }}</span></td>
-        <td>{{ n_publications_total }}</td>
-    </tr>
-    <tr class="metric">
-        <td>{% trans "Authors" %}</td>
-        <td><span class="counter">{{ n_authors_filter }}</span></td>
-        <td>{{ n_authors_total }}</td>
-    </tr>
-    <tr class="metric">
-        <td>{% trans "Journals" %}</td>
-        <td><span class="counter">{{ n_journals_filter }}</span></td>
-        <td>{{ n_journals_total }}</td>
-    </tr>
-</table>
+<div id="publications-stats">
+    <table>
+        <tr class="metric">
+            <td>{% trans "Publications" %}</td>
+            <td><span class="counter">{{ n_publications_filter }}</span></td>
+            <td>{{ n_publications_total }}</td>
+        </tr>
+        <tr class="metric">
+            <td>{% trans "Authors" %}</td>
+            <td><span class="counter">{{ n_authors_filter }}</span></td>
+            <td>{{ n_authors_total }}</td>
+        </tr>
+        <tr class="metric">
+            <td>{% trans "Journals" %}</td>
+            <td><span class="counter">{{ n_journals_filter }}</span></td>
+            <td>{{ n_journals_total }}</td>
+        </tr>
+    </table>
+
+    <div class="legend">
+        <span class="counter">XX</span> {% trans "after filtering" %}
+    </div>
+</div>
 
 <h3>{% trans "Filters" %}</h3>
 
