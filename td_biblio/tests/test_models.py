@@ -99,6 +99,46 @@ class AbstractHumanModelTestMixin(ModelTestMixin):
                              user=user)
         self.assertEqual(human.user, user)
 
+    def test_map(self):
+        """
+        Test the map method
+        """
+        # Simple case: everything match perfectly
+        user = get_user_model().objects.create(
+            username='johnmcclane',
+            first_name="John",
+            last_name="McClane",
+        )
+        human = self.factory(first_name="John", last_name="McClane")
+        self.assertEqual(human.user, user)
+
+        # We only have the first initial
+        user = get_user_model().objects.create(
+            username='hollygennero',
+            first_name="Holly",
+            last_name="Gennero",
+        )
+        human = self.factory(first_name="H", last_name="Gennero")
+        self.assertEqual(human.user, user)
+
+        # We have 2 possible matches
+        user = get_user_model().objects.create(
+            username='johnjuniormcclane',
+            first_name="John Junior",
+            last_name="McClane",
+        )
+        human = self.factory(first_name="J", last_name="McClane")
+        self.assertIsNone(human.user)
+
+        # We have 2 possible matches
+        user = get_user_model().objects.create(
+            username='johnjuniormcclane2',
+            first_name="John Junior",
+            last_name="McClane",
+        )
+        human = self.factory(first_name="John", last_name="McClane")
+        self.assertIsNone(human.user)
+
 
 class AuthorModelTest(AbstractHumanModelTestMixin, TestCase):
     """
