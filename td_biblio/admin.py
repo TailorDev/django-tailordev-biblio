@@ -10,11 +10,11 @@ class AbstractHumanAdmin(admin.ModelAdmin):
 
 
 class AuthorAdmin(AbstractHumanAdmin):
-    pass
+    raw_id_fields = ('user',)
 
 
 class EditorAdmin(AbstractHumanAdmin):
-    pass
+    raw_id_fields = ('user',)
 
 
 class AbstractEntityAdmin(admin.ModelAdmin):
@@ -30,11 +30,7 @@ class PublisherAdmin(AbstractEntityAdmin):
 
 
 class EntryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'first_author', 'type', 'publication_date',
-                    'journal')
-    list_filter = ('publication_date', 'journal', 'authors')
     date_hierarchy = 'publication_date'
-    ordering = ('-publication_date',)
     fieldsets = (
         ('Publication core fields', {
             'fields': ('type', 'title', 'authors', 'journal',
@@ -56,7 +52,18 @@ class EntryAdmin(admin.ModelAdmin):
         ('Miscellaneous', {
             'fields': ('editors', 'publisher', 'address', 'annote', 'note')
         }),
+        ('Cross References', {
+            'fields': ('crossref',)
+        }),
     )
+    list_display = ('title', 'first_author', 'type', 'publication_date',
+                    'journal')
+    list_filter = ('publication_date', 'journal', 'authors')
+    list_per_page = 20
+    list_select_related = True
+    ordering = ('-publication_date',)
+    raw_id_fields = ('authors', 'crossref')
+    search_fields = ('title',)
 
 
 class CollectionAdmin(admin.ModelAdmin):
@@ -66,7 +73,7 @@ class CollectionAdmin(admin.ModelAdmin):
         return obj.entries.count()
 
     list_display = ('name', 'size')
-
+    raw_id_fields = ('entries',)
 
 admin.site.register(Author, AuthorAdmin)
 admin.site.register(Editor, EditorAdmin)
