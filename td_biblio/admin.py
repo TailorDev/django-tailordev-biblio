@@ -35,6 +35,28 @@ class EntryAdmin(admin.ModelAdmin):
     list_filter = ('publication_date', 'journal', 'authors')
     date_hierarchy = 'publication_date'
     ordering = ('-publication_date',)
+    fieldsets = (
+        ('Publication core fields', {
+            'fields': ('type', 'title', 'authors', 'journal',
+                       ('volume', 'number'), ('pages', 'publication_date'),
+                       'url')
+        }),
+        ('Identifiers', {
+            'fields': (('doi', 'issn'), ('isbn', 'pmid'))
+        }),
+        ('Book fields', {
+            'fields': ('booktitle', 'edition', 'chapter')
+        }),
+        ('PhD Thesis', {
+            'fields': ('school',)
+        }),
+        ('Proceedings', {
+            'fields': ('organization',)
+        }),
+        ('Miscellaneous', {
+            'fields': ('editors', 'publisher', 'address', 'annote', 'note')
+        }),
+    )
 
 
 class CollectionAdmin(admin.ModelAdmin):
