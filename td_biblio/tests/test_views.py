@@ -10,7 +10,7 @@ import random
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from ..factories import AuthorFactory, EntryFactory
+from ..factories import AuthorFactory, CollectionFactory, EntryFactory
 from ..models import Author, Entry
 
 
@@ -133,15 +133,45 @@ class EntryListViewTests(TestCase):
         """
         Test the get request with an author parameter
         """
-        # Get a valid date
+        # Get a valid author
         entry = Entry.objects.get(id=1)
         params = {'author': entry.first_author().id}
 
         self._test_filtering(**params)
 
+    def test_collection_filtering(self):
+        """
+        Test the get request with a collection parameter
+        """
+        # Create a collection
+        entries = Entry.objects.filter(id__in=(1, 5, 10, 15))
+        collection = CollectionFactory(entries=entries)
+
+        # Get a valid collection
+        params = {'collection': collection.id}
+
+        self._test_filtering(**params)
+
+    def test_collection_author_year_filtering(self):
+        """
+        Test the get request with a collection, an author and a year parameter
+        """
+        # Create a collection
+        entries = Entry.objects.filter(id__in=(1, 5, 10, 15))
+        collection = CollectionFactory(entries=entries)
+        entry = Entry.objects.get(id=1)
+
+        # Get a valid collection
+        params = {
+            'collection': collection.id,
+            'author': entry.first_author().id,
+            'year': entry.publication_date.year,
+        }
+        self._test_filtering(**params)
+
     def test_author_year_filtering(self):
         """
-        Test the get request with an author parameter
+        Test the get request with an author and a year parameter
         """
         # Get a valid date
         entry = Entry.objects.get(id=1)
