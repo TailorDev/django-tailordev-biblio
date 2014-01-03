@@ -81,7 +81,7 @@
         <ul class="publication-list">
         {% for entry in entry_year.list %}
             <li class="publication">
-                {{ entry }}
+                {% include "td_biblio/entry_item.html" %}
             </li>
         {% endfor %}
         </ul>
