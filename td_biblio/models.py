@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import ugettext as _
 
@@ -24,9 +25,10 @@ class AbstractHuman(models.Model):
         return self.get_formatted_name()
 
     def save(self, *args, **kwargs):
-        """Set initials before saving"""
+        """Set initials and try to map django users before saving"""
 
         self._set_first_initial()
+        self.map()
         super(AbstractHuman, self).save(*args, **kwargs)
 
     def _set_first_initial(self, force=False):
@@ -40,6 +42,20 @@ class AbstractHuman(models.Model):
         """Return author formated full name, e.g. Maupetit J"""
 
         return u"%s %s" % (self.last_name, self.first_initial)
+
+    def map(self):
+        """Map with django users based on their full names and initials"""
+
+        User = get_user_model()
+        try:
+            self.user = User.objects.get(
+                models.Q(last_name__iexact=self.last_name),
+                models.Q(first_name__iexact=self.first_name) |
+                models.Q(first_name__istartswith=self.first_initial[0])
+            )
+        except:
+            # Fail silently
+            return None
 
 
 class Author(AbstractHuman):
