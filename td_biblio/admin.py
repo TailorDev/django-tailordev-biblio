@@ -60,7 +60,12 @@ class EntryAdmin(admin.ModelAdmin):
 
 
 class CollectionAdmin(admin.ModelAdmin):
-    pass
+
+    def size(self, obj):
+        """Get the number of entries in each collection"""
+        return obj.entries.count()
+
+    list_display = ('name', 'size')
 
 
 admin.site.register(Author, AuthorAdmin)
