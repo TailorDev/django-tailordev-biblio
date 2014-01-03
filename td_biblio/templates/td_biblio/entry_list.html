@@ -60,6 +60,18 @@
         </option>
         {% endfor %}
     </select>
+
+    <label for="filter-collection">{% trans "Collection" %}</label>
+    <select name="collection" id="filter-collection">
+        <option value="">
+            {% trans "All" %}
+        </option>
+        {% for collection in publication_collections %}
+        <option value="{{ collection.id }}" {% if collection.id == current_publication_collection %}selected="selected"{% endif %}>
+            {{ collection.name }}
+        </option>
+        {% endfor %}
+    </select>
 </form>
 
 {% endblock left_sidebar_extras %}
