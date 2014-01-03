@@ -150,10 +150,10 @@ class Entry(models.Model):
     title = models.CharField(_("Title"), max_length=255)
     authors = models.ManyToManyField('Author', related_name='entries')
     journal = models.ForeignKey('Journal', related_name='entries')
-    publication_date = models.DateField(_("Publication date"), blank=True, null=True)
-    volume = models.CharField(_("The volume of a journal or multi-volume book"), max_length=50, blank=True)
+    publication_date = models.DateField(_("Publication date"), null=True)
+    volume = models.CharField(_("Volume"), max_length=50, blank=True, help_text=_("The volume of a journal or multi-volume book"))
     number = models.CharField(_("Number"), max_length=50, blank=True, help_text=_("The '(issue) number' of a journal, magazine, or tech-report, if applicable. (Most publications have a 'volume', but no 'number' field.)"))
-    pages = models.CharField(_("Page numbers, separated either by commas or double-hyphens"), max_length=50, blank=True)
+    pages = models.CharField(_("Pages"), max_length=50, blank=True, help_text=_("Page numbers, separated either by commas or double-hyphens"))
     url = models.URLField(_("URL"), blank=True, help_text=_("The WWW address where to find this resource"))
 
     # Identifiers
@@ -174,14 +174,14 @@ class Entry(models.Model):
     organization = models.CharField(_("Organization"), max_length=50, blank=True, help_text=_("The conference sponsor"))
 
     # Misc
-    editors = models.ManyToManyField('Editor', related_name='entries')
-    publisher = models.ForeignKey('Publisher', related_name='entries', null=True)
+    editors = models.ManyToManyField('Editor', related_name='entries', blank=True)
+    publisher = models.ForeignKey('Publisher', related_name='entries', null=True, blank=True)
     address = models.CharField(_("Address"), max_length=250, blank=True, help_text=_("Publisher's address (usually just the city, but can be the full address for lesser-known publishers)"))
     annote = models.CharField(_("Annote"), max_length=250, blank=True, help_text=_("An annotation for annotated bibliography styles (not typical)"))
     note = models.TextField(_("Note"), blank=True, help_text=_("Miscellaneous extra information"))
 
     # Related publications
-    crossref = models.ManyToManyField('self')
+    crossref = models.ManyToManyField('self', blank=True)
 
     class Meta:
         verbose_name = _("Entry")
