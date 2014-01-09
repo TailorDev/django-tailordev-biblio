@@ -105,18 +105,6 @@ class EntryFactory(DjangoModelFactory):
     number = factory.fuzzy.FuzzyInteger(1, 50)
     pages = FuzzyPages(1, 2000)
 
-    # Many to many
-    @factory.post_generation
-    def authors(self, create, extracted, **kwargs):
-        if not create:  # pragma: no cover
-            # Simple build, do nothing.
-            return
-
-        if extracted:
-            # A list of groups were passed in, use them
-            for author in extracted:
-                self.authors.add(author)
-
 
 class CollectionFactory(DjangoModelFactory):
     FACTORY_FOR = models.Collection
@@ -135,3 +123,32 @@ class CollectionFactory(DjangoModelFactory):
             # A list of groups were passed in, use them
             for entry in extracted:
                 self.entries.add(entry)
+
+
+class AuthorEntryRankFactory(DjangoModelFactory):
+    FACTORY_FOR = models.AuthorEntryRank
+
+    author = factory.SubFactory(AuthorFactory)
+    entry = factory.SubFactory(EntryFactory)
+    rank = factory.Iterator(xrange(1, 4), cycle=True)
+
+
+class EntryWithAuthorsFactory(EntryFactory):
+    author1 = factory.RelatedFactory(AuthorEntryRankFactory, 'entry')
+    author2 = factory.RelatedFactory(AuthorEntryRankFactory, 'entry')
+    author3 = factory.RelatedFactory(AuthorEntryRankFactory, 'entry')
+
+
+class EntryWithStaticAuthorsFactory(EntryFactory):
+    """Fix two authors first and last names"""
+    author1 = factory.RelatedFactory(
+        AuthorEntryRankFactory,
+        'entry',
+        author__first_name='John',
+        author__last_name='McClane')
+
+    author2 = factory.RelatedFactory(
+        AuthorEntryRankFactory,
+        'entry',
+        author__first_name='Holly',
+        author__last_name='Gennero')

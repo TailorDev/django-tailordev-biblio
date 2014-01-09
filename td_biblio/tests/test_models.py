@@ -10,8 +10,10 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from ..factories import (AuthorFactory, EditorFactory, JournalFactory,
-                         PublisherFactory, EntryFactory, CollectionFactory)
-from ..models import Author, Editor, Journal, Publisher, Entry, Collection
+                         PublisherFactory, EntryFactory, CollectionFactory,
+                         AuthorEntryRankFactory, EntryWithStaticAuthorsFactory)
+from ..models import (Author, Editor, Journal, Publisher, Entry, Collection,
+    AuthorEntryRank)
 
 
 class ModelTestMixin(object):
@@ -194,18 +196,15 @@ class EntryModelTest(ModelTestMixin, TestCase):
     """
     def concrete_setup(self):
         self.model = Entry
-        self.factory = EntryFactory
+        self.factory = EntryWithStaticAuthorsFactory
 
     def test_unicode(self):
         """
         Test __unicode__ method
         """
-        AuthorFactory(first_name='John', last_name='McClane')
-        AuthorFactory(first_name='Holly', last_name='Gennero')
         journal = JournalFactory(name='Die Hard', abbreviation='Die Hard')
 
         entry = self.factory(
-            authors=Author.objects.all(),
             title='Yippee-ki-yay, motherfucker',
             journal=journal,
             volume='1',
@@ -246,16 +245,12 @@ class EntryModelTest(ModelTestMixin, TestCase):
         """
         Test the first_author method
         """
-        entry = self.factory()
+        entry = EntryFactory()
         self.assertEqual(entry.first_author(), '')
 
-        # Generate authors
-        author1 = AuthorFactory()
-        for i in range(2):
-            AuthorFactory()
-
-        entry = self.factory(authors=Author.objects.all())
-        self.assertEqual(entry.first_author(), author1)
+        entry = self.factory()
+        first_author = Author.objects.get(id=1)
+        self.assertEqual(entry.first_author(), first_author)
 
 
 class CollectionModelTest(ModelTestMixin, TestCase):
@@ -285,3 +280,23 @@ class CollectionModelTest(ModelTestMixin, TestCase):
         collection = self.factory(entries=Entry.objects.all())
 
         self.assertEqual(collection.entries.count(), 5)
+
+
+class AuthorEntryRankTest(ModelTestMixin, TestCase):
+    """
+    Tests for the AuthorEntryRank model
+    """
+    def concrete_setup(self):
+        self.model = AuthorEntryRank
+        self.factory = AuthorEntryRankFactory
+
+    def test_unicode(self):
+        """
+        Test __unicode__ method
+        """
+        obj = self.factory()
+        expected = u"%(author)s:%(rank)d:%(entry)s" % {
+            'author': obj.author,
+            'entry': obj.entry,
+            'rank': obj.rank}
+        self.assertEqual(unicode(obj), expected)

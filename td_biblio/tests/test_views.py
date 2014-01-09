@@ -5,13 +5,12 @@ Django TailorDev Biblio
 Test views
 """
 import datetime
-import random
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from ..factories import AuthorFactory, CollectionFactory, EntryFactory
-from ..models import Author, Entry
+from ..factories import (CollectionFactory, EntryWithAuthorsFactory)
+from ..models import Entry
 
 
 class EntryListViewTests(TestCase):
@@ -24,28 +23,22 @@ class EntryListViewTests(TestCase):
         """
         self.url = reverse('entry_list')
         self.paginate_by = 20
-        self.n_authors = 10
         self.n_publications_per_year = 3
         self.start_year = 2000
         self.end_year = 2014
         self.n_publications = (self.end_year - self.start_year) * self.n_publications_per_year  # NOPEP8
+        self.n_authors = self.n_publications * 3
         self.publications_years = []  # publications years
         # The maximal page number
         self.max_page_num = self.n_publications / self.paginate_by
         if self.n_publications % self.paginate_by:
             self.max_page_num += 1
 
-        # Author (10)
-        for a in xrange(self.n_authors):
-            AuthorFactory()
-
         # Entry (14 * 3 = 42)
         for y in xrange(self.start_year, self.end_year, 1):
             for i in xrange(1, 1 + self.n_publications_per_year):
-                n_authors = random.randrange(2, 5)
-                authors = random.sample(Author.objects.all(), n_authors)
                 date = datetime.date(y, i, 1)
-                EntryFactory(publication_date=date, authors=authors)
+                EntryWithAuthorsFactory(publication_date=date)
                 self.publications_years.append(y)
 
     def test_get(self):
