@@ -10,7 +10,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from ..factories import (AuthorFactory, EditorFactory, JournalFactory,
-                         PublisherFactory, EntryFactory, CollectionFactory)
+                         PublisherFactory, EntryFactory, CollectionFactory,
+                         EntryWithStaticAuthorsFactory)
 from ..models import Author, Editor, Journal, Publisher, Entry, Collection
 
 
@@ -194,18 +195,15 @@ class EntryModelTest(ModelTestMixin, TestCase):
     """
     def concrete_setup(self):
         self.model = Entry
-        self.factory = EntryFactory
+        self.factory = EntryWithStaticAuthorsFactory
 
     def test_unicode(self):
         """
         Test __unicode__ method
         """
-        AuthorFactory(first_name='John', last_name='McClane')
-        AuthorFactory(first_name='Holly', last_name='Gennero')
         journal = JournalFactory(name='Die Hard', abbreviation='Die Hard')
 
         entry = self.factory(
-            authors=Author.objects.all(),
             title='Yippee-ki-yay, motherfucker',
             journal=journal,
             volume='1',
@@ -247,15 +245,8 @@ class EntryModelTest(ModelTestMixin, TestCase):
         Test the first_author method
         """
         entry = self.factory()
-        self.assertEqual(entry.first_author(), '')
-
-        # Generate authors
-        author1 = AuthorFactory()
-        for i in range(2):
-            AuthorFactory()
-
-        entry = self.factory(authors=Author.objects.all())
-        self.assertEqual(entry.first_author(), author1)
+        first_author = Author.objects.get(id=1)
+        self.assertEqual(entry.first_author(), first_author)
 
 
 class CollectionModelTest(ModelTestMixin, TestCase):
