@@ -130,11 +130,25 @@ class AuthorEntryRankFactory(DjangoModelFactory):
 
     author = factory.SubFactory(AuthorFactory)
     entry = factory.SubFactory(EntryFactory)
-    rank = factory.Iterator(xrange(1, 5), cycle=True)
+    rank = factory.Iterator(xrange(1, 4), cycle=True)
 
 
 class EntryWithAuthorsFactory(EntryFactory):
     author1 = factory.RelatedFactory(AuthorEntryRankFactory, 'entry')
     author2 = factory.RelatedFactory(AuthorEntryRankFactory, 'entry')
     author3 = factory.RelatedFactory(AuthorEntryRankFactory, 'entry')
-    author4 = factory.RelatedFactory(AuthorEntryRankFactory, 'entry')
+
+
+class EntryWithStaticAuthorsFactory(EntryFactory):
+    """Fix two authors first and last names"""
+    author1 = factory.RelatedFactory(
+        AuthorEntryRankFactory,
+        'entry',
+        author__first_name='John',
+        author__last_name='McClane')
+
+    author2 = factory.RelatedFactory(
+        AuthorEntryRankFactory,
+        'entry',
+        author__first_name='Holly',
+        author__last_name='Gennero')
