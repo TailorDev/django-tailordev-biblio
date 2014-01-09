@@ -216,11 +216,16 @@ class Entry(models.Model):
         s += '"%(title)s", ' % self.__dict__
 
         # Journal
-        s += 'in %(abbreviation)s, ' % self.journal.__dict__
+        if self.journal.abbreviation:
+            s += 'in %(abbreviation)s, ' % self.journal.__dict__
+        else:
+            s += 'in %(name)s, ' % self.journal.__dict__
 
         # Misc
-        s += 'vol. %(volume)s, pp. %(pages)s, ' % self.__dict__
-        s += '%s.' % self.publication_date.strftime('%B %Y')
+        if self.volume and self.pages:
+            s += 'vol. %(volume)s, pp. %(pages)s, ' % self.__dict__
+        if self.publication_date:
+            s += '%s.' % self.publication_date.strftime('%B %Y')
 
         return s
 
