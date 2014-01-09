@@ -164,7 +164,7 @@ class Entry(models.Model):
 
     # Base fields
     title = models.CharField(_("Title"), max_length=255)
-    authors = models.ManyToManyField('Author', related_name='entries')
+    authors = models.ManyToManyField('Author', related_name='entries', through='AuthorEntryRank')
     journal = models.ForeignKey('Journal', related_name='entries')
     publication_date = models.DateField(_("Publication date"), null=True)
     volume = models.CharField(_("Volume"), max_length=50, blank=True, help_text=_("The volume of a journal or multi-volume book"))
@@ -246,3 +246,20 @@ class Collection(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class AuthorEntryRank(models.Model):
+    """Give the author rank for an entry author sequence"""
+
+    author = models.ForeignKey(Author)
+    entry = models.ForeignKey(Entry)
+    rank = models.IntegerField(_("Rank"), help_text=_("Author rank in entry authors sequence"))
+
+    class Meta:
+        verbose_name = _('Author Entry Rank')
+        verbose_name_plural = _('Author Entry Ranks')
+        ordering = ('rank',)
+
+    def __unicode__(self):
+        return self.rank
+        #return u"%(author)s:%(rank)d:%(entry)s" % self.__dict__
