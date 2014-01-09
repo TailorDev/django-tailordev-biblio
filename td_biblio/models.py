@@ -261,5 +261,7 @@ class AuthorEntryRank(models.Model):
         ordering = ('rank',)
 
     def __unicode__(self):
-        return self.rank
-        #return u"%(author)s:%(rank)d:%(entry)s" % self.__dict__
+        return u"%(author)s:%(rank)d:%(entry)s" % {
+            'author': self.author,
+            'entry': self.entry,
+            'rank': self.rank}
