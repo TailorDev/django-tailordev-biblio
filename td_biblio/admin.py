@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
-from .models import Author, Editor, Journal, Publisher, Entry, Collection
+from .models import (Author, Editor, Journal, Publisher, Entry, Collection,
+                     AuthorEntryRank)
+
+
+class AuthorEntryRankInline(admin.TabularInline):
+    extra = 1
+    model = AuthorEntryRank
+    ordering = ('rank',)
 
 
 class AbstractHumanAdmin(admin.ModelAdmin):
@@ -33,7 +40,7 @@ class EntryAdmin(admin.ModelAdmin):
     date_hierarchy = 'publication_date'
     fieldsets = (
         ('Publication core fields', {
-            'fields': ('type', 'title', 'authors', 'journal',
+            'fields': ('type', 'title', 'journal',
                        ('volume', 'number'), ('pages', 'publication_date'),
                        'url')
         }),
@@ -56,6 +63,7 @@ class EntryAdmin(admin.ModelAdmin):
             'fields': ('crossref',)
         }),
     )
+    inlines = (AuthorEntryRankInline,)
     list_display = ('title', 'first_author', 'type', 'publication_date',
                     'journal')
     list_filter = ('publication_date', 'journal', 'authors')
