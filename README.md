@@ -1,23 +1,29 @@
 TailorDev Biblio
 ================
 
-A scientific bibliography management reusable django application.
+Scientific bibliography management with django.
 
 ## Dependencies
 
-For now, Django>=1.5 is required for this project to run on production, with python>=2.6. Currently, this application is not compatible with python 3.3. We are working on it.
+For now, Django>=1.5 is required for this project to run on production, with python>=2.6.
 
 ## Installation
 
-To install all dependencies at once, use pip:
+The easiest way to go is to use pip:
+
+    $ pip install django-tailordev-biblio
+
+If you intend to work on the code, clone this repository and install all dependencies at once using pip:
 
     $ pip install -r requirements.txt
 
-If you intend to test or improve this application, also install the local dependencies:
+If you intend to work on the code, clone this repository and install the local dependencies:
 
     $ pip install -r requirements/local.txt
 
-Add `td_biblio` and its dependencies to your `INSTALLED_APPS`:
+## Configuration
+
+Add `td_biblio` to your `INSTALLED_APPS`:
 
     INSTALLED_APPS = (
     ...
@@ -29,18 +35,23 @@ Add `td_biblio` urls to your project url patterns:
 
     urlpatterns = patterns('',
         ...
-        url(r'^mypattern/', include('td_biblio.urls')),
+        url(r'^bibliography/', include('td_biblio.urls')),
         ...
     )
 
 And then update your database:
 
     $ python manage.py syncdb
-    $ python manage.py migrate
 
 ## Templates
 
 Create a base template to inherit from. It should be visible as `_layouts/base.html`
+
+## Import BibTex bibliography
+
+Once `td_biblio` is fully functional, you may want to import your references via:
+
+    $ python manage.py bibtex_import my_bibliography.bib
 
 ## Running the Tests
 
