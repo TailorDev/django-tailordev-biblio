@@ -219,6 +219,7 @@ class Entry(models.Model):
         if self.journal.abbreviation:
             s += 'in %(abbreviation)s, ' % self.journal.__dict__
         else:
+            # fall back to the real name
             s += 'in %(name)s, ' % self.journal.__dict__
 
         # Misc

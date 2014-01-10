@@ -202,7 +202,9 @@ class EntryModelTest(ModelTestMixin, TestCase):
         """
         Test __unicode__ method
         """
-        journal = JournalFactory(name='Die Hard', abbreviation='Die Hard')
+        journal = JournalFactory(
+            name='Die Hard Journal',
+            abbreviation='Die Hard J')
 
         entry = self.factory(
             title='Yippee-ki-yay, motherfucker',
@@ -212,7 +214,14 @@ class EntryModelTest(ModelTestMixin, TestCase):
             publication_date=datetime.date(1988, 7, 15)
         )
         expected = 'McClane J, and Gennero H, "Yippee-ki-yay, motherfucker", '
-        expected += 'in Die Hard, vol. 1, pp. 1--132, July 1988.'
+        expected += 'in Die Hard J, vol. 1, pp. 1--132, July 1988.'
+        self.assertEqual(unicode(entry), expected)
+
+        # Remove the abbreviation
+        journal.abbreviation = ''
+        journal.save(update_fields=['abbreviation', ])
+        expected = 'McClane J, and Gennero H, "Yippee-ki-yay, motherfucker", '
+        expected += 'in Die Hard Journal, vol. 1, pp. 1--132, July 1988.'
         self.assertEqual(unicode(entry), expected)
 
     def test_saving_and_retrieving_items(self):
