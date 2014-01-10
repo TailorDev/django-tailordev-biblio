@@ -1,7 +1,7 @@
 TailorDev Biblio
 ================
 
-Scientific bibliography management with django.
+Scientific bibliography management with Django.
 
 ## Dependencies
 
