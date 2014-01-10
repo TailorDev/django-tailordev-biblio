@@ -5,9 +5,9 @@ Bibliography Manager Tools
 import datetime
 import logging
 
+from bibtexparser import customization as bp_customization
 from bibtexparser.bparser import BibTexParser
-from bibtexparser.customization import (author, convert_to_unicode, editor,
-    page_double_hyphen, type)
+from bibtexparser.latexenc import string_to_latex
 
 from ..models import Author, Journal, Entry, AuthorEntryRank
 
@@ -15,15 +15,27 @@ from ..models import Author, Journal, Entry, AuthorEntryRank
 logger = logging.getLogger('td_biblio')
 
 
-def bibtex_customization(record):
+def to_latex(record):
+    """
+    Convert strings to latex
+    """
+    for val in record:
+        record[val] = string_to_latex(record[val])
+    return record
+
+
+def td_biblio_customization(record):
     """
     Customize BibTex records parsing
     """
-    record = type(record)
-    record = author(record)
-    record = editor(record)
-    record = page_double_hyphen(record)
-    record = convert_to_unicode(record)
+    # Convert crapy things to latex
+    record = to_latex(record)
+    # and then to unicode
+    record = bp_customization.convert_to_unicode(record)
+    record = bp_customization.type(record)
+    record = bp_customization.author(record)
+    record = bp_customization.editor(record)
+    record = bp_customization.page_double_hyphen(record)
 
     return record
 
@@ -39,7 +51,7 @@ def bibtex_import(bibfile):
     with open(bibfile, 'r') as bibfile:
 
         # Parse BibTex file
-        bp = BibTexParser(bibfile, customization=bibtex_customization)
+        bp = BibTexParser(bibfile, customization=td_biblio_customization)
 
         # Import each entry
         for bib_item in bp.get_entry_list():
