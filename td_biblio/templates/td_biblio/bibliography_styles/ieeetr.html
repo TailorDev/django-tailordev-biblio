@@ -1,0 +1,70 @@
+{% comment %}
+    TailorDev Biblio
+
+    Bibiography style: ieeetr
+    Author: @julienmaupetit
+    Date: 2013, jan. 3
+{% endcomment %}
+
+{% load i18n %}
+
+
+{% comment %}
+
+    Article citation style
+
+{% endcomment %}
+
+<!-- Article citation style -->
+<div class="article">
+
+    <!-- Authors -->
+    {% for author in entry.authors.all %}
+    <span class="author {% if author.id == current_publication_author %}active{% endif %}">
+        {% if author.user %}
+        <a href="{{ author.user.get_absolute_url }}" title="{% trans "Access user home page" %}">
+        {% endif %}
+        {% for initial in author.first_initial.split %}
+            {{ initial }}.
+        {% endfor %}
+        <span class="last_name">{{ author.last_name }}</span>{% if author.user %}</a>{% endif %}{% if forloop.revcounter == 2 %} and {% else %}, {% endif %}
+    </span>
+    {% endfor %}
+    <!-- /Authors -->
+
+    <!-- Title -->
+    <span class="title">
+        &ldquo;{{ entry.title }},&rdquo;
+    </span>
+    <!-- /Title -->
+
+    <!-- Journal -->
+    <span class="journal">
+        <em>{{ entry.journal.abbreviation }}</em>,
+    </span>
+    <!-- /Journal -->
+
+    <!-- Volume -->
+    <span class="volume">
+        vol. {{ entry.volume }}
+        {% if entry.number %}
+        <span class="number">({{ entry.number}})</span>
+        {% endif %}
+        ,
+    </span>
+    <!-- /Volume -->
+
+    <!-- Pages -->
+    <span class="pages">
+        pp. {{ entry.pages }},
+    </span>
+    <!-- /Pages -->
+
+    <!-- Publication date -->
+    <span class="publication_date">
+        {{ entry.publication_date|date:"F Y" }}.
+    </span>
+    <!-- /Publication date -->
+
+</div>
+<!-- ./article -->

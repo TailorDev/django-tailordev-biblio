@@ -1,0 +1,6 @@
+[run]
+source = td_biblio
+omit = td_biblio/admin.py
+
+[report]
+omit = td_biblio/admin.py

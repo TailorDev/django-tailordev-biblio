@@ -1,0 +1,40 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+
+    <title>{% block page_title %}{{ _("Your Site") }}{% endblock %}</title>
+</head>
+<body class="{% block page_class %}{% endblock page_class %}">
+{% block body %}
+    <header id="page-header">
+        This is a header
+    </header>
+
+    <div role="main">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li data-alert{% if message.tags %} class="message {{ message.tags }}"{% endif %}>
+                {{ message }}
+                <a href="#" class="close">&times;</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer id="page-footer">
+        This is a footer
+    </footer>
+    <!-- End Footer -->
+
+{% endblock %}
+</body>
+</html>
