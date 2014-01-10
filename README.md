@@ -13,13 +13,13 @@ The easiest way to go is to use pip:
 
     $ pip install django-tailordev-biblio
 
-If you intend to work on the code, clone this repository and install all dependencies at once using pip:
-
-    $ pip install -r requirements.txt
-
-If you intend to work on the code, clone this repository and install the local dependencies:
+If you intend to work on the code, clone this repository and install all dependencies at once via:
 
     $ pip install -r requirements/local.txt
+
+And then install the package in development mode:
+
+    $ python setup.py develop
 
 ## Configuration
 
