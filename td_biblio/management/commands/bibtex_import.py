@@ -7,17 +7,23 @@ from td_biblio.utils.managers import bibtex_import
 
 
 class Command(BaseCommand):
-    args = '<BibTex file (.bib)>'
-    help = 'Generates lorem ipsum fixtures for designers'
+    args = '<my_biblio.bib)>'
+    help = 'Import entries from a BibTex file'
 
     def handle(self, *args, **options):
-        #logger = self._get_logger()
+        logger = self._get_logger()
 
         if not len(args):
             raise CommandError("No BibTex file provided")
 
+        bibtex_file = args[0]
+
         # import
-        bibtex_import(args[0])
+        logger.info("Starting BibTex import from: %s" % bibtex_file)
+
+        bibtex_import(bibtex_file)
+
+        logger.info("BibTex import was successfull")
 
     def _get_logger(self):
         logger = logging.getLogger('td_biblio')
