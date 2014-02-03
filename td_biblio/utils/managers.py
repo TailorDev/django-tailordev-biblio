@@ -78,7 +78,9 @@ def bibtex_import(bibfile):
 
             # Authors
             for rank, author in enumerate(bib_item['author']):
-                last_name, first_name = author.split(', ')
+                splited = author.split(', ')
+                last_name = splited[0]
+                first_name = " ".join(splited[1:])
 
                 author, _ = Author.objects.get_or_create(
                     first_name=first_name,
