@@ -145,10 +145,12 @@ class EntryWithStaticAuthorsFactory(EntryFactory):
         AuthorEntryRankFactory,
         'entry',
         author__first_name='John',
-        author__last_name='McClane')
+        author__last_name='McClane',
+        rank=1)
 
     author2 = factory.RelatedFactory(
         AuthorEntryRankFactory,
         'entry',
         author__first_name='Holly',
-        author__last_name='Gennero')
+        author__last_name='Gennero',
+        rank=2)

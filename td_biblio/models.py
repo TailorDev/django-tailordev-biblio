@@ -208,7 +208,7 @@ class Entry(models.Model):
         """Format entry with a default bibliography style"""
         # Authors
         author_str = '%(last_name)s %(first_initial)s'
-        s = ', '.join([author_str % a.__dict__ for a in self.authors.all()])
+        s = ', '.join([author_str % a.__dict__ for a in self.get_authors()])
         s = ', and '.join(s.rsplit(', ', 1))  # last author case
         s += ', '
 
@@ -234,9 +234,18 @@ class Entry(models.Model):
         """
         Get this entry first author
         """
-        if not self.authors.count():
+        if not len(self.get_authors()):
             return ''
-        return self.authors.all()[0]
+        return self.get_authors()[0]
+
+    def get_authors(self):
+        """
+        Get ordered authors list
+
+        Note that authorentryrank_set is ordered as expected while the authors
+        queryset is not (M2M with a through case).
+        """
+        return [aer.author for aer in self.authorentryrank_set.all()]
 
 
 class Collection(models.Model):
