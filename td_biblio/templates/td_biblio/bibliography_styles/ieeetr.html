@@ -40,7 +40,7 @@
 
     <!-- Journal -->
     <span class="journal">
-        <em>{{ entry.journal.abbreviation }}</em>,
+        <em>{% if entry.journal.abbreviation %}{{ entry.journal.abbreviation }}{% else %}{{ entry.journal.name }}{% endif %}</em>,
     </span>
     <!-- /Journal -->
 
