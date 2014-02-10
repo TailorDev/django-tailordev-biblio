@@ -29,7 +29,12 @@ from django.test.utils import get_runner
 def runtests():
     TestRunner = get_runner(settings)
     test_runner = TestRunner(verbosity=1, interactive=True, failfast=False)
-    failures = test_runner.run_tests(['td_biblio', ])
+    failures = test_runner.run_tests([
+        'td_biblio.tests.test_commands',
+        'td_biblio.tests.test_factories',
+        'td_biblio.tests.test_models',
+        'td_biblio.tests.test_views',
+    ])
     sys.exit(failures)
 
 

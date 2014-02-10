@@ -19,7 +19,7 @@
 <div class="article">
 
     <!-- Authors -->
-    {% for author in entry.authors.all %}
+    {% for author in entry.get_authors %}
     <span class="author {% if author.id == current_publication_author %}active{% endif %}">
         {% if author.user %}
         <a href="{{ author.user.get_absolute_url }}" title="{% trans "Access user home page" %}">
@@ -40,7 +40,7 @@
 
     <!-- Journal -->
     <span class="journal">
-        <em>{{ entry.journal.abbreviation }}</em>,
+        <em>{% if entry.journal.abbreviation %}{{ entry.journal.abbreviation }}{% else %}{{ entry.journal.name }}{% endif %}</em>,
     </span>
     <!-- /Journal -->
 
