@@ -261,6 +261,17 @@ class EntryModelTest(ModelTestMixin, TestCase):
         first_author = Author.objects.get(id=1)
         self.assertEqual(entry.first_author(), first_author)
 
+    def test_get_authors(self):
+        """
+        Test the get_authors method
+        """
+        entry = self.factory()
+        expected = [
+            u'McClane J',
+            u'Gennero H',
+        ]
+        self.assertListEqual(map(unicode, entry.get_authors()), expected)
+
 
 class CollectionModelTest(ModelTestMixin, TestCase):
     """
