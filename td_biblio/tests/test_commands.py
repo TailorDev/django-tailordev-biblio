@@ -86,3 +86,14 @@ class BibTexImportCommandTests(TestCase):
             u'Tufféry P'
         ]
         self._test_entry_authors(entry, expected_authors)
+
+    def test_partial_publication_date(self):
+        """Test if partial publication date flag"""
+        # Execute the command
+        self.cmd.handle(self.bibtex_file)
+
+        qs = Entry.objects.filter(is_partial_publication_date=False)
+        self.assertEqual(qs.count(), 1)
+
+        qs = Entry.objects.filter(is_partial_publication_date=True)
+        self.assertEqual(qs.count(), 8)

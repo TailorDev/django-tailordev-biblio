@@ -7,7 +7,7 @@
 {% endcomment %}
 
 {% load i18n %}
-
+{% load td_biblio %}
 
 {% comment %}
 
@@ -45,6 +45,7 @@
     <!-- /Journal -->
 
     <!-- Volume -->
+    {% if entry.volume %}
     <span class="volume">
         vol. {{ entry.volume }}
         {% if entry.number %}
@@ -52,17 +53,20 @@
         {% endif %}
         ,
     </span>
+    {% endif %}
     <!-- /Volume -->
 
     <!-- Pages -->
+    {% if entry.pages %}
     <span class="pages">
         pp. {{ entry.pages }},
     </span>
+    {% endif %}
     <!-- /Pages -->
 
     <!-- Publication date -->
     <span class="publication_date">
-        {{ entry.publication_date|date:"F Y" }}.
+        {{ entry|publication_date }}.
     </span>
     <!-- /Publication date -->
 

@@ -62,6 +62,7 @@ class Author(AbstractHuman):
     """Entry author"""
 
     class Meta:
+        ordering = ('last_name', 'first_name')
         verbose_name = _("Author")
         verbose_name_plural = _("Authors")
 
@@ -70,6 +71,7 @@ class Editor(AbstractHuman):
     """Journal or book editor"""
 
     class Meta:
+        ordering = ('last_name', 'first_name')
         verbose_name = _("Editor")
         verbose_name_plural = _("Editors")
 
@@ -167,6 +169,7 @@ class Entry(models.Model):
     authors = models.ManyToManyField('Author', related_name='entries', through='AuthorEntryRank')
     journal = models.ForeignKey('Journal', related_name='entries')
     publication_date = models.DateField(_("Publication date"), null=True)
+    is_partial_publication_date = models.BooleanField(_("Partial publication date?"), default=True, help_text=_("Check this if the publication date is incomplete (for example if only the year is valid)"))
     volume = models.CharField(_("Volume"), max_length=50, blank=True, help_text=_("The volume of a journal or multi-volume book"))
     number = models.CharField(_("Number"), max_length=50, blank=True, help_text=_("The '(issue) number' of a journal, magazine, or tech-report, if applicable. (Most publications have a 'volume', but no 'number' field.)"))
     pages = models.CharField(_("Pages"), max_length=50, blank=True, help_text=_("Page numbers, separated either by commas or double-hyphens"))

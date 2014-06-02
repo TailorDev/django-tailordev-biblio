@@ -17,6 +17,7 @@ class AbstractHumanAdmin(admin.ModelAdmin):
 
 
 class AuthorAdmin(AbstractHumanAdmin):
+    list_display = ('last_name', 'first_name', 'user')
     raw_id_fields = ('user',)
 
 
@@ -41,7 +42,10 @@ class EntryAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Publication core fields', {
             'fields': ('type', 'title', 'journal',
-                       ('volume', 'number'), ('pages', 'publication_date'),
+                       ('volume', 'number'),
+                       ('pages', ),
+                       ('publication_date',
+                        'is_partial_publication_date'),
                        'url')
         }),
         ('Identifiers', {
