@@ -8,6 +8,7 @@ import logging
 from bibtexparser import customization as bp_customization
 from bibtexparser.bparser import BibTexParser
 from bibtexparser.latexenc import string_to_latex
+from time import strptime
 
 from ..models import Author, Journal, Entry, AuthorEntryRank
 
@@ -63,8 +64,19 @@ def bibtex_import(bibfile):
 
             # Publication date
             publication_date = {'day': 1, 'month': 1, 'year': 1900}
-            publication_date.update(dict((k, int(v)) for (k, v) in bib_item.iteritems() if k in date_fields))  # NOPEP8
+            item_date = dict((k, v) for (k, v) in bib_item.iteritems() if k in date_fields)  # NOPEP8
+            publication_date.update(item_date)
+            # Check if month is numerical or not
+            month = publication_date['month']
+            try:
+                int(month)
+            except:
+                publication_date['month'] = strptime(month, '%b').tm_mon
+            # Convert date fields to integers
+            publication_date = dict(map(lambda (k, v): (k, int(v)), publication_date.iteritems()))  # NOPEP8
             fields['publication_date'] = datetime.date(**publication_date)
+
+            fields['is_partial_publication_date'] = not all([True if k in item_date else False for k in date_fields])  # NOPEP8
 
             # Foreign keys
             journal, _ = Journal.objects.get_or_create(name=bib_item['journal'])  # NOPEP8
