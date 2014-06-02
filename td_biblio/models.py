@@ -62,6 +62,7 @@ class Author(AbstractHuman):
     """Entry author"""
 
     class Meta:
+        ordering = ('last_name', 'first_name')
         verbose_name = _("Author")
         verbose_name_plural = _("Authors")
 
@@ -70,6 +71,7 @@ class Editor(AbstractHuman):
     """Journal or book editor"""
 
     class Meta:
+        ordering = ('last_name', 'first_name')
         verbose_name = _("Editor")
         verbose_name_plural = _("Editors")
 
