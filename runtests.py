@@ -33,6 +33,7 @@ def runtests():
         'td_biblio.tests.test_commands',
         'td_biblio.tests.test_factories',
         'td_biblio.tests.test_models',
+        'td_biblio.tests.test_templatetags',
         'td_biblio.tests.test_views',
     ])
     sys.exit(failures)
