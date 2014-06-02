@@ -17,6 +17,7 @@ class AbstractHumanAdmin(admin.ModelAdmin):
 
 
 class AuthorAdmin(AbstractHumanAdmin):
+    list_display = ('last_name', 'first_name', 'user')
     raw_id_fields = ('user',)
 
 
