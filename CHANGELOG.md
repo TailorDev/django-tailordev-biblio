@@ -1,5 +1,9 @@
 # TailorDev Biblio
 
+## 0.3 (February 3, 2015)
+
+* Add publication list partial template
+
 ## 0.2 (June 2, 2014)
 
 * Add support for partial publication date
