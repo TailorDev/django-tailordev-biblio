@@ -128,7 +128,7 @@ class EntryListViewTests(TestCase):
         """
         # Get a valid author
         entry = Entry.objects.get(id=1)
-        params = {'author': entry.first_author().id}
+        params = {'author': entry.first_author.id}
 
         self._test_filtering(**params)
 
@@ -157,7 +157,7 @@ class EntryListViewTests(TestCase):
         # Get a valid collection
         params = {
             'collection': collection.id,
-            'author': entry.first_author().id,
+            'author': entry.first_author.id,
             'year': entry.publication_date.year,
         }
         self._test_filtering(**params)
@@ -169,7 +169,7 @@ class EntryListViewTests(TestCase):
         # Get a valid date
         entry = Entry.objects.get(id=1)
         params = {
-            'author': entry.first_author().id,
+            'author': entry.first_author.id,
             'year': entry.publication_date.year,
         }
 

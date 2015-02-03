@@ -233,13 +233,23 @@ class Entry(models.Model):
 
         return s
 
-    def first_author(self):
+    def _get_first_author(self):
         """
         Get this entry first author
         """
         if not len(self.get_authors()):
             return ''
         return self.get_authors()[0]
+    first_author = property(_get_first_author)
+
+    def _get_last_author(self):
+        """
+        Get this entry last author
+        """
+        if not len(self.get_authors()):
+            return ''
+        return self.get_authors()[-1]
+    last_author = property(_get_last_author)
 
     def get_authors(self):
         """

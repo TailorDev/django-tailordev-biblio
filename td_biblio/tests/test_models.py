@@ -141,6 +141,20 @@ class AbstractHumanModelTestMixin(ModelTestMixin):
         human = self.factory(first_name="John", last_name="McClane")
         self.assertIsNone(human.user)
 
+    def test_saving_and_retrieving_items(self):
+        """
+        Test saving and retrieving two different objects
+        """
+        saved1 = self.factory(first_name="Master", last_name="Zu")
+        saved2 = self.factory(first_name="Mister", last_name="Hide")
+
+        qs = self.model.objects.all()
+        self.assertEqual(qs.count(), 2)
+
+        # Don't forget ordering!
+        self.assertEqual(qs[0], saved2)
+        self.assertEqual(qs[1], saved1)
+
 
 class AuthorModelTest(AbstractHumanModelTestMixin, TestCase):
     """
@@ -255,11 +269,11 @@ class EntryModelTest(ModelTestMixin, TestCase):
         Test the first_author method
         """
         entry = EntryFactory()
-        self.assertEqual(entry.first_author(), '')
+        self.assertEqual(entry.first_author, '')
 
         entry = self.factory()
         first_author = Author.objects.get(id=1)
-        self.assertEqual(entry.first_author(), first_author)
+        self.assertEqual(entry.first_author, first_author)
 
     def test_get_authors(self):
         """
