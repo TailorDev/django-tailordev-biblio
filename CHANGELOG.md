@@ -4,6 +4,10 @@
 
 * Add support for partial publication date
 
+### 0.2.1 (February 3, 2015)
+
+* Entry first and last author are now object properties
+
 ## 0.1 (January 10, 2014)
 
 First public release. Main features are:
