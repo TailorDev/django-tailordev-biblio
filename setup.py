@@ -1,28 +1,33 @@
 # -*- coding: utf-8 -*-
 import os
 
-from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
 
-REQUIREMENTS = 'requirements.txt'
+REQUIREMENTS = 'requirements/production.txt'
+
+with open('README.md') as f:
+    readme = f.read()
 
 
-def read_file(filename):
-    """Read a file into a string"""
-    path = os.path.abspath(os.path.dirname(__file__))
-    filepath = os.path.join(path, filename)
-    try:
-        return open(filepath).read()
-    except IOError:
-        return ''
+def parse_requirements(requirements, ignore=('setuptools',)):
+    """Read dependencies from requirements file (with version numbers if any)
 
-
-def get_dependencies(requirements):
-    """Return project dependencies as read from the requirements file"""
-    r = parse_requirements(requirements)
-    return [str(d.req) for d in r]
-
+    Note: this implementation does not support requirements files with extra
+    requirements
+    """
+    with open(requirements) as f:
+        packages = set()
+        for line in f:
+            line = line.strip()
+            if line.startswith(('#', '-r', '--')):
+                continue
+            if '#egg=' in line:
+                line = line.split('#egg=')[1]
+            pkg = line.strip()
+            if pkg not in ignore:
+                packages.add(pkg)
+        return packages
 
 setup(
     name='django-tailordev-biblio',
@@ -34,7 +39,7 @@ setup(
     url='https://bitbucket.org/tailordev/django-tailordev-biblio',
     license='MIT',
     description=u' '.join(__import__('td_biblio').__doc__.splitlines()).strip(),  # NOPEP8
-    long_description=read_file('README.md'),
+    long_description=readme,
     classifiers=[
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Intended Audience :: Developers',
@@ -45,7 +50,7 @@ setup(
         'Development Status :: 4 - Beta',
         'Operating System :: OS Independent',
     ],
-    install_requires=get_dependencies(REQUIREMENTS),
+    install_requires=parse_requirements(REQUIREMENTS),
     test_suite="runtests.runtests",
     zip_safe=False,
 )
