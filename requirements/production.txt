@@ -1,11 +1,5 @@
-# Install everything that needs to be compiled
--r compiled.txt
-
 # Django
-Django>=1.5
-
-# Migrations
-South
+Django>=1.7
 
 # Reference manager file parser
 bibtexparser
