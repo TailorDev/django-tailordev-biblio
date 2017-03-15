@@ -5,8 +5,6 @@ import os
 from setuptools import setup, find_packages
 
 
-REQUIREMENTS = 'requirements/production.txt'
-
 with open('README.md') as f:
     readme = f.read()
 
@@ -57,7 +55,8 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Operating System :: OS Independent',
     ],
-    install_requires=parse_requirements(REQUIREMENTS),
+    install_requires=parse_requirements('requirements.txt'),
+    tests_require=parse_requirements('requirements-dev.txt'),
     test_suite='runtests.runtests',
     zip_safe=False,
 )
