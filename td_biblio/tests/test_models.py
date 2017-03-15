@@ -307,7 +307,7 @@ class CollectionModelTest(ModelTestMixin, TestCase):
         Save a new collection with multiple entries
         """
         # Create entries
-        for i in xrange(5):
+        for i in range(5):
             EntryFactory()
 
         # Create a collection

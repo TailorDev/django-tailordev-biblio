@@ -12,7 +12,7 @@ class PublicationDateFilterTests(TestCase):
     def setUp(self):
         """Setup a publication database"""
         # Standard entries
-        for i in xrange(4):
+        for i in range(4):
             EntryFactory(is_partial_publication_date=False)
 
         # Special entry with an incomplete publication date

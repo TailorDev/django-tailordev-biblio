@@ -35,8 +35,8 @@ class EntryListViewTests(TestCase):
             self.max_page_num += 1
 
         # Entry (14 * 3 = 42)
-        for y in xrange(self.start_year, self.end_year, 1):
-            for i in xrange(1, 1 + self.n_publications_per_year):
+        for y in range(self.start_year, self.end_year, 1):
+            for i in range(1, 1 + self.n_publications_per_year):
                 date = datetime.date(y, i, 1)
                 EntryWithAuthorsFactory(publication_date=date)
                 self.publications_years.append(y)
@@ -109,7 +109,7 @@ class EntryListViewTests(TestCase):
         """
         Test the get request pagination for 4 pages
         """
-        for page in xrange(1, 5):
+        for page in range(1, 5):
             self._test_one_page(page=page)
 
     def test_year_filtering(self):
@@ -201,7 +201,7 @@ class EntryListViewTests(TestCase):
         # Get all different publication years
         start = self.end_year - 1
         end = self.start_year - 1
-        years_range = xrange(start, end, -1)
+        years_range = range(start, end, -1)
         publication_years = [datetime.date(y, 1, 1) for y in years_range]
 
         # Context

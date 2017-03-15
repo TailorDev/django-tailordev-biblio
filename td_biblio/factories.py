@@ -130,7 +130,7 @@ class AuthorEntryRankFactory(DjangoModelFactory):
 
     author = factory.SubFactory(AuthorFactory)
     entry = factory.SubFactory(EntryFactory)
-    rank = factory.Iterator(xrange(1, 4), cycle=True)
+    rank = factory.Iterator(range(1, 4), cycle=True)
 
 
 class EntryWithAuthorsFactory(EntryFactory):
