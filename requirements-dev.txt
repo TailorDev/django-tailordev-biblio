@@ -9,5 +9,4 @@ flake8
 tox
 
 # Fixtures
-factory-boy>=2.3.0
-names
+factory-boy>=2.6.0
