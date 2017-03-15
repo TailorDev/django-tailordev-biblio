@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
 
@@ -33,12 +34,12 @@ setup(
     name='django-tailordev-biblio',
     version=__import__('td_biblio').__version__,
     author='Julien Maupetit',
-    author_email='julien@tailordev.com',
+    author_email='julien@tailordev.fr',
     packages=find_packages(),
     include_package_data=True,
     url='https://bitbucket.org/tailordev/django-tailordev-biblio',
     license='MIT',
-    description=u' '.join(__import__('td_biblio').__doc__.splitlines()).strip(),  # NOPEP8
+    description=' '.join(__import__('td_biblio').__doc__.splitlines()).strip(),  # noqa
     long_description=readme,
     classifiers=[
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
