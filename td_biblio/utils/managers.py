@@ -73,7 +73,7 @@ def bibtex_import(bibfile):
             except:
                 publication_date['month'] = strptime(month, '%b').tm_mon
             # Convert date fields to integers
-            publication_date = dict(map(lambda (k, v): (k, int(v)), publication_date.iteritems()))  # NOPEP8
+            publication_date = dict(map(lambda k, v: (k, int(v)), publication_date.iteritems()))  # NOPEP8
             fields['publication_date'] = datetime.date(**publication_date)
 
             fields['is_partial_publication_date'] = not all([True if k in item_date else False for k in date_fields])  # NOPEP8
