@@ -1,7 +1,5 @@
 /*
-    TailorDev Biblio, 2013
-
-    author: Julien Maupetit
+ * TailorDev Biblio
  */
 $( document ).ready(function() {
 
