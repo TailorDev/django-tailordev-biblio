@@ -26,10 +26,10 @@ class EntryListViewTests(TestCase):
         self.n_publications_per_year = 3
         self.start_year = 2000
         self.end_year = 2014
-        self.n_publications = (self.end_year - self.start_year) * self.n_publications_per_year  # NOPEP8
+        self.n_publications = self.end_year - self.start_year
+        self.n_publications *= self.n_publications_per_year
         self.n_authors = self.n_publications * 3
-        self.publications_years = []  # publications years
-        # The maximal page number
+        self.publications_years = []
         self.max_page_num = self.n_publications / self.paginate_by
         if self.n_publications % self.paginate_by:
             self.max_page_num += 1

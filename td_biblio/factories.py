@@ -11,14 +11,39 @@ from . import models
 
 
 JOURNAL_CHOICES = [
-    ('Bioinformatics', 'Bioinformatics'),
-    ('BMC Bioinf.', 'BMC Bioinformatics'),
-    ('JACS', 'Journal of the American Chemical Society'),
-    ('J. Comput. Chem.', 'Journal of Computational Chemistry'),
-    ('Nat. Biotechnol.', 'Nature Biotechnology'),
-    ('Nucleic Acids Res.', 'Nucleic Acids Research'),
-    ('PNAS', 'Proceedings of the National Academy of Sciences of the United States of America'),  # NOPEP8
-    ('Proteins Struct. Funct. Bioinf.', 'Proteins: Structure, Function, and Bioinformatics'),  # NOPEP8
+    (
+        'Bioinformatics',
+        'Bioinformatics'
+    ),
+    (
+        'BMC Bioinf.',
+        'BMC Bioinformatics'
+    ),
+    (
+        'JACS',
+        'Journal of the American Chemical Society'
+    ),
+    (
+        'J. Comput. Chem.',
+        'Journal of Computational Chemistry'
+    ),
+    (
+        'Nat. Biotechnol.',
+        'Nature Biotechnology'
+    ),
+    (
+        'Nucleic Acids Res.',
+        'Nucleic Acids Research'
+    ),
+    (
+        'PNAS',
+        'Proceedings of the National Academy of Sciences of the United '
+        'States of America'
+    ),
+    (
+        'Proteins Struct. Funct. Bioinf.',
+        'Proteins: Structure, Function, and Bioinformatics'
+    ),
 ]
 
 ENTRY_TYPES_RAW_CHOICES = [c[0] for c in models.Entry.ENTRY_TYPES_CHOICES]

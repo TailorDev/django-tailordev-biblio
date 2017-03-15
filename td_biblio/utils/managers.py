@@ -60,11 +60,15 @@ def bibtex_import(bibfile):
             logger.debug(u"BibTex entry: %s", bib_item)
 
             # Simple fields
-            fields = dict((k, v) for (k, v) in bib_item.iteritems() if k in simple_fields)  # NOPEP8
+            fields = dict(
+                (k, v) for (k, v) in bib_item.iteritems() if k in simple_fields
+            )
 
             # Publication date
             publication_date = {'day': 1, 'month': 1, 'year': 1900}
-            item_date = dict((k, v) for (k, v) in bib_item.iteritems() if k in date_fields)  # NOPEP8
+            item_date = dict(
+                (k, v) for (k, v) in bib_item.iteritems() if k in date_fields
+            )
             publication_date.update(item_date)
             # Check if month is numerical or not
             month = publication_date['month']
@@ -73,13 +77,19 @@ def bibtex_import(bibfile):
             except:
                 publication_date['month'] = strptime(month, '%b').tm_mon
             # Convert date fields to integers
-            publication_date = dict(map(lambda k, v: (k, int(v)), publication_date.iteritems()))  # NOPEP8
+            publication_date = dict(
+                map(lambda k, v: (k, int(v)), publication_date.iteritems())
+            )
             fields['publication_date'] = datetime.date(**publication_date)
 
-            fields['is_partial_publication_date'] = not all([True if k in item_date else False for k in date_fields])  # NOPEP8
+            fields['is_partial_publication_date'] = not all(
+                [True if k in item_date else False for k in date_fields]
+            )
 
             # Foreign keys
-            journal, _ = Journal.objects.get_or_create(name=bib_item['journal'])  # NOPEP8
+            journal, _ = Journal.objects.get_or_create(
+                name=bib_item['journal']
+            )
             fields['journal'] = journal
 
             logger.debug(u"Fields: %s", fields)
