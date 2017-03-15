@@ -3,9 +3,6 @@
 # package for developers (testing, docs, etc.), it goes in this file.
 -r production.txt
 
-# Documentation
-Sphinx
-
 # Testing
 coverage
 flake8
