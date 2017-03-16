@@ -6,7 +6,7 @@ Test views
 """
 import datetime
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.test import TestCase
 
 from ..factories import (CollectionFactory, EntryWithAuthorsFactory)
@@ -21,7 +21,7 @@ class EntryListViewTests(TestCase):
         """
         Generate Author and Entry fixtures & set object level vars
         """
-        self.url = reverse('entry_list')
+        self.url = reverse_lazy('entry_list')
         self.paginate_by = 20
         self.n_publications_per_year = 3
         self.start_year = 2000

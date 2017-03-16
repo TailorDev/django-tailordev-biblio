@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.test import TestCase
 
 from ..factories import EntryFactory
@@ -20,7 +20,7 @@ class PublicationDateFilterTests(TestCase):
             publication_date=datetime.date(1980, 1, 1),
             is_partial_publication_date=True,
         )
-        self.url = reverse('entry_list')
+        self.url = reverse_lazy('entry_list')
 
     def test_publication_date_filter(self):
         """Core testing"""
