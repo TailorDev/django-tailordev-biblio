@@ -1,5 +1,6 @@
 __pycache__
 *.py[co]
+.cache
 .project
 .pydevproject
 *~
@@ -8,6 +9,7 @@ __pycache__
 *.DS_Store
 .coverage
 .tox
+db.sqlite3
 *.egg-info/*
 docs/_build/*
 dist/*

@@ -4,12 +4,14 @@ TailorDev Bibliography
 
 Test factories.
 """
-from .compat import unittest
+import pytest
+from django.test import TestCase
 
 from ..factories import FuzzyPages, EntryFactory
 
 
-class FuzzyPagesTestCase(unittest.TestCase):
+@pytest.mark.django_db
+class FuzzyPagesTestCase(TestCase):
 
     def test_simple_call(self):
         """Test the Fuzzy pages attribute implicit call"""

@@ -5,6 +5,7 @@ TailorDev Bibliography
 Test commands.
 """
 import os.path
+import pytest
 
 from django.core.management.base import CommandError
 from django.test import TestCase
@@ -13,6 +14,7 @@ from ..management.commands import bibtex_import
 from ..models import Author, Entry, Journal
 
 
+@pytest.mark.django_db
 class BibTexImportCommandTests(TestCase):
     """
     Tests for the bibtex_import admin command

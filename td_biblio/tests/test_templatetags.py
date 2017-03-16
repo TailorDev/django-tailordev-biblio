@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import pytest
 
 from django.core.urlresolvers import reverse_lazy
 from django.test import TestCase
@@ -7,6 +8,7 @@ from django.test import TestCase
 from ..factories import EntryFactory
 
 
+@pytest.mark.django_db
 class PublicationDateFilterTests(TestCase):
     """Tests for the publication_date filter"""
     def setUp(self):

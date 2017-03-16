@@ -5,17 +5,23 @@ TailorDev Bibliography
 Test models.
 """
 import datetime
+import pytest
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from ..factories import (AuthorFactory, EditorFactory, JournalFactory,
-                         PublisherFactory, EntryFactory, CollectionFactory,
-                         AuthorEntryRankFactory, EntryWithStaticAuthorsFactory)
-from ..models import (Author, Editor, Journal, Publisher, Entry, Collection,
-    AuthorEntryRank)
+from ..factories import (
+    AuthorFactory, EditorFactory, JournalFactory, PublisherFactory,
+    EntryFactory, CollectionFactory, AuthorEntryRankFactory,
+    EntryWithStaticAuthorsFactory
+)
+
+from ..models import (
+    Author, Editor, Journal, Publisher, Entry, Collection, AuthorEntryRank
+)
 
 
+@pytest.mark.django_db
 class ModelTestMixin(object):
     """
     A simple mixin for models.

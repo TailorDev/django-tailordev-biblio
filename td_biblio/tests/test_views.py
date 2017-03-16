@@ -5,6 +5,7 @@ Django TailorDev Biblio
 Test views
 """
 import datetime
+import pytest
 
 from django.core.urlresolvers import reverse_lazy
 from django.test import TestCase
@@ -13,6 +14,7 @@ from ..factories import (CollectionFactory, EntryWithAuthorsFactory)
 from ..models import Entry
 
 
+@pytest.mark.django_db
 class EntryListViewTests(TestCase):
     """
     Tests for the EntryListViewTests
