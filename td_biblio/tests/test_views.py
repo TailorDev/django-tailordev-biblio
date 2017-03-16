@@ -72,7 +72,7 @@ class EntryListViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Publication list
-        publication_block = u'<li class="publication-list-year">'
+        publication_block = '<li class="publication-list-year">'
         start = self.paginate_by * (page - 1)
         end = self.paginate_by * page
         if end > self.n_publications:
@@ -81,17 +81,17 @@ class EntryListViewTests(TestCase):
         self.assertContains(response, publication_block,
                             count=expected_count)
 
-        publication_block = u'<li class="publication">'
+        publication_block = '<li class="publication">'
         self.assertContains(response, publication_block,
                             count=end - start)
 
         # Pagination
         self.assertTrue(response.context['is_paginated'])
 
-        pagination_block = u'<div class="pagination-centered">'
+        pagination_block = '<div class="pagination-centered">'
         self.assertContains(response, pagination_block)
 
-        pagination_block = u'<a href="">%d</a>' % page
+        pagination_block = '<a href="">%d</a>' % page
         self.assertContains(response, pagination_block)
 
     def _test_filtering(self, **kwargs):
@@ -104,7 +104,7 @@ class EntryListViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Display at list a publication
-        publication_block = u'<li class="publication">'
+        publication_block = '<li class="publication">'
         self.assertContains(response, publication_block)
 
     def test_pagination(self):

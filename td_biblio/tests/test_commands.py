@@ -24,7 +24,7 @@ class BibTexImportCommandTests(TestCase):
         Set object level vars
         """
         self.bibtex_file = os.path.abspath(
-            os.path.dirname(__file__) + "/fixtures/biblio.bib"
+            os.path.dirname(__file__) + '/fixtures/biblio.bib'
         )
         self.cmd = bibtex_import.Command()
 
@@ -51,7 +51,7 @@ class BibTexImportCommandTests(TestCase):
     def _test_entry_authors(self, entry, expected_authors):
         for rank, author in enumerate(entry.get_authors()):
             self.assertEqual(
-                unicode(author),
+                str(author),
                 expected_authors[rank]
             )
 
@@ -64,28 +64,28 @@ class BibTexImportCommandTests(TestCase):
 
         # Case 1
         entry = Entry.objects.get(
-            title=u'Mobyle: a new full web bioinformatics framework'
+            title='Mobyle: a new full web bioinformatics framework'
         )
         expected_authors = [
-            u'Néron B',
-            u'Ménager H',
-            u'Maufrais C',
-            u'Joly N',
-            u'Maupetit J',
-            u'Letort S',
-            u'Carrere S',
-            u'Tuffery P',
-            u'Letondal C',
+            'Néron B',
+            'Ménager H',
+            'Maufrais C',
+            'Joly N',
+            'Maupetit J',
+            'Letort S',
+            'Carrere S',
+            'Tuffery P',
+            'Letondal C',
         ]
         self._test_entry_authors(entry, expected_authors)
 
         # Case 2
-        entry = Entry.objects.get(title__startswith=u'fpocket')
+        entry = Entry.objects.get(title__startswith='fpocket')
         expected_authors = [
-            u'Schmidtke P',
-            u'Le Guilloux V',
-            u'Maupetit J',
-            u'Tufféry P'
+            'Schmidtke P',
+            'Le Guilloux V',
+            'Maupetit J',
+            'Tufféry P'
         ]
         self._test_entry_authors(entry, expected_authors)
 

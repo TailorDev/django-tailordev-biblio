@@ -28,10 +28,10 @@ class PublicationDateFilterTests(TestCase):
         """Core testing"""
         response = self.client.get(self.url)
 
-        publication_date_block = u'<span class="publication_date">'
+        publication_date_block = '<span class="publication_date">'
         self.assertContains(response, publication_date_block, count=5)
 
-        publication_date_block = u'<span class="publication_date">1980.</span>'
+        publication_date_block = '<span class="publication_date">1980.</span>'
         self.assertContains(
             response, publication_date_block, count=1, html=True
         )

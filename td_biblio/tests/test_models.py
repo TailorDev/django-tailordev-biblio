@@ -62,12 +62,12 @@ class AbstractHumanModelTestMixin(ModelTestMixin):
     """
     Tests for the abstract Human model
     """
-    def test_unicode(self):
+    def test_str(self):
         """
-        Test __unicode__ method
+        Test __str__ method
         """
         human = self.factory()
-        self.assertEqual(unicode(human), human.get_formatted_name())
+        self.assertEqual(str(human), human.get_formatted_name())
 
     def test_set_first_initial(self):
         """
@@ -184,12 +184,12 @@ class AbstractEntityModelTestMixin(ModelTestMixin):
     """
     Tests for the abstract Entity model
     """
-    def test_unicode(self):
+    def test_str(self):
         """
-        Test __unicode__ method
+        Test __str__ method
         """
         entity = self.factory()
-        self.assertEqual(unicode(entity), entity.name)
+        self.assertEqual(str(entity), entity.name)
 
 
 class JournalModelTest(AbstractEntityModelTestMixin, TestCase):
@@ -218,9 +218,9 @@ class EntryModelTest(ModelTestMixin, TestCase):
         self.model = Entry
         self.factory = EntryWithStaticAuthorsFactory
 
-    def test_unicode(self):
+    def test_str(self):
         """
-        Test __unicode__ method
+        Test __str__ method
         """
         journal = JournalFactory(
             name='Die Hard Journal',
@@ -235,14 +235,14 @@ class EntryModelTest(ModelTestMixin, TestCase):
         )
         expected = 'McClane J, and Gennero H, "Yippee-ki-yay, motherfucker", '
         expected += 'in Die Hard J, vol. 1, pp. 1--132, July 1988.'
-        self.assertEqual(unicode(entry), expected)
+        self.assertEqual(str(entry), expected)
 
         # Remove the abbreviation
         journal.abbreviation = ''
         journal.save(update_fields=['abbreviation', ])
         expected = 'McClane J, and Gennero H, "Yippee-ki-yay, motherfucker", '
         expected += 'in Die Hard Journal, vol. 1, pp. 1--132, July 1988.'
-        self.assertEqual(unicode(entry), expected)
+        self.assertEqual(str(entry), expected)
 
     def test_saving_and_retrieving_items(self):
         """
@@ -287,10 +287,10 @@ class EntryModelTest(ModelTestMixin, TestCase):
         """
         entry = self.factory()
         expected = [
-            u'McClane J',
-            u'Gennero H',
+            'McClane J',
+            'Gennero H',
         ]
-        self.assertListEqual(map(unicode, entry.get_authors()), expected)
+        self.assertListEqual(map(str, entry.get_authors()), expected)
 
 
 class CollectionModelTest(ModelTestMixin, TestCase):
@@ -301,12 +301,12 @@ class CollectionModelTest(ModelTestMixin, TestCase):
         self.model = Collection
         self.factory = CollectionFactory
 
-    def test_unicode(self):
+    def test_str(self):
         """
-        Test __unicode__ method
+        Test __str__ method
         """
         collection = self.factory()
-        self.assertEqual(unicode(collection), collection.name)
+        self.assertEqual(str(collection), collection.name)
 
     def test_add_entries(self):
         """
@@ -330,13 +330,13 @@ class AuthorEntryRankTest(ModelTestMixin, TestCase):
         self.model = AuthorEntryRank
         self.factory = AuthorEntryRankFactory
 
-    def test_unicode(self):
+    def test_str(self):
         """
-        Test __unicode__ method
+        Test __str__ method
         """
         obj = self.factory()
-        expected = u"%(author)s:%(rank)d:%(entry)s" % {
+        expected = '%(author)s:%(rank)d:%(entry)s' % {
             'author': obj.author,
             'entry': obj.entry,
             'rank': obj.rank}
-        self.assertEqual(unicode(obj), expected)
+        self.assertEqual(str(obj), expected)
