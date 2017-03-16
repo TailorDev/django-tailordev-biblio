@@ -5,6 +5,8 @@ Bibliography Manager Tools
 import datetime
 import logging
 
+import bibtexparser
+
 from bibtexparser import customization as bp_customization
 from bibtexparser.bparser import BibTexParser
 from bibtexparser.latexenc import string_to_latex
@@ -41,18 +43,20 @@ def td_biblio_customization(record):
     return record
 
 
-def bibtex_import(bibfile):
+def bibtex_import(bibtex_filename):
     """
     Import a bibtex (.bib) bibliography file
     """
-    logger.info("BibTex import: %s" % bibfile)
+    logger.info("BibTex import: %s" % bibtex_filename)
     simple_fields = ('type', 'title', 'volume', 'number', 'pages', 'url')
     date_fields = ('day', 'month', 'year')
 
-    with open(bibfile, 'r') as bibfile:
+    with open(bibtex_filename) as bibtex_file:
 
         # Parse BibTex file
-        bp = BibTexParser(bibfile, customization=td_biblio_customization)
+        parser = BibTexParser()
+        parser.customization = td_biblio_customization
+        bp = bibtexparser.load(bibtex_file, parser=parser)
 
         # Import each entry
         for bib_item in bp.get_entry_list():
@@ -61,13 +65,13 @@ def bibtex_import(bibfile):
 
             # Simple fields
             fields = dict(
-                (k, v) for (k, v) in bib_item.iteritems() if k in simple_fields
+                (k, v) for (k, v) in bib_item.items() if k in simple_fields
             )
 
             # Publication date
             publication_date = {'day': 1, 'month': 1, 'year': 1900}
             item_date = dict(
-                (k, v) for (k, v) in bib_item.iteritems() if k in date_fields
+                (k, v) for (k, v) in bib_item.items() if k in date_fields
             )
             publication_date.update(item_date)
             # Check if month is numerical or not
@@ -78,7 +82,7 @@ def bibtex_import(bibfile):
                 publication_date['month'] = strptime(month, '%b').tm_mon
             # Convert date fields to integers
             publication_date = dict(
-                map(lambda k, v: (k, int(v)), publication_date.iteritems())
+                (k, int(v)) for k, v in publication_date.items()
             )
             fields['publication_date'] = datetime.date(**publication_date)
 
