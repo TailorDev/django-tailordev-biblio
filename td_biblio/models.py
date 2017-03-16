@@ -36,12 +36,12 @@ class AbstractHuman(models.Model):
 
         if self.first_initial and not force:
             return
-        self.first_initial = u" ".join([c[0] for c in self.first_name.split()])
+        self.first_initial = ' '.join([c[0] for c in self.first_name.split()])
 
     def get_formatted_name(self):
         """Return author formated full name, e.g. Maupetit J"""
 
-        return u"%s %s" % (self.last_name, self.first_initial)
+        return '%s %s' % (self.last_name, self.first_initial)
 
     def map(self):
         """Map with django users based on their full names and initials"""
@@ -289,7 +289,7 @@ class AuthorEntryRank(models.Model):
         ordering = ('rank',)
 
     def __unicode__(self):
-        return u"%(author)s:%(rank)d:%(entry)s" % {
+        return '%(author)s:%(rank)d:%(entry)s' % {
             'author': self.author,
             'entry': self.entry,
             'rank': self.rank}

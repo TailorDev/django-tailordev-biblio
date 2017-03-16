@@ -45,7 +45,7 @@ def bibtex_import(bibfile):
     """
     Import a bibtex (.bib) bibliography file
     """
-    logger.info(u"BibTex import: %s" % bibfile)
+    logger.info("BibTex import: %s" % bibfile)
     simple_fields = ('type', 'title', 'volume', 'number', 'pages', 'url')
     date_fields = ('day', 'month', 'year')
 
@@ -57,7 +57,7 @@ def bibtex_import(bibfile):
         # Import each entry
         for bib_item in bp.get_entry_list():
 
-            logger.debug(u"BibTex entry: %s", bib_item)
+            logger.debug("BibTex entry: %s", bib_item)
 
             # Simple fields
             fields = dict(
@@ -92,11 +92,11 @@ def bibtex_import(bibfile):
             )
             fields['journal'] = journal
 
-            logger.debug(u"Fields: %s", fields)
+            logger.debug("Fields: %s", fields)
 
             # Save or Update this entry
             entry, _ = Entry.objects.get_or_create(**fields)
-            logger.debug(u"Entry: %s", entry)
+            logger.debug("Entry: %s", entry)
 
             # Authors
             for rank, author in enumerate(bib_item['author']):
