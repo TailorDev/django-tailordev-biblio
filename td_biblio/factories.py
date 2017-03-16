@@ -50,7 +50,7 @@ ENTRY_TYPES_RAW_CHOICES = [c[0] for c in models.Entry.ENTRY_TYPES_CHOICES]
 
 # Custom fuzzy attributes definition
 #
-class FuzzyPages(factory.fuzzy.BaseFuzzyAttribute):
+class FuzzyPages(BaseFuzzyAttribute):
     """Random pages numbers separated by double-hyphens"""
 
     def __init__(self, low, high=None, **kwargs):
@@ -79,6 +79,7 @@ class AbstractHumanFactory(DjangoModelFactory):
     class Meta:
             model = models.AbstractHuman
             abstract = True
+
 
 class AuthorFactory(AbstractHumanFactory):
 
