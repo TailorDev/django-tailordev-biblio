@@ -290,7 +290,7 @@ class EntryModelTest(ModelTestMixin, TestCase):
             'McClane J',
             'Gennero H',
         ]
-        self.assertListEqual(map(str, entry.get_authors()), expected)
+        self.assertListEqual(list(map(str, entry.get_authors())), expected)
 
 
 class CollectionModelTest(ModelTestMixin, TestCase):
