@@ -4,6 +4,8 @@ TailorDev Bibliography
 
 Test commands.
 """
+from __future__ import unicode_literals
+
 import os.path
 import pytest
 
@@ -51,7 +53,7 @@ class BibTexImportCommandTests(TestCase):
     def _test_entry_authors(self, entry, expected_authors):
         for rank, author in enumerate(entry.get_authors()):
             self.assertEqual(
-                str(author),
+                author.get_formatted_name(),
                 expected_authors[rank]
             )
 
