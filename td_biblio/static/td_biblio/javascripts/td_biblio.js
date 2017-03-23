@@ -1,10 +1,21 @@
 /*
  * TailorDev Biblio
  */
-$( document ).ready(function() {
-
-    // Publication list filters form
-    $('form#publication-list-filters > *').change(function(){
-        $(this).parent('form').submit();
+(function() {
+  function submitFiltersFormOnChange() {
+    const form = document.forms['publication-list-filters'];
+    form.addEventListener('change', function() {
+      form.submit();
     });
-});
+  };
+
+  function ready(fn) {
+    if (document.readyState != 'loading'){
+      fn();
+    } else {
+      document.addEventListener('DOMContentLoaded', fn);
+    }
+  }
+
+  ready(submitFiltersFormOnChange);
+})();
