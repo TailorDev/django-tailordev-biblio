@@ -1,5 +1,17 @@
 # TailorDev Biblio
 
+## 1.0.0 (March 23, 2017)
+
+* Add support for python 3.4+
+* Add support for Django 1.7+
+* Switch to `py.test` test runner
+* Remove jQuery implicit dependency
+
+### BC Breaks
+
+* Drops compatibility with python 2.6
+* Drops compatibility with Django < 1.7
+
 ## 0.3 (February 3, 2015)
 
 * Add publication list partial template
@@ -25,4 +37,3 @@ TODO:
 
 * Work on the documentation
 * Add EndNote support
-
