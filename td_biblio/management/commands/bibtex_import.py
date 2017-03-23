@@ -1,30 +1,20 @@
 # -*- coding: utf-8 -*-
-import logging
-
 from django.core.management.base import BaseCommand, CommandError
 
 from td_biblio.utils.managers import bibtex_import
 
 
 class Command(BaseCommand):
-    args = '<my_biblio.bib)>'
-    help = 'Import entries from a BibTex file'
+    help = "Import entries from a BibTex file"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'bibtex',
+            help="The path to the BibTeX file to import"
+        )
 
     def handle(self, *args, **options):
-        logger = self._get_logger()
-
-        if not len(args):
-            raise CommandError("No BibTex file provided")
-
-        bibtex_file = args[0]
-
-        # import
-        logger.info("Starting BibTex import from: %s" % bibtex_file)
-
-        bibtex_import(bibtex_file)
-
-        logger.info("BibTex import was successfull")
-
-    def _get_logger(self):
-        logger = logging.getLogger('td_biblio')
-        return logger
+        bibtex = options.get('bibtex', None)
+        self.stdout.write("Importing '{}' BibTeX file...".format(bibtex))
+        bibtex_import(bibtex)
+        self.stdout.write(self.style.SUCCESS("Importation succeeded"))
