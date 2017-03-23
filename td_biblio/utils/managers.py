@@ -116,3 +116,5 @@ def bibtex_import(bibtex_filename):
                     entry=entry,
                     author=author,
                     rank=rank)
+
+    logger.info("Importation done.")

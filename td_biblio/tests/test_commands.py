@@ -39,7 +39,7 @@ class BibTexImportCommandTests(TestCase):
             self.cmd.handle()
 
         # Execute the command
-        self.cmd.handle(self.bibtex_file)
+        self.cmd.handle(bibtex=self.bibtex_file)
 
         # How many entries did we successfully import?
         self.assertEqual(Entry.objects.count(), 9)
@@ -62,7 +62,7 @@ class BibTexImportCommandTests(TestCase):
         Test if author rank is respected
         """
         # Execute the command
-        self.cmd.handle(self.bibtex_file)
+        self.cmd.handle(bibtex=self.bibtex_file)
 
         # Case 1
         entry = Entry.objects.get(
@@ -94,7 +94,7 @@ class BibTexImportCommandTests(TestCase):
     def test_partial_publication_date(self):
         """Test if partial publication date flag"""
         # Execute the command
-        self.cmd.handle(self.bibtex_file)
+        self.cmd.handle(bibtex=self.bibtex_file)
 
         qs = Entry.objects.filter(is_partial_publication_date=False)
         self.assertEqual(qs.count(), 1)
