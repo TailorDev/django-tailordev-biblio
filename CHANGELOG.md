@@ -12,6 +12,10 @@
 * Drops compatibility with python 2.6
 * Drops compatibility with Django < 1.7
 
+### 1.0.1 (March 23, 2017)
+
+* Fix missing dev requirments
+
 ## 0.3 (February 3, 2015)
 
 * Add publication list partial template
