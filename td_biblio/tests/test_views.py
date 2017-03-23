@@ -5,6 +5,7 @@ Django TailorDev Biblio
 Test views
 """
 import datetime
+import pytest
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -13,6 +14,7 @@ from ..factories import (CollectionFactory, EntryWithAuthorsFactory)
 from ..models import Entry
 
 
+@pytest.mark.django_db
 class EntryListViewTests(TestCase):
     """
     Tests for the EntryListViewTests
@@ -26,17 +28,17 @@ class EntryListViewTests(TestCase):
         self.n_publications_per_year = 3
         self.start_year = 2000
         self.end_year = 2014
-        self.n_publications = (self.end_year - self.start_year) * self.n_publications_per_year  # NOPEP8
+        self.n_publications = self.end_year - self.start_year
+        self.n_publications *= self.n_publications_per_year
         self.n_authors = self.n_publications * 3
-        self.publications_years = []  # publications years
-        # The maximal page number
+        self.publications_years = []
         self.max_page_num = self.n_publications / self.paginate_by
         if self.n_publications % self.paginate_by:
             self.max_page_num += 1
 
         # Entry (14 * 3 = 42)
-        for y in xrange(self.start_year, self.end_year, 1):
-            for i in xrange(1, 1 + self.n_publications_per_year):
+        for y in range(self.start_year, self.end_year, 1):
+            for i in range(1, 1 + self.n_publications_per_year):
                 date = datetime.date(y, i, 1)
                 EntryWithAuthorsFactory(publication_date=date)
                 self.publications_years.append(y)
@@ -70,7 +72,7 @@ class EntryListViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Publication list
-        publication_block = u'<li class="publication-list-year">'
+        publication_block = '<li class="publication-list-year">'
         start = self.paginate_by * (page - 1)
         end = self.paginate_by * page
         if end > self.n_publications:
@@ -79,17 +81,17 @@ class EntryListViewTests(TestCase):
         self.assertContains(response, publication_block,
                             count=expected_count)
 
-        publication_block = u'<li class="publication">'
+        publication_block = '<li class="publication">'
         self.assertContains(response, publication_block,
                             count=end - start)
 
         # Pagination
         self.assertTrue(response.context['is_paginated'])
 
-        pagination_block = u'<div class="pagination-centered">'
+        pagination_block = '<div class="pagination-centered">'
         self.assertContains(response, pagination_block)
 
-        pagination_block = u'<a href="">%d</a>' % page
+        pagination_block = '<a href="">%d</a>' % page
         self.assertContains(response, pagination_block)
 
     def _test_filtering(self, **kwargs):
@@ -102,14 +104,14 @@ class EntryListViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Display at list a publication
-        publication_block = u'<li class="publication">'
+        publication_block = '<li class="publication">'
         self.assertContains(response, publication_block)
 
     def test_pagination(self):
         """
         Test the get request pagination for 4 pages
         """
-        for page in xrange(1, 5):
+        for page in range(1, 5):
             self._test_one_page(page=page)
 
     def test_year_filtering(self):
@@ -201,7 +203,7 @@ class EntryListViewTests(TestCase):
         # Get all different publication years
         start = self.end_year - 1
         end = self.start_year - 1
-        years_range = xrange(start, end, -1)
+        years_range = range(start, end, -1)
         publication_years = [datetime.date(y, 1, 1) for y in years_range]
 
         # Context

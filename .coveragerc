@@ -1,6 +1,0 @@
-[run]
-source = td_biblio
-omit = td_biblio/admin.py, td_biblio/migrations/*
-
-[report]
-omit = td_biblio/admin.py, td_biblio/migrations/*

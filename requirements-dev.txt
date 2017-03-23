@@ -1,16 +1,13 @@
 # This file pulls in everything a developer needs. If it's a basic package
 # needed to run the site, it belongs in requirements/prod.txt. If it's a
 # package for developers (testing, docs, etc.), it goes in this file.
--r production.txt
-
-# Documentation
-Sphinx
+-r requirements.txt
 
 # Testing
-coverage
+pytest>=3.0.7
+pytest-cov>=2.4.0
+pytest-django>=3.1.2
 flake8
-tox
 
 # Fixtures
-factory-boy>=2.3.0
-names
+factory-boy>=2.6.0

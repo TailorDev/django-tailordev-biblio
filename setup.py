@@ -1,51 +1,65 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
 
-from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
 
-REQUIREMENTS = 'requirements.txt'
+with open('README.md') as f:
+    readme = f.read()
 
 
-def read_file(filename):
-    """Read a file into a string"""
-    path = os.path.abspath(os.path.dirname(__file__))
-    filepath = os.path.join(path, filename)
-    try:
-        return open(filepath).read()
-    except IOError:
-        return ''
+def parse_requirements(requirements, ignore=('setuptools',)):
+    """Read dependencies from requirements file (with version numbers if any)
 
-
-def get_dependencies(requirements):
-    """Return project dependencies as read from the requirements file"""
-    r = parse_requirements(requirements)
-    return [str(d.req) for d in r]
-
+    Note: this implementation does not support requirements files with extra
+    requirements
+    """
+    with open(requirements) as f:
+        packages = set()
+        for line in f:
+            line = line.strip()
+            if line.startswith(('#', '-r', '--')):
+                continue
+            if '#egg=' in line:
+                line = line.split('#egg=')[1]
+            pkg = line.strip()
+            if pkg not in ignore:
+                packages.add(pkg)
+        return packages
 
 setup(
     name='django-tailordev-biblio',
     version=__import__('td_biblio').__version__,
-    author='Julien Maupetit',
-    author_email='julien@tailordev.com',
+    author='TailorDev',
+    author_email='hello+github@tailordev.fr',
     packages=find_packages(),
     include_package_data=True,
-    url='https://bitbucket.org/tailordev/django-tailordev-biblio',
+    url='https://github.com/TailorDev/django-tailordev-biblio',
     license='MIT',
-    description=u' '.join(__import__('td_biblio').__doc__.splitlines()).strip(),  # NOPEP8
-    long_description=read_file('README.md'),
+    description=' '.join(__import__('td_biblio').__doc__.splitlines()).strip(),  # noqa
+    long_description=readme,
     classifiers=[
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Information Technology',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Framework :: Django',
-        'Development Status :: 4 - Beta',
+        'Framework :: Django :: 1.7',
+        'Framework :: Django :: 1.8',
+        'Framework :: Django :: 1.9',
+        'Framework :: Django :: 1.10',
+        'Development Status :: 5 - Production/Stable',
         'Operating System :: OS Independent',
     ],
-    install_requires=get_dependencies(REQUIREMENTS),
-    test_suite="runtests.runtests",
-    zip_safe=False,
+    install_requires=parse_requirements('requirements.txt'),
+    tests_require=parse_requirements('requirements-dev.txt'),
+    keywords='django biblio bibliography bibtex publication',
 )

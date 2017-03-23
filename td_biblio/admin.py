@@ -87,6 +87,7 @@ class CollectionAdmin(admin.ModelAdmin):
     list_display = ('name', 'size')
     raw_id_fields = ('entries',)
 
+
 admin.site.register(Author, AuthorAdmin)
 admin.site.register(Editor, EditorAdmin)
 admin.site.register(Journal, JournalAdmin)

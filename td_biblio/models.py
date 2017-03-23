@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 
 class AbstractHuman(models.Model):
@@ -13,7 +13,9 @@ class AbstractHuman(models.Model):
 
     first_name = models.CharField(_("First name"), max_length=100)
     last_name = models.CharField(_("Last name"), max_length=100)
-    first_initial = models.CharField(_("First Initial(s)"), max_length=10, blank=True)
+    first_initial = models.CharField(
+        _("First Initial(s)"), max_length=10, blank=True
+    )
 
     # This is a django user
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
@@ -21,7 +23,7 @@ class AbstractHuman(models.Model):
     class Meta:
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         return self.get_formatted_name()
 
     def save(self, *args, **kwargs):
@@ -36,12 +38,12 @@ class AbstractHuman(models.Model):
 
         if self.first_initial and not force:
             return
-        self.first_initial = u" ".join([c[0] for c in self.first_name.split()])
+        self.first_initial = ' '.join([c[0] for c in self.first_name.split()])
 
     def get_formatted_name(self):
         """Return author formated full name, e.g. Maupetit J"""
 
-        return u"%s %s" % (self.last_name, self.first_initial)
+        return '%s %s' % (self.last_name, self.first_initial)
 
     def map(self):
         """Map with django users based on their full names and initials"""
@@ -80,12 +82,17 @@ class AbstractEntity(models.Model):
     """Simple abstract entity"""
 
     name = models.CharField(_("Name"), max_length=150)
-    abbreviation = models.CharField(_("Entity abbreviation"), max_length=100, blank=True, help_text=_("e.g. Proc Natl Acad Sci U S A"))
+    abbreviation = models.CharField(
+        _("Entity abbreviation"),
+        max_length=100,
+        blank=True,
+        help_text=_("e.g. Proc Natl Acad Sci U S A")
+    )
 
     class Meta:
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -162,42 +169,158 @@ class Entry(models.Model):
         (UNPUBLISHED, _("Unpublished work")),
     )
 
-    type = models.CharField(_("Entry type"), max_length=50, choices=ENTRY_TYPES_CHOICES, default=ARTICLE)
+    type = models.CharField(
+        _("Entry type"),
+        max_length=50,
+        choices=ENTRY_TYPES_CHOICES,
+        default=ARTICLE
+    )
 
     # Base fields
     title = models.CharField(_("Title"), max_length=255)
-    authors = models.ManyToManyField('Author', related_name='entries', through='AuthorEntryRank')
+    authors = models.ManyToManyField(
+        'Author',
+        related_name='entries',
+        through='AuthorEntryRank'
+    )
     journal = models.ForeignKey('Journal', related_name='entries')
     publication_date = models.DateField(_("Publication date"), null=True)
-    is_partial_publication_date = models.BooleanField(_("Partial publication date?"), default=True, help_text=_("Check this if the publication date is incomplete (for example if only the year is valid)"))
-    volume = models.CharField(_("Volume"), max_length=50, blank=True, help_text=_("The volume of a journal or multi-volume book"))
-    number = models.CharField(_("Number"), max_length=50, blank=True, help_text=_("The '(issue) number' of a journal, magazine, or tech-report, if applicable. (Most publications have a 'volume', but no 'number' field.)"))
-    pages = models.CharField(_("Pages"), max_length=50, blank=True, help_text=_("Page numbers, separated either by commas or double-hyphens"))
-    url = models.URLField(_("URL"), blank=True, help_text=_("The WWW address where to find this resource"))
+    is_partial_publication_date = models.BooleanField(
+        _("Partial publication date?"),
+        default=True,
+        help_text=_(
+            "Check this if the publication date is incomplete (for example "
+            "if only the year is valid)"
+        )
+    )
+    volume = models.CharField(
+        _("Volume"),
+        max_length=50,
+        blank=True,
+        help_text=_("The volume of a journal or multi-volume book")
+    )
+    number = models.CharField(
+        _("Number"),
+        max_length=50,
+        blank=True,
+        help_text=_(
+            "The '(issue) number' of a journal, magazine, or tech-report, if "
+            "applicable. (Most publications have a 'volume', but no 'number' "
+            "field.)"
+        )
+    )
+    pages = models.CharField(
+        _("Pages"),
+        max_length=50,
+        blank=True,
+        help_text=_(
+            "Page numbers, separated either by commas or "
+            "double-hyphens"
+        )
+    )
+    url = models.URLField(
+        _("URL"),
+        blank=True,
+        help_text=_("The WWW address where to find this resource")
+    )
 
     # Identifiers
-    doi = models.CharField(_("DOI"), max_length=100, blank=True, help_text=_("Digital Object Identifier for this resource"))
-    issn = models.CharField(_("ISSN"), max_length=20, blank=True, help_text=_("International Standard Serial Number"))
-    isbn = models.CharField(_("ISBN"), max_length=20, blank=True, help_text=_("International Standard Book Number"))
-    pmid = models.CharField(_("PMID"), blank=True, max_length=20, help_text=_("Pubmed ID"))
+    doi = models.CharField(
+        _("DOI"),
+        max_length=100,
+        blank=True,
+        help_text=_("Digital Object Identifier for this resource")
+    )
+    issn = models.CharField(
+        _("ISSN"),
+        max_length=20,
+        blank=True,
+        help_text=_("International Standard Serial Number")
+    )
+    isbn = models.CharField(
+        _("ISBN"),
+        max_length=20,
+        blank=True,
+        help_text=_("International Standard Book Number")
+    )
+    pmid = models.CharField(
+        _("PMID"),
+        blank=True,
+        max_length=20,
+        help_text=_("Pubmed ID")
+    )
 
     # Book
-    booktitle = models.CharField(_("Book title"), max_length=50, blank=True, help_text=_("The title of the book, if only part of it is being cited"))
-    edition = models.CharField(_("Edition"), max_length=100, blank=True, help_text=_("The edition of a book, long form (such as 'First' or 'Second')"))
-    chapter = models.CharField(_("Chapter number"), max_length=50, blank=True)
+    booktitle = models.CharField(
+        _("Book title"),
+        max_length=50,
+        blank=True,
+        help_text=_("The title of the book, if only part of it is being cited")
+    )
+    edition = models.CharField(
+        _("Edition"),
+        max_length=100,
+        blank=True,
+        help_text=_(
+            "The edition of a book, long form (such as 'First' or "
+            "'Second')"
+        )
+    )
+    chapter = models.CharField(
+        _("Chapter number"),
+        max_length=50,
+        blank=True
+    )
 
     # PhD Thesis
-    school = models.CharField(_("School"), max_length=50, blank=True, help_text=_("The school where the thesis was written"))
+    school = models.CharField(
+        _("School"),
+        max_length=50,
+        blank=True,
+        help_text=_("The school where the thesis was written")
+    )
 
     # Proceedings
-    organization = models.CharField(_("Organization"), max_length=50, blank=True, help_text=_("The conference sponsor"))
+    organization = models.CharField(
+        _("Organization"),
+        max_length=50,
+        blank=True,
+        help_text=_("The conference sponsor")
+    )
 
     # Misc
-    editors = models.ManyToManyField('Editor', related_name='entries', blank=True)
-    publisher = models.ForeignKey('Publisher', related_name='entries', null=True, blank=True)
-    address = models.CharField(_("Address"), max_length=250, blank=True, help_text=_("Publisher's address (usually just the city, but can be the full address for lesser-known publishers)"))
-    annote = models.CharField(_("Annote"), max_length=250, blank=True, help_text=_("An annotation for annotated bibliography styles (not typical)"))
-    note = models.TextField(_("Note"), blank=True, help_text=_("Miscellaneous extra information"))
+    editors = models.ManyToManyField(
+        'Editor',
+        related_name='entries',
+        blank=True
+    )
+    publisher = models.ForeignKey(
+        'Publisher',
+        related_name='entries',
+        null=True, blank=True
+    )
+    address = models.CharField(
+        _("Address"),
+        max_length=250,
+        blank=True,
+        help_text=_(
+            "Publisher's address (usually just the city, but can be the full "
+            "address for lesser-known publishers)"
+        )
+    )
+    annote = models.CharField(
+        _("Annote"),
+        max_length=250,
+        blank=True,
+        help_text=_(
+            "An annotation for annotated bibliography styles (not typical)"
+        )
+    )
+    note = models.TextField(
+        _("Note"),
+        blank=True,
+        help_text=_("Miscellaneous extra information")
+    )
 
     # Related publications
     crossref = models.ManyToManyField('self', blank=True)
@@ -207,7 +330,7 @@ class Entry(models.Model):
         verbose_name_plural = _("Entries")
         ordering = ('-publication_date',)
 
-    def __unicode__(self):
+    def __str__(self):
         """Format entry with a default bibliography style"""
         # Authors
         author_str = '%(last_name)s %(first_initial)s'
@@ -265,14 +388,18 @@ class Collection(models.Model):
     """Define a collection of entries"""
 
     name = models.CharField(_("Name"), max_length=100)
-    short_description = models.TextField(_("Short description"), blank=True, null=True)
+    short_description = models.TextField(
+        _("Short description"),
+        blank=True,
+        null=True
+    )
     entries = models.ManyToManyField('Entry', related_name="collections")
 
     class Meta:
         verbose_name = _("Collection")
         verbose_name_plural = _("Collections")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -281,15 +408,18 @@ class AuthorEntryRank(models.Model):
 
     author = models.ForeignKey(Author)
     entry = models.ForeignKey(Entry)
-    rank = models.IntegerField(_("Rank"), help_text=_("Author rank in entry authors sequence"))
+    rank = models.IntegerField(
+        _("Rank"),
+        help_text=_("Author rank in entry authors sequence")
+    )
 
     class Meta:
         verbose_name = _('Author Entry Rank')
         verbose_name_plural = _('Author Entry Ranks')
         ordering = ('rank',)
 
-    def __unicode__(self):
-        return u"%(author)s:%(rank)d:%(entry)s" % {
+    def __str__(self):
+        return '%(author)s:%(rank)d:%(entry)s' % {
             'author': self.author,
             'entry': self.entry,
             'rank': self.rank}

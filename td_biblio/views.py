@@ -105,6 +105,6 @@ class EntryListView(ListView):
 
         # Publication collection
         ctx['publication_collections'] = Collection.objects.all()
-        ctx['current_publication_collection'] = self.current_publication_collection  # NOPEP8
+        ctx['current_publication_collection'] = self.current_publication_collection  # noqa
 
         return ctx
