@@ -76,7 +76,8 @@ and contains at least the following blocks:
 
 As you might have guessed, the `content` block is the base block where we render
 the bibliography list and item details, while the `javascripts` block contains
-eponym front-end dependencies.
+eponym front-end dependencies. You will find an example base layout template at:
+[`td_biblio/templates/_layouts/base.html`](https://github.com/TailorDev/django-tailordev-biblio/blob/master/td_biblio/templates/_layouts/base.html)
 
 ## Import BibTex bibliography
 
