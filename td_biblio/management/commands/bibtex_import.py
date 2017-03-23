@@ -15,6 +15,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         bibtex = options.get('bibtex', None)
+        if bibtex is None:
+            raise CommandError("A BibTeX file path is required")
+
         self.stdout.write("Importing '{}' BibTeX file...".format(bibtex))
         bibtex_import(bibtex)
         self.stdout.write(self.style.SUCCESS("Importation succeeded"))
