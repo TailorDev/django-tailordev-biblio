@@ -59,7 +59,7 @@ class BaseLoader(object):
         """Convert an item to import to a valid record
 
         valid_record = {
-            'title': 'A coarse-grained protein force field for folding and structure prediction',
+            'title': 'A coarse-grained protein force field …',
             'authors': [
                 {
                     'first_name': 'Julien',
