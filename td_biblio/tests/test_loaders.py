@@ -4,6 +4,8 @@ TailorDev Bibliography
 
 Test loaders.
 """
+from __future__ import unicode_literals
+
 import datetime
 import pytest
 
