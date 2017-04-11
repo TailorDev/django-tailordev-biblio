@@ -6,11 +6,14 @@ import datetime
 import logging
 
 import bibtexparser
+import eutils.client
+
+from time import strptime
 
 from bibtexparser import customization as bp_customization
 from bibtexparser.bparser import BibTexParser
 from bibtexparser.latexenc import string_to_latex
-from time import strptime
+from django.utils.translation import ugettext_lazy as _
 
 from ..models import Author, Journal, Entry, AuthorEntryRank
 
@@ -43,78 +46,165 @@ def td_biblio_customization(record):
     return record
 
 
-def bibtex_import(bibtex_filename):
+class BaseLoader(object):
+
+    def __init__(self):
+        self.entry_base_fields = (
+            'type', 'title', 'volume', 'number', 'pages', 'url',
+            'publication_date', 'is_partial_publication_date'
+        )
+        self.records = []
+
+    def to_record(self, input):
+        """Convert an item to import to a valid record
+
+        valid_record = {
+            'title': 'A coarse-grained protein force field for folding and structure prediction',
+            'author':[
+                {
+                    'first_name': 'Julien',
+                    'last_name': 'Maupetit'
+                },
+                {
+                    'first_name': 'P',
+                    'last_name': 'Tuffery'
+                },
+                {
+                    'first_name': 'Philippe',
+                    'last_name': 'Derreumaux'
+                }
+            ],
+            'journal': 'Proteins: Structure, Function, and Bioinformatics',
+            'volume': '69',
+            'number': '2',
+            'pages': '394--408',
+            'year': '2007',
+            'publisher': 'Wiley Online Library',
+            'ENTRYTYPE': 'article',
+            'ID': 'maupetit2007coarse',
+            'publication_date': datetime.date(2007, 1, 1),
+            'is_partial_publication_date': True
+        }
+        """
+        raise NotImplemented(
+            _(
+                "You should implement a to_record method for {}".format(
+                    self.__class__.__name__
+                )
+            )
+        )
+
+    def load_records(self, **kwargs):
+        """Load all records in self.records"""
+
+        raise NotImplemented(
+            _(
+                "You should implement a load_records method for {}".format(
+                    self.__class__.__name__
+                )
+            )
+        )
+
+    def save_record(self, record):
+        """Save a single record"""
+
+        logger.debug("Record: {}".format(record))
+
+        entry_fields = dict(
+            (k, v) for (k, v) in record.items() if k in self.entry_base_fields
+        )
+
+        # Foreign keys
+        journal, is_new = Journal.objects.get_or_create(
+            name=record['journal']
+        )
+        entry_fields['journal'] = journal
+        logger.debug("Journal: {}".format(journal))
+
+        # Save or Update this entry
+        entry, is_new = Entry.objects.get_or_create(**entry_fields)
+
+        # Authors
+        for rank, record_author in enumerate(record['author']):
+            author, _ = Author.objects.get_or_create(
+                first_name=record_author['first_name'],
+                last_name=record_author['last_name'],
+            )
+
+            AuthorEntryRank.objects.get_or_create(
+                entry=entry,
+                author=author,
+                rank=rank,
+            )
+        logger.debug("(New) Entry imported with success: {}".format(entry))
+
+    def save_records(self):
+        """Batch save records"""
+        for record in self.records:
+            self.save_record(record)
+
+
+class BibTeXLoader(BaseLoader):
+    """BibTeXLoader
+
+    This loader is designed to import a bibtex file items.
+
+    Usage:
+
+    >>> from td_biblio.utils.managers import BibTeXLoader
+    >>> loader = BibTeXLoader()
+    >>> loader.load_records(bibtex_filename='foo.bib')
+    >>> loader.save_records()
     """
-    Import a bibtex (.bib) bibliography file
-    """
-    logger.info("BibTex import: %s" % bibtex_filename)
-    simple_fields = ('type', 'title', 'volume', 'number', 'pages', 'url')
-    date_fields = ('day', 'month', 'year')
 
-    with open(bibtex_filename) as bibtex_file:
+    def to_record(self, input):
+        """Convert a bibtex item to a valid record"""
 
-        # Parse BibTex file
-        parser = BibTexParser()
-        parser.customization = td_biblio_customization
-        bp = bibtexparser.load(bibtex_file, parser=parser)
+        # Simple fields
+        record = input.copy()
 
-        # Import each entry
-        for bib_item in bp.get_entry_list():
+        # Journal
+        record['journal'] = input['journal']
 
-            logger.debug("BibTex entry: %s", bib_item)
+        # Publication date
+        pub_date = {'day': 1, 'month': 1, 'year': 1900}
+        input_date = dict(
+            (k, v) for (k, v) in input.items() if k in pub_date.keys()
+        )
+        pub_date.update(input_date)
+        # Check if month is numerical or not
+        try:
+            int(pub_date['month'])
+        except:
+            pub_date['month'] = strptime(pub_date['month'], '%b').tm_mon
+        # Convert date fields to integers
+        pub_date = dict(
+            (k, int(v)) for k, v in pub_date.items()
+        )
+        record['publication_date'] = datetime.date(**pub_date)
 
-            # Simple fields
-            fields = dict(
-                (k, v) for (k, v) in bib_item.items() if k in simple_fields
+        record['is_partial_publication_date'] = not all(
+            [True if k in input else False for k in pub_date.keys()]
+        )
+
+        # Authors
+        record['author'] = []
+        for rank, author in enumerate(input['author']):
+            splited = author.split(', ')
+            record['author'].append(
+                {
+                    'first_name': " ".join(splited[1:]),
+                    'last_name': splited[0],
+                }
             )
+        return record
 
-            # Publication date
-            publication_date = {'day': 1, 'month': 1, 'year': 1900}
-            item_date = dict(
-                (k, v) for (k, v) in bib_item.items() if k in date_fields
-            )
-            publication_date.update(item_date)
-            # Check if month is numerical or not
-            month = publication_date['month']
-            try:
-                int(month)
-            except:
-                publication_date['month'] = strptime(month, '%b').tm_mon
-            # Convert date fields to integers
-            publication_date = dict(
-                (k, int(v)) for k, v in publication_date.items()
-            )
-            fields['publication_date'] = datetime.date(**publication_date)
+    def load_records(self, bibtex_filename=None):
+        """Load all bibtex items as valid records"""
 
-            fields['is_partial_publication_date'] = not all(
-                [True if k in item_date else False for k in date_fields]
-            )
-
-            # Foreign keys
-            journal, _ = Journal.objects.get_or_create(
-                name=bib_item['journal']
-            )
-            fields['journal'] = journal
-
-            logger.debug("Fields: %s", fields)
-
-            # Save or Update this entry
-            entry, _ = Entry.objects.get_or_create(**fields)
-            logger.debug("Entry: %s", entry)
-
-            # Authors
-            for rank, author in enumerate(bib_item['author']):
-                splited = author.split(', ')
-                last_name = splited[0]
-                first_name = " ".join(splited[1:])
-
-                author, _ = Author.objects.get_or_create(
-                    first_name=first_name,
-                    last_name=last_name)
-
-                AuthorEntryRank.objects.get_or_create(
-                    entry=entry,
-                    author=author,
-                    rank=rank)
-
-    logger.info("Importation done.")
+        with open(bibtex_filename) as bibtex_file:
+            # Parse BibTex file
+            parser = BibTexParser()
+            parser.customization = td_biblio_customization
+            bp = bibtexparser.load(bibtex_file, parser=parser)
+            self.records = [self.to_record(r) for r in bp.get_entry_list()]
