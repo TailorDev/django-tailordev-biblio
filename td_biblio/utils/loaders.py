@@ -60,7 +60,7 @@ class BaseLoader(object):
 
         valid_record = {
             'title': 'A coarse-grained protein force field for folding and structure prediction',
-            'author':[
+            'authors': [
                 {
                     'first_name': 'Julien',
                     'last_name': 'Maupetit'
@@ -125,7 +125,7 @@ class BaseLoader(object):
         entry, is_new = Entry.objects.get_or_create(**entry_fields)
 
         # Authors
-        for rank, record_author in enumerate(record['author']):
+        for rank, record_author in enumerate(record['authors']):
             author, _ = Author.objects.get_or_create(
                 first_name=record_author['first_name'],
                 last_name=record_author['last_name'],
@@ -188,10 +188,10 @@ class BibTeXLoader(BaseLoader):
         )
 
         # Authors
-        record['author'] = []
-        for rank, author in enumerate(input['author']):
+        record['authors'] = []
+        for author in input['author']:
             splited = author.split(', ')
-            record['author'].append(
+            record['authors'].append(
                 {
                     'first_name': " ".join(splited[1:]),
                     'last_name': splited[0],
@@ -208,3 +208,53 @@ class BibTeXLoader(BaseLoader):
             parser.customization = td_biblio_customization
             bp = bibtexparser.load(bibtex_file, parser=parser)
             self.records = [self.to_record(r) for r in bp.get_entry_list()]
+
+
+class PubmedLoader(BaseLoader):
+    """PubmedLoader
+
+    This loader is designed to fetch & import a list of Pubmed IDs
+
+    Usage:
+
+    >>> from td_biblio.utils.managers import PubmedLoader
+    >>> loader = PubmedLoader()
+    >>> loader.load_records(PMIDs=26588162)
+    >>> loader.save_records()
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.client = eutils.client.Client()
+
+    def to_record(self, input):
+        """Convert eutils PubmedArticle xml facade to a valid record"""
+
+        record = {
+            'title': input.title,
+            'authors': [],
+            'journal': input.jrnl,
+            'volume': input.volume,
+            'number': input.issue,
+            'pages': input.pages,
+            'year': input.year,
+            'publication_date': datetime.date(int(input.year), 1, 1),
+            'is_partial_publication_date': True
+        }
+
+        for author in input.authors:
+            splited = author.split()
+            record['authors'].append(
+                {
+                    'first_name': " ".join(splited[1:]),
+                    'last_name': splited[0],
+                }
+            )
+
+        return record
+
+    def load_records(self, PMIDs=None):
+        """Load all PMIDs as valid records"""
+
+        entries = self.client.efetch(db='pubmed', id=PMIDs)
+        self.records = [self.to_record(r) for r in entries]
