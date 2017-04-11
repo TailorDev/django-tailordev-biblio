@@ -3,7 +3,7 @@ import logging
 
 from django.core.management.base import BaseCommand, CommandError
 
-from td_biblio.utils.managers import BibTeXLoader
+from td_biblio.utils.loaders import BibTeXLoader
 
 
 class Command(BaseCommand):
