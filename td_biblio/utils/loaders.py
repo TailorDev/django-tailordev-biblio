@@ -2,6 +2,8 @@
 """
 Bibliography Manager Tools
 """
+from __future__ import unicode_literals
+
 import datetime
 import logging
 
@@ -224,7 +226,7 @@ class PubmedLoader(BaseLoader):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(PubmedLoader, self).__init__(*args, **kwargs)
         self.client = eutils.client.Client()
 
     def to_record(self, input):
