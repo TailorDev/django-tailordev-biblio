@@ -4,3 +4,4 @@ Django>=1.7
 # Bibliography loaders
 bibtexparser
 eutils
+git+https://github.com/sckott/habanero.git@83a66bd6

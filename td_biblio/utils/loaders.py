@@ -5,6 +5,7 @@ Bibliography Manager Tools
 from __future__ import unicode_literals
 
 import datetime
+import json
 import logging
 
 import bibtexparser
@@ -16,6 +17,7 @@ from bibtexparser import customization as bp_customization
 from bibtexparser.bparser import BibTexParser
 from bibtexparser.latexenc import string_to_latex
 from django.utils.translation import ugettext_lazy as _
+from habanero import cn
 
 from ..models import Author, Journal, Entry, AuthorEntryRank
 
@@ -260,3 +262,48 @@ class PubmedLoader(BaseLoader):
 
         entries = self.client.efetch(db='pubmed', id=PMIDs)
         self.records = [self.to_record(r) for r in entries]
+
+
+class DOILoader(BaseLoader):
+    """DOILoader
+
+    This loader is designed to fetch & import a list of DOIs
+
+    Usage:
+
+    >>> from td_biblio.utils.managers import DOILoader
+    >>> loader = DOILoader()
+    >>> loader.load_records(DOIs='10.1021/ct500592m')
+    >>> loader.save_records()
+    """
+
+    def to_record(self, input):
+        """Convert eutils PubmedArticle xml facade to a valid record"""
+
+        date_parts = input['issued']['date-parts'][0]
+        record = {
+            'title': input['title'],
+            'authors': [
+                {
+                    'first_name': a['given'],
+                    'last_name': a['family']
+                } for a in input['author']
+            ],
+            'journal': input['short-container-title'][0],
+            'volume': input['volume'],
+            'number': input['issue'],
+            'pages': input['page'],
+            'year': date_parts[0],
+            'publication_date': datetime.date(*date_parts),
+            'is_partial_publication_date': len(date_parts) != 3
+        }
+
+        return record
+
+    def load_records(self, DOIs=None):
+        """Load all bibtex items as valid records"""
+
+        records = cn.content_negotiation(ids=DOIs, format='citeproc-json')
+        if isinstance(records, str):
+            records = [records, ]
+        self.records = [self.to_record(json.loads(r)) for r in records]
