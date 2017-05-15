@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from django.views.generic import ListView
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic import FormView, ListView, TemplateView
 
+from .forms import EntryBatchImportForm
 from .models import Author, Collection, Entry, Journal
+from .utils.loaders import DOILoader, PubmedLoader
 
 
 class EntryListView(ListView):
@@ -108,3 +111,33 @@ class EntryListView(ListView):
         ctx['current_publication_collection'] = self.current_publication_collection  # noqa
 
         return ctx
+
+
+class EntryBatchImportView(FormView):
+
+    form_class = EntryBatchImportForm
+    template_name = 'td_biblio/entry_import.html'
+    success_url = reverse_lazy('td_biblio:import_success')
+
+    def form_valid(self, form):
+        """Save to database"""
+        # PMIDs
+        pmids = form.cleaned_data['pmids']
+        if len(pmids):
+            pm_loader = PubmedLoader()
+            pm_loader.load_records(PMIDs=pmids)
+            pm_loader.save_records()
+
+        # DOIs
+        dois = form.cleaned_data['dois']
+        if len(dois):
+            doi_loader = DOILoader()
+            doi_loader.load_records(DOIs=dois)
+            doi_loader.save_records()
+
+        return super(EntryBatchImportView, self).form_valid(form)
+
+
+class EntryBatchImportSuccessView(TemplateView):
+
+    template_name = 'td_biblio/entry_import_success.html'

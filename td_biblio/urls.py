@@ -1,10 +1,24 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
 
-from .views import EntryListView
+from . import views
 
 
 urlpatterns = [
     # Entry List
-    url('^$', EntryListView.as_view(), name='entry_list'),
+    url(
+        '^$',
+        views.EntryListView.as_view(),
+        name='entry_list'
+    ),
+    url(
+        '^import$',
+        views.EntryBatchImportView.as_view(),
+        name='import'
+    ),
+    url(
+        '^import/success$',
+        views.EntryBatchImportSuccessView.as_view(),
+        name='import_success'
+    ),
 ]
