@@ -22,7 +22,7 @@ from .fixtures.entries import PMIDs as FPMIDS, DOIs as FDOIS
 @pytest.mark.usefixtures('bibtex')
 class BibTexLoaderTests(TestCase):
     """
-    Tests for the pubmed loader
+    Tests for the BibTex loader
     """
     def setUp(self):
         """
