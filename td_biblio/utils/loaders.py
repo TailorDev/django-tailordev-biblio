@@ -281,21 +281,34 @@ class DOILoader(BaseLoader):
         """Convert eutils PubmedArticle xml facade to a valid record"""
 
         date_parts = input['issued']['date-parts'][0]
+        is_partial_publication_date = len(date_parts) != 3
+
+        # Fill date parts if only a year is given
+        if is_partial_publication_date:
+            date_parts = date_parts + ((3 - len(date_parts)) * [1])
+
+        # Journal name defaults to 'short-container-title'
+        # It falls back to 'container-title'
+        if input.get('short-container-title'):
+            journal = input['short-container-title'][0]
+        else:
+            journal = input.get('container-title', '')
+
         record = {
-            'title': input['title'],
+            'title': input.get('title', ''),
             'authors': [
                 {
                     'first_name': a['given'],
                     'last_name': a['family']
                 } for a in input['author']
             ],
-            'journal': input['short-container-title'][0],
-            'volume': input['volume'],
-            'number': input['issue'] if input['issue'] is not None else '',
-            'pages': input['page'],
+            'journal': journal,
+            'volume': input.get('volume', ''),
+            'number': input.get('issue', ''),
+            'pages': input.get('page', ''),
             'year': date_parts[0],
             'publication_date': datetime.date(*date_parts),
-            'is_partial_publication_date': len(date_parts) != 3
+            'is_partial_publication_date': is_partial_publication_date
         }
 
         return record
