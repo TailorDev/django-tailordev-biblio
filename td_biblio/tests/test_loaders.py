@@ -15,6 +15,7 @@ from requests.exceptions import HTTPError
 
 from ..utils.loaders import DOILoader, PubmedLoader
 from ..models import Author, Entry, Journal
+from .fixtures.entries import PMIDs as FPMIDS, DOIs as FDOIS
 
 
 @pytest.mark.django_db
@@ -29,7 +30,7 @@ class PubmedLoaderTests(TestCase):
         self.PMID = 26588162
         self.loader = PubmedLoader()
 
-    def test_load_records_with_an_existing_pmid(self):
+    def test_load_records_given_an_existing_pmid(self):
         """Test single import given an existing PMID"""
 
         self.loader.load_records(PMIDs=self.PMID)
@@ -84,14 +85,14 @@ class PubmedLoaderTests(TestCase):
             expected['is_partial_publication_date']
         )
 
-    def test_load_records_with_a_fake_string_as_pmid(self):
+    def test_load_records_given_a_fake_string_as_pmid(self):
         """Test single import given a fake PMID"""
 
         with pytest.raises(EutilsNCBIError):
             self.loader.load_records(PMIDs='fakePMID')
         self.assertEqual(len(self.loader.records), 0)
 
-    def test_save_records_with_an_existing_pmid(self):
+    def test_save_records_from_an_existing_pmid(self):
         """Test single import given an existing PMID"""
 
         self.assertEqual(Author.objects.count(), 0)
@@ -104,6 +105,16 @@ class PubmedLoaderTests(TestCase):
         self.assertEqual(Author.objects.count(), 4)
         self.assertEqual(Entry.objects.count(), 1)
         self.assertEqual(Journal.objects.count(), 1)
+
+    def test_save_records_from_mutiple_pmid(self):
+        """Test batch import from multiple PMIDs"""
+
+        self.assertEqual(Entry.objects.count(), 0)
+
+        self.loader.load_records(PMIDs=FPMIDS)
+        self.loader.save_records()
+
+        self.assertEqual(Entry.objects.count(), 21)
 
 
 @pytest.mark.django_db
@@ -118,7 +129,7 @@ class DOILoaderTests(TestCase):
         self.doi = '10.1021/ct500592m'
         self.loader = DOILoader()
 
-    def test_load_records_with_an_existing_doi(self):
+    def test_load_records_from_an_existing_doi(self):
         """Test single import given an existing DOI"""
 
         self.loader.load_records(DOIs=self.doi)
@@ -173,14 +184,14 @@ class DOILoaderTests(TestCase):
             expected['is_partial_publication_date']
         )
 
-    def test_load_records_with_a_fake_string_as_doi(self):
+    def test_load_records_given_a_fake_string_as_doi(self):
         """Test single import given a fake DOI"""
 
         with pytest.raises(HTTPError):
             self.loader.load_records(DOIs='fakeDOI')
         self.assertEqual(len(self.loader.records), 0)
 
-    def test_save_records_with_an_existing_doi(self):
+    def test_save_records_from_an_existing_doi(self):
         """Test single import given an existing DOI"""
 
         self.assertEqual(Author.objects.count(), 0)
@@ -194,7 +205,7 @@ class DOILoaderTests(TestCase):
         self.assertEqual(Entry.objects.count(), 1)
         self.assertEqual(Journal.objects.count(), 1)
 
-    def test_save_records_with_multiple_dois(self):
+    def test_save_records_from_two_dois(self):
         """Test single import given an existing DOI"""
 
         self.assertEqual(Author.objects.count(), 0)
@@ -208,3 +219,13 @@ class DOILoaderTests(TestCase):
         self.assertEqual(Author.objects.count(), 6)
         self.assertEqual(Entry.objects.count(), 2)
         self.assertEqual(Journal.objects.count(), 1)
+
+    def test_save_records_from_several_dois(self):
+        """Test batch import from a DOI list"""
+
+        self.assertEqual(Entry.objects.count(), 0)
+
+        self.loader.load_records(DOIs=FDOIS)
+        self.loader.save_records()
+
+        self.assertEqual(Entry.objects.count(), 25)
