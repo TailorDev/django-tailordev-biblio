@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
-
 from setuptools import setup, find_packages
 
 
@@ -27,6 +25,7 @@ def parse_requirements(requirements, ignore=('setuptools',)):
             if pkg not in ignore:
                 packages.add(pkg)
         return packages
+
 
 setup(
     name='django-tailordev-biblio',

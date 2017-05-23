@@ -1,7 +1,7 @@
 from operator import methodcaller
 
 from django import forms
-from django.core.validators import RegexValidator, integer_validator
+from django.core.validators import RegexValidator
 from django.utils.translation import ugettext_lazy as _
 
 
