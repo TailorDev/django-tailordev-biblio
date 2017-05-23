@@ -50,54 +50,8 @@ class BibTexImportCommandTests(TestCase):
         # How many authors?
         self.assertEqual(Author.objects.count(), 31)
 
-    def _test_entry_authors(self, entry, expected_authors):
-        for rank, author in enumerate(entry.get_authors()):
-            self.assertEqual(
-                author.get_formatted_name(),
-                expected_authors[rank]
-            )
-
-    def test_author_rank(self):
-        """
-        Test if author rank is respected
-        """
-        # Execute the command
-        self.cmd.handle(bibtex=self.bibtex_file)
-
-        # Case 1
-        entry = Entry.objects.get(
-            title='Mobyle: a new full web bioinformatics framework'
-        )
-        expected_authors = [
-            'Néron B',
-            'Ménager H',
-            'Maufrais C',
-            'Joly N',
-            'Maupetit J',
-            'Letort S',
-            'Carrere S',
-            'Tuffery P',
-            'Letondal C',
-        ]
-        self._test_entry_authors(entry, expected_authors)
-
-        # Case 2
-        entry = Entry.objects.get(title__startswith='fpocket')
-        expected_authors = [
-            'Schmidtke P',
-            'Le Guilloux V',
-            'Maupetit J',
-            'Tufféry P'
-        ]
-        self._test_entry_authors(entry, expected_authors)
-
-    def test_partial_publication_date(self):
-        """Test if partial publication date flag"""
-        # Execute the command
-        self.cmd.handle(bibtex=self.bibtex_file)
-
-        qs = Entry.objects.filter(is_partial_publication_date=False)
-        self.assertEqual(qs.count(), 1)
-
-        qs = Entry.objects.filter(is_partial_publication_date=True)
-        self.assertEqual(qs.count(), 8)
+    def test_command_with_a_wrong_path(self):
+        """Test command with a wrong path"""
+        with self.assertRaises(FileNotFoundError):
+            self.cmd.handle(bibtex='fake/path')
+        self.assertEqual(Entry.objects.count(), 0)

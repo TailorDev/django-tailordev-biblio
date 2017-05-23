@@ -13,9 +13,99 @@ from django.test import TestCase
 from eutils.exceptions import EutilsNCBIError
 from requests.exceptions import HTTPError
 
-from ..utils.loaders import DOILoader, PubmedLoader
+from ..utils.loaders import BibTeXLoader, DOILoader, PubmedLoader
 from ..models import Author, Entry, Journal
 from .fixtures.entries import PMIDs as FPMIDS, DOIs as FDOIS
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures('bibtex')
+class BibTexLoaderTests(TestCase):
+    """
+    Tests for the pubmed loader
+    """
+    def setUp(self):
+        """
+        Set object level vars
+        """
+        self.loader = BibTeXLoader()
+
+    def _save_records(self):
+        self.loader.load_records(bibtex_filename=self.bibtex)
+        self.loader.save_records()
+
+    def test_load_records_from_a_bibtex_file(self):
+        """Test records loading from an existing bibtex file"""
+        self.loader.load_records(bibtex_filename=self.bibtex)
+
+        self.assertEqual(len(self.loader.records), 9)
+
+    def test_load_records_with_a_wrong_path(self):
+        """Test records loading from a wrong bibtex file path"""
+        with self.assertRaises(FileNotFoundError):
+            self.loader.load_records(bibtex_filename='fake/path')
+
+        self.assertEqual(len(self.loader.records), 0)
+
+    def test_save_records_from_a_bibtex_file(self):
+        """Test records saving from an existing bibtex file"""
+        self.assertEqual(Entry.objects.count(), 0)
+
+        self._save_records()
+
+        self.assertEqual(Entry.objects.count(), 9)
+        self.assertEqual(Journal.objects.count(), 5)
+        self.assertEqual(Author.objects.count(), 31)
+
+    def _test_entry_authors(self, entry, expected_authors):
+        for rank, author in enumerate(entry.get_authors()):
+            self.assertEqual(
+                author.get_formatted_name(),
+                expected_authors[rank]
+            )
+
+    def test_author_rank(self):
+        """
+        Test if author rank is respected
+        """
+        self._save_records()
+
+        # Case 1
+        entry = Entry.objects.get(
+            title='Mobyle: a new full web bioinformatics framework'
+        )
+        expected_authors = [
+            'Néron B',
+            'Ménager H',
+            'Maufrais C',
+            'Joly N',
+            'Maupetit J',
+            'Letort S',
+            'Carrere S',
+            'Tuffery P',
+            'Letondal C',
+        ]
+        self._test_entry_authors(entry, expected_authors)
+
+        # Case 2
+        entry = Entry.objects.get(title__startswith='fpocket')
+        expected_authors = [
+            'Schmidtke P',
+            'Le Guilloux V',
+            'Maupetit J',
+            'Tufféry P'
+        ]
+        self._test_entry_authors(entry, expected_authors)
+
+    def test_partial_publication_date(self):
+        """Test if partial publication date flag"""
+        self._save_records()
+
+        qs = Entry.objects.filter(is_partial_publication_date=False)
+        self.assertEqual(qs.count(), 1)
+
+        qs = Entry.objects.filter(is_partial_publication_date=True)
+        self.assertEqual(qs.count(), 8)
 
 
 @pytest.mark.django_db
