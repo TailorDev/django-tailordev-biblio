@@ -3,7 +3,7 @@ from django.conf.urls import url
 
 from . import views
 
-
+app_name = 'td_biblio'
 urlpatterns = [
     # Entry List
     url(
