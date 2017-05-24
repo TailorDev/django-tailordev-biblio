@@ -15,6 +15,8 @@ from django.test import TestCase
 from ..management.commands import bibtex_import
 from ..models import Author, Entry, Journal
 
+FileNotFoundError = getattr(__builtins__, 'FileNotFoundError', IOError)
+
 
 @pytest.mark.django_db
 class BibTexImportCommandTests(TestCase):

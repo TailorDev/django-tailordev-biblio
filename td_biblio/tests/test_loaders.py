@@ -17,6 +17,8 @@ from ..utils.loaders import BibTeXLoader, DOILoader, PubmedLoader
 from ..models import Author, Entry, Journal
 from .fixtures.entries import PMIDs as FPMIDS, DOIs as FDOIS
 
+FileNotFoundError = getattr(__builtins__, 'FileNotFoundError', IOError)
+
 
 @pytest.mark.django_db
 @pytest.mark.usefixtures('bibtex')
