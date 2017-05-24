@@ -38,7 +38,7 @@ class EntryBatchImportForm(forms.Form):
         label=_("PubMed identifiers"),
         widget=forms.Textarea(
             attrs={
-                'placeholder': "26588162\n19569182"
+                'placeholder': "ex: 26588162, 19569182"
             }
         ),
         help_text=_("Comma separated or one per line"),
@@ -49,7 +49,7 @@ class EntryBatchImportForm(forms.Form):
         label=_("Digital object identifiers (DOIs)"),
         widget=forms.Textarea(
             attrs={
-                'placeholder': "10.1093/nar/gks419\n10.1093/nar/gkp323"
+                'placeholder': "ex: 10.1093/nar/gks419, 10.1093/nar/gkp323"
             }
         ),
         help_text=_("Comma separated or one per line"),
