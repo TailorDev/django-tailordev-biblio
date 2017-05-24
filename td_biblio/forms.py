@@ -35,24 +35,30 @@ def text_to_list(raw):
 class EntryBatchImportForm(forms.Form):
 
     pmids = forms.CharField(
-        label=_("PubMed identifiers"),
+        label=_("PMID"),
         widget=forms.Textarea(
             attrs={
                 'placeholder': "ex: 26588162, 19569182"
             }
         ),
-        help_text=_("Comma separated or one per line"),
+        help_text=_(
+            "Paste a list of PubMed Identifiers "
+            "(comma separated or one per line)"
+        ),
         required=False,
     )
 
     dois = forms.CharField(
-        label=_("Digital object identifiers (DOIs)"),
+        label=_("DOI"),
         widget=forms.Textarea(
             attrs={
                 'placeholder': "ex: 10.1093/nar/gks419, 10.1093/nar/gkp323"
             }
         ),
-        help_text=_("Comma separated or one per line"),
+        help_text=_(
+            "Paste a list of Digital Object Identifiers "
+            "(comma separated or one per line)"
+        ),
         required=False,
     )
 
