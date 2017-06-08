@@ -1,12 +1,42 @@
 # -*- coding: utf-8 -*-
 import datetime
 
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import FormView, ListView, TemplateView
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import FormView, ListView
 
 from .forms import EntryBatchImportForm
 from .models import Author, Collection, Entry, Journal
 from .utils.loaders import DOILoader, PubmedLoader
+
+
+def superuser_required(function=None):
+    """
+    Decorator for views that checks that the user is a super user redirecting
+    to the log-in page if necessary.
+
+    Inspired by Django 'login_required' decorator
+    """
+    actual_decorator = user_passes_test(lambda u: u.is_superuser)
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+
+class LoginRequiredMixin(object):
+    @classmethod
+    def as_view(cls, **initkwargs):
+        view = super(LoginRequiredMixin, cls).as_view(**initkwargs)
+        return login_required(view)
+
+
+class SuperuserRequiredMixin(object):
+    @classmethod
+    def as_view(cls, **initkwargs):
+        view = super(SuperuserRequiredMixin, cls).as_view(**initkwargs)
+        return superuser_required(view)
 
 
 class EntryListView(ListView):
@@ -113,11 +143,22 @@ class EntryListView(ListView):
         return ctx
 
 
-class EntryBatchImportView(FormView):
+class EntryBatchImportView(LoginRequiredMixin,
+                           SuperuserRequiredMixin,
+                           FormView):
 
     form_class = EntryBatchImportForm
     template_name = 'td_biblio/entry_import.html'
-    success_url = reverse_lazy('td_biblio:import_success')
+    success_url = reverse_lazy('td_biblio:entry_list')
+
+    def test_func(self):
+        """Check that request user is a super user (admin)
+
+        If not user will be invited to log in.
+        """
+        if self.request.user.is_superuser:
+            return True
+        return False
 
     def form_valid(self, form):
         """Save to database"""
@@ -135,9 +176,11 @@ class EntryBatchImportView(FormView):
             doi_loader.load_records(DOIs=dois)
             doi_loader.save_records()
 
+        messages.success(
+            self.request,
+            _("We have successfully imported {} references.").format(
+                len(dois) + len(pmids)
+            )
+        )
+
         return super(EntryBatchImportView, self).form_valid(form)
-
-
-class EntryBatchImportSuccessView(TemplateView):
-
-    template_name = 'td_biblio/entry_import_success.html'
