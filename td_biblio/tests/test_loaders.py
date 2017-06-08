@@ -224,7 +224,7 @@ class DOILoaderTests(TestCase):
     def test_load_records_from_an_existing_doi(self):
         """Test single import given an existing DOI"""
 
-        self.loader.load_records(DOIs=self.doi)
+        self.loader.load_records(DOIs=[self.doi, ])
 
         self.assertEqual(len(self.loader.records), 1)
 
@@ -280,7 +280,7 @@ class DOILoaderTests(TestCase):
         """Test single import given a fake DOI"""
 
         with pytest.raises(HTTPError):
-            self.loader.load_records(DOIs='fakeDOI')
+            self.loader.load_records(DOIs=['fakeDOI', ])
         self.assertEqual(len(self.loader.records), 0)
 
     def test_save_records_from_an_existing_doi(self):
@@ -290,7 +290,8 @@ class DOILoaderTests(TestCase):
         self.assertEqual(Entry.objects.count(), 0)
         self.assertEqual(Journal.objects.count(), 0)
 
-        self.loader.load_records(DOIs=self.doi)
+        self.loader.load_records(DOIs=[self.doi, ])
+        print('type: {}'.format(self.doi.__class__.__name__))
         self.loader.save_records()
 
         self.assertEqual(Author.objects.count(), 4)

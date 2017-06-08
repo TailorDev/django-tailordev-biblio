@@ -317,6 +317,7 @@ class DOILoader(BaseLoader):
         """Load all bibtex items as valid records"""
 
         records = cn.content_negotiation(ids=DOIs, format='citeproc-json')
-        if isinstance(records, str):
+        # Records might be a str or unicode (python 2)
+        if not isinstance(records, list):
             records = [records, ]
         self.records = [self.to_record(json.loads(r)) for r in records]
