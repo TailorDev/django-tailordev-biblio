@@ -11,12 +11,12 @@ Bibliography management with Django.
 Since the `1.0.0` release, we have added full support for recent python and
 Django releases:
 
-|            | Django 1.7         | Django 1.8         | Django 1.9         | Django 1.10        |
-| --         | --                 | --                 | --                 | --                 |
-| Python 2.7 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Python 3.4 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Python 3.5 |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Python 3.6 |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+|            | Django 1.7         | Django 1.8         | Django 1.9         | Django 1.10        | Django 1.11        |
+| --         | --                 | --                 | --                 | --                 | --                 |
+| Python 2.7 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Python 3.4 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Python 3.5 |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Python 3.6 |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 Please note that for older Python and/or Django versions, you can still use the `0.3` release.
 
