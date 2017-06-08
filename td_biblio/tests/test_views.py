@@ -17,13 +17,14 @@ from ..models import Entry
 @pytest.mark.django_db
 class EntryListViewTests(TestCase):
     """
-    Tests for the EntryListViewTests
+    Tests for the EntryListView
     """
+
     def setUp(self):
         """
         Generate Author and Entry fixtures & set object level vars
         """
-        self.url = reverse('entry_list')
+        self.url = reverse('td_biblio:entry_list')
         self.paginate_by = 20
         self.n_publications_per_year = 3
         self.start_year = 2000
@@ -228,3 +229,65 @@ class EntryListViewTests(TestCase):
             self.n_authors)
 
         self.assertEqual(response.context['current_publication_year'], None)
+
+
+@pytest.mark.django_db
+class EntryBatchImportViewTests(TestCase):
+    """
+    Tests for the EntryBatchImportView
+    """
+
+    def setUp(self):
+        self.url = reverse('td_biblio:import')
+
+    def test_get(self):
+        """
+        Test the EntryBatchImportView get method
+        """
+        response = self.client.get(self.url)
+
+        # Standard response
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('td_biblio/entry_import.html')
+
+    def test_post(self):
+        """
+        Test the EntryBatchImportView post method
+        """
+        self.assertEqual(Entry.objects.count(), 0)
+
+        data = {
+            'pmids': '26588162,19569182',
+            'dois': '10.1093/nar/gks419,10.1093/nar/gkp323'
+        }
+
+        # Redirect on success
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Entry.objects.count(), 4)
+
+        # Follow redirection to test success view
+        response = self.client.post(self.url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            'td_biblio/entry_import_success.html'
+        )
+
+
+class EntryBatchImportSuccessViewTests(TestCase):
+    """
+    Tests for the EntryBatchImportSuccessView
+    """
+
+    def setUp(self):
+        self.url = reverse('td_biblio:import_success')
+
+    def test_get(self):
+        """
+        Test the EntryBatchImportSuccessView get method
+        """
+        response = self.client.get(self.url)
+
+        # Standard response
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('td_biblio/entry_import_success.html')

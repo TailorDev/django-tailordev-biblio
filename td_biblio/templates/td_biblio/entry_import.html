@@ -1,0 +1,35 @@
+{% extends "td_biblio/layouts/one_col.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Import publications" %}{% endblock page_title %}
+
+{% block page_class %}page biblio import{% endblock page_class %}
+
+{% block main_content %}
+
+<h2>{% trans "Import new publications" %}</h2>
+
+<form
+  class="batch-import-form"
+  action="{% url 'td_biblio:import' %}"
+  method="post"
+>
+  {% csrf_token %}
+
+  <table>
+    {{ form.as_table }}
+  </table>
+
+  <input
+    type="reset"
+    name="{% trans "Cancel" %}"
+    value="{% trans "cancel" %}"
+  >
+  <input
+    type="submit"
+    name="{% trans "Import" %}"
+    value="{% trans "submit" %}"
+  >
+</form>
+
+{% endblock main_content %}

@@ -1,5 +1,7 @@
 # Django
 Django>=1.7
 
-# Reference manager file parser
+# Bibliography loaders
 bibtexparser
+eutils
+habanero>=0.3.0

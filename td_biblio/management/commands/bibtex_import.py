@@ -3,7 +3,7 @@ import logging
 
 from django.core.management.base import BaseCommand, CommandError
 
-from td_biblio.utils.managers import bibtex_import
+from td_biblio.utils.loaders import BibTeXLoader
 
 
 class Command(BaseCommand):
@@ -27,5 +27,7 @@ class Command(BaseCommand):
             raise CommandError("A BibTeX file path is required")
 
         logger.info("Importing '{}' BibTeX file...".format(bibtex))
-        bibtex_import(bibtex)
+        loader = BibTeXLoader()
+        loader.load_records(bibtex_filename=bibtex)
+        loader.save_records()
         logger.info("Importation succeeded")

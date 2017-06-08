@@ -281,6 +281,17 @@ class EntryModelTest(ModelTestMixin, TestCase):
         first_author = Author.objects.get(id=1)
         self.assertEqual(entry.first_author, first_author)
 
+    def test_last_author(self):
+        """
+        Test the last_author method
+        """
+        entry = EntryFactory()
+        self.assertEqual(entry.last_author, '')
+
+        entry = self.factory()
+        last_author = Author.objects.get(id=2)
+        self.assertEqual(entry.last_author, last_author)
+
     def test_get_authors(self):
         """
         Test the get_authors method
