@@ -73,28 +73,28 @@ class AbstractHumanModelTestMixin(ModelTestMixin):
         """
         Test the _set_first_initial method
         """
-        human = self.factory(first_name="John", last_name="McClane")
-        self.assertEqual(human.first_initial, "J")
+        human = self.factory(first_name='John', last_name='McClane')
+        self.assertEqual(human.first_initial, 'J')
 
-        human = self.factory(first_name="John Jack Junior",
-                             last_name="McClane")
-        self.assertEqual(human.first_initial, "J J J")
+        human = self.factory(first_name='John Jack Junior',
+                             last_name='McClane')
+        self.assertEqual(human.first_initial, 'J J J')
 
-        human.first_name = "Jumping Jack Flash"
+        human.first_name = 'Jumping Jack Flash'
         human._set_first_initial()
-        self.assertEqual(human.first_initial, "J J J")
+        self.assertEqual(human.first_initial, 'J J J')
 
-        human.first_name = "Jumping Jack Flash"
+        human.first_name = 'Jumping Jack Flash'
         human._set_first_initial(force=True)
-        self.assertEqual(human.first_initial, "J J F")
+        self.assertEqual(human.first_initial, 'J J F')
 
     def test_get_formatted_name(self):
         """
         Test the get_formatted_name method
         """
-        human = self.factory(first_name="John", last_name="McClane")
+        human = self.factory(first_name='John', last_name='McClane')
         formatted_name = human.get_formatted_name()
-        expected = "McClane J"
+        expected = 'McClane J'
         self.assertEqual(formatted_name, expected)
 
     def test_user_linking(self):
@@ -102,8 +102,8 @@ class AbstractHumanModelTestMixin(ModelTestMixin):
         Test linking the AbstractHuman object with a django user
         """
         user = get_user_model().objects.create(username='johnmcclane')
-        human = self.factory(first_name="John",
-                             last_name="McClane",
+        human = self.factory(first_name='John',
+                             last_name='McClane',
                              user=user)
         self.assertEqual(human.user, user)
 
@@ -114,45 +114,45 @@ class AbstractHumanModelTestMixin(ModelTestMixin):
         # Simple case: everything match perfectly
         user = get_user_model().objects.create(
             username='johnmcclane',
-            first_name="John",
-            last_name="McClane",
+            first_name='John',
+            last_name='McClane',
         )
-        human = self.factory(first_name="John", last_name="McClane")
+        human = self.factory(first_name='John', last_name='McClane')
         self.assertEqual(human.user, user)
 
         # We only have the first initial
         user = get_user_model().objects.create(
             username='hollygennero',
-            first_name="Holly",
-            last_name="Gennero",
+            first_name='Holly',
+            last_name='Gennero',
         )
-        human = self.factory(first_name="H", last_name="Gennero")
+        human = self.factory(first_name='H', last_name='Gennero')
         self.assertEqual(human.user, user)
 
         # We have 2 possible matches
         user = get_user_model().objects.create(
             username='johnjuniormcclane',
-            first_name="John Junior",
-            last_name="McClane",
+            first_name='John Junior',
+            last_name='McClane',
         )
-        human = self.factory(first_name="J", last_name="McClane")
+        human = self.factory(first_name='J', last_name='McClane')
         self.assertIsNone(human.user)
 
         # We have 2 possible matches
         user = get_user_model().objects.create(
             username='johnjuniormcclane2',
-            first_name="John Junior",
-            last_name="McClane",
+            first_name='John Junior',
+            last_name='McClane',
         )
-        human = self.factory(first_name="John", last_name="McClane")
+        human = self.factory(first_name='John', last_name='McClane')
         self.assertIsNone(human.user)
 
     def test_saving_and_retrieving_items(self):
         """
         Test saving and retrieving two different objects
         """
-        saved1 = self.factory(first_name="Master", last_name="Zu")
-        saved2 = self.factory(first_name="Mister", last_name="Hide")
+        saved1 = self.factory(first_name='Master', last_name='Zu')
+        saved2 = self.factory(first_name='Mister', last_name='Hide')
 
         qs = self.model.objects.all()
         self.assertEqual(qs.count(), 2)
