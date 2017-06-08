@@ -151,15 +151,6 @@ class EntryBatchImportView(LoginRequiredMixin,
     template_name = 'td_biblio/entry_import.html'
     success_url = reverse_lazy('td_biblio:entry_list')
 
-    def test_func(self):
-        """Check that request user is a super user (admin)
-
-        If not user will be invited to log in.
-        """
-        if self.request.user.is_superuser:
-            return True
-        return False
-
     def form_valid(self, form):
         """Save to database"""
         # PMIDs
