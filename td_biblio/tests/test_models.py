@@ -107,9 +107,9 @@ class AbstractHumanModelTestMixin(ModelTestMixin):
                              user=user)
         self.assertEqual(human.user, user)
 
-    def test_map(self):
+    def test_set_user(self):
         """
-        Test the map method
+        Test the set_user method
         """
         # Simple case: everything match perfectly
         user = get_user_model().objects.create(
