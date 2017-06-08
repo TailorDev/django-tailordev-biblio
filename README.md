@@ -4,6 +4,7 @@ Bibliography management with Django.
 
 [![](https://travis-ci.org/TailorDev/django-tailordev-biblio.svg?branch=master)
 ](https://travis-ci.org/TailorDev/django-tailordev-biblio/)
+[![Coverage Status](https://coveralls.io/repos/github/TailorDev/django-tailordev-biblio/badge.svg?branch=coveralls)](https://coveralls.io/github/TailorDev/django-tailordev-biblio?branch=coveralls)
 [![](https://img.shields.io/pypi/v/django-tailordev-biblio.svg)](https://pypi.python.org/pypi/django-tailordev-biblio)
 
 ## Compatibility

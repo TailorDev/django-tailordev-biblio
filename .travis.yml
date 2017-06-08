@@ -24,3 +24,5 @@ install:
 script:
   - flake8 td_biblio/
   - PYTHONPATH=$(pwd) py.test
+after_success:
+  coveralls
