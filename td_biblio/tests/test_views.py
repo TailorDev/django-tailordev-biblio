@@ -8,6 +8,7 @@ import datetime
 import pytest
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -316,7 +317,7 @@ class EntryBatchImportViewTests(TestCase):
             username=self.superuser.username,
             password=self.fake_password
         )
-        
+
         self.assertEqual(Entry.objects.count(), 0)
 
         data = {
@@ -333,24 +334,16 @@ class EntryBatchImportViewTests(TestCase):
         response = self.client.post(self.url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
-            'td_biblio/entry_import_success.html'
+            'td_biblio/entry_list.html'
         )
 
-
-class EntryBatchImportSuccessViewTests(TestCase):
-    """
-    Tests for the EntryBatchImportSuccessView
-    """
-
-    def setUp(self):
-        self.url = reverse('td_biblio:import_success')
-
-    def test_get(self):
-        """
-        Test the EntryBatchImportSuccessView get method
-        """
-        response = self.client.get(self.url)
-
-        # Standard response
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('td_biblio/entry_import_success.html')
+        # Test messages
+        response_messages = response.context['messages']
+        # We have two messages (we did the same request two times)
+        self.assertEqual(len(response_messages), 2)
+        for m in response_messages:
+            self.assertEqual(
+                str(m),
+                'We have successfully imported 4 references.'
+            )
+            self.assertEqual(m.level, messages.SUCCESS)

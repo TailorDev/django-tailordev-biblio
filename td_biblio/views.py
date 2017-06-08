@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import datetime
 
+from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import FormView, ListView, TemplateView
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import FormView, ListView
 
 from .forms import EntryBatchImportForm
 from .models import Author, Collection, Entry, Journal
@@ -118,7 +120,7 @@ class EntryBatchImportView(UserPassesTestMixin, FormView):
 
     form_class = EntryBatchImportForm
     template_name = 'td_biblio/entry_import.html'
-    success_url = reverse_lazy('td_biblio:import_success')
+    success_url = reverse_lazy('td_biblio:entry_list')
 
     def test_func(self):
         """Check that request user is a super user (admin)
@@ -145,9 +147,11 @@ class EntryBatchImportView(UserPassesTestMixin, FormView):
             doi_loader.load_records(DOIs=dois)
             doi_loader.save_records()
 
+        messages.success(
+            self.request,
+            _("We have successfully imported {} references.").format(
+                len(dois) + len(pmids)
+            )
+        )
+
         return super(EntryBatchImportView, self).form_valid(form)
-
-
-class EntryBatchImportSuccessView(TemplateView):
-
-    template_name = 'td_biblio/entry_import_success.html'

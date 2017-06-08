@@ -16,9 +16,4 @@ urlpatterns = [
         views.EntryBatchImportView.as_view(),
         name='import'
     ),
-    url(
-        '^import/success$',
-        views.EntryBatchImportSuccessView.as_view(),
-        name='import_success'
-    ),
 ]
