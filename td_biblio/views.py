@@ -2,7 +2,7 @@
 import datetime
 
 from django.contrib import messages
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView
@@ -10,6 +10,33 @@ from django.views.generic import FormView, ListView
 from .forms import EntryBatchImportForm
 from .models import Author, Collection, Entry, Journal
 from .utils.loaders import DOILoader, PubmedLoader
+
+
+def superuser_required(function=None):
+    """
+    Decorator for views that checks that the user is a super user redirecting
+    to the log-in page if necessary.
+
+    Inspired by Django 'login_required' decorator
+    """
+    actual_decorator = user_passes_test(lambda u: u.is_superuser)
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+
+class LoginRequiredMixin(object):
+    @classmethod
+    def as_view(cls, **initkwargs):
+        view = super(LoginRequiredMixin, cls).as_view(**initkwargs)
+        return login_required(view)
+
+
+class SuperuserRequiredMixin(object):
+    @classmethod
+    def as_view(cls, **initkwargs):
+        view = super(SuperuserRequiredMixin, cls).as_view(**initkwargs)
+        return superuser_required(view)
 
 
 class EntryListView(ListView):
@@ -116,7 +143,9 @@ class EntryListView(ListView):
         return ctx
 
 
-class EntryBatchImportView(UserPassesTestMixin, FormView):
+class EntryBatchImportView(LoginRequiredMixin,
+                           SuperuserRequiredMixin,
+                           FormView):
 
     form_class = EntryBatchImportForm
     template_name = 'td_biblio/entry_import.html'
