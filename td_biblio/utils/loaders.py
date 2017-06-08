@@ -278,7 +278,7 @@ class DOILoader(BaseLoader):
     """
 
     def to_record(self, input):
-        """Convert eutils PubmedArticle xml facade to a valid record"""
+        """Convert crossref item to a valid record"""
 
         date_parts = input['issued']['date-parts'][0]
         is_partial_publication_date = len(date_parts) != 3
@@ -314,7 +314,7 @@ class DOILoader(BaseLoader):
         return record
 
     def load_records(self, DOIs=None):
-        """Load all bibtex items as valid records"""
+        """Load all crossref items as valid records"""
 
         records = cn.content_negotiation(ids=DOIs, format='citeproc-json')
         # Records might be a str or unicode (python 2)
