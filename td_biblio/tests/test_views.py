@@ -7,6 +7,8 @@ Test views
 import datetime
 import pytest
 
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
@@ -239,11 +241,67 @@ class EntryBatchImportViewTests(TestCase):
 
     def setUp(self):
         self.url = reverse('td_biblio:import')
+        User = get_user_model()
+        self.fake_password = 'fake123'
+        self.superuser = User.objects.create_superuser(
+            'louis', 'louis@pasteur.com', self.fake_password
+        )
+        self.user = User.objects.create_user(
+            'james', 'james@watson.com', self.fake_password
+        )
+
+    def test_user_must_be_a_logged_superuser(self):
+        """Test the EntryBatchImportView for login restriction"""
+        response = self.client.get(self.url)
+
+        login_redirect_url = '{}?next={}'.format(
+            settings.LOGIN_URL,
+            self.url
+        )
+
+        # User is not logged in: it should redirect to login view
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, login_redirect_url)
+
+        # Log user as a normal user
+        self.client.login(
+            username=self.user.username,
+            password=self.fake_password
+        )
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, login_redirect_url)
+
+        # Log user as a normal user
+        self.client.login(
+            username=self.user.username,
+            password=self.fake_password
+        )
+
+        # A standard user should be redirected to the login page
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, login_redirect_url)
+
+        # Log user as a super user
+        self.client.login(
+            username=self.superuser.username,
+            password=self.fake_password
+        )
+
+        # A super user should not be redirected
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('td_biblio/entry_import.html')
 
     def test_get(self):
         """
         Test the EntryBatchImportView get method
         """
+        self.client.login(
+            username=self.superuser.username,
+            password=self.fake_password
+        )
         response = self.client.get(self.url)
 
         # Standard response
@@ -254,6 +312,11 @@ class EntryBatchImportViewTests(TestCase):
         """
         Test the EntryBatchImportView post method
         """
+        self.client.login(
+            username=self.superuser.username,
+            password=self.fake_password
+        )
+        
         self.assertEqual(Entry.objects.count(), 0)
 
         data = {

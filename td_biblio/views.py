@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import FormView, ListView, TemplateView
 
@@ -113,11 +114,20 @@ class EntryListView(ListView):
         return ctx
 
 
-class EntryBatchImportView(FormView):
+class EntryBatchImportView(UserPassesTestMixin, FormView):
 
     form_class = EntryBatchImportForm
     template_name = 'td_biblio/entry_import.html'
     success_url = reverse_lazy('td_biblio:import_success')
+
+    def test_func(self):
+        """Check that request user is a super user (admin)
+
+        If not user will be invited to log in.
+        """
+        if self.request.user.is_superuser:
+            return True
+        return False
 
     def form_valid(self, form):
         """Save to database"""
