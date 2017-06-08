@@ -51,7 +51,7 @@ Add `td_biblio` urls your project url patterns:
 
 urlpatterns = [
     # other urls…
-    url(r'^bibliography/', include('td_biblio.urls')),
+    url(r'^bibliography/', include('td_biblio.urls', namespace='td_biblio')),
 ]
 ```
 
