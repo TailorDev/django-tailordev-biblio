@@ -20,9 +20,9 @@ matrix:
       env: DJANGO_RELEASE='Django>=1.7,<1.8'
 install:
   - pip install "$DJANGO_RELEASE"
-  - pip install -r requirements-dev.txt
+  - pip install -r requirements/dev.txt
 script:
   - flake8 td_biblio/
-  - PYTHONPATH=$(pwd) py.test
+  - PYTHONPATH=$(pwd) DATABASE_URL="sqlite:///:memory:" py.test
 after_success:
   coveralls
