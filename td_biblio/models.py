@@ -27,10 +27,10 @@ class AbstractHuman(models.Model):
         return self.get_formatted_name()
 
     def save(self, *args, **kwargs):
-        """Set initials and try to map django users before saving"""
+        """Set initials and try to set django user before saving"""
 
         self._set_first_initial()
-        self.map()
+        self._set_user()
         super(AbstractHuman, self).save(*args, **kwargs)
 
     def _set_first_initial(self, force=False):
@@ -45,8 +45,8 @@ class AbstractHuman(models.Model):
 
         return '%s %s' % (self.last_name, self.first_initial)
 
-    def map(self):
-        """Map with django users based on their full names and initials"""
+    def _set_user(self):
+        """Look for local django user based on human name"""
 
         User = get_user_model()
         try:
@@ -56,8 +56,7 @@ class AbstractHuman(models.Model):
                 models.Q(first_name__istartswith=self.first_initial[0])
             )
         except:
-            # Fail silently
-            return None
+            pass
 
 
 class Author(AbstractHuman):
