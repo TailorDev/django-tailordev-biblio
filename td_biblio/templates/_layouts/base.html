@@ -14,12 +14,19 @@
     <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
 
     <link rel="stylesheet" href="{% static "styles.css" %}">
-    <title>{% block page_title %}TailorDev Biblio - Demo{% endblock %}</title>
+    <title>TailorDev Biblio - {% block page_title %}{% endblock %}</title>
   </head>
   <body class="{% block page_class %}demo{% endblock page_class %}">
     {% block body %}
     <header id="page-header">
-      <h1>TailorDev Biblio</h1>
+      <h1>
+        <a href="{% url 'td_biblio:entry_list' %}">
+          TailorDev Biblio
+        </a>
+        <span>
+          // a Django app to manage your references.
+        </span>
+      </h1>
     </header>
 
     {% if messages %}
