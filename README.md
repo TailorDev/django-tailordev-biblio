@@ -118,6 +118,28 @@ You can run the tests with via:
 $ make test
 ```
 
+### Deploy to Heroku
+
+To start playing with an Heroku instance, we suppose you have:
+
+* an Heroku account;
+* a functional SSH key imported for this account;
+* installed the [`heroku` client](https://devcenter.heroku.com/articles/heroku-cli).
+
+```bash
+# Log in to heroku
+$ heroku login
+
+# Configure current repository as a registered heroku app
+$ heroku git:remote -a tailordev-biblio
+
+# Push your code
+$ git push heroku master
+
+# Perform database migrations
+$ heroku run python sandbox/manage.py migrate
+```
+
 ## License
 
 `django-tailordev-biblio` is released under the MIT License. See the bundled
