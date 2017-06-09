@@ -1,3 +1,48 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+}
+
+body > * {
+  max-width: 1024px;
+}
+
+header#page-header {
+  width: 100%;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+}
+
 #content-wrapper {
   display: flex;
+}
+
+#left-sidebar #publications-stats {
+  margin-bottom: 4rem;
+}
+
+#main-content {
+  padding: 0 0 0 2rem;
+}
+
+.publication-list-years {
+  list-style: none;
+}
+
+.publication-list-year .year {
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.publication-list {
+  list-style: none;
+}
+
+footer#page-footer {
+  width: 100%;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid
 }
