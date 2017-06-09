@@ -1,0 +1,8 @@
+# This file pulls in everything needed to run the sandbox in production (heroku)
+-r dev.txt
+
+# WSGI
+gunicorn
+
+# Database
+psycopg2

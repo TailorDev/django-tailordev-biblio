@@ -58,7 +58,7 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Operating System :: OS Independent',
     ],
-    install_requires=parse_requirements('requirements.txt'),
-    tests_require=parse_requirements('requirements-dev.txt'),
+    install_requires=parse_requirements('requirements/base.txt'),
+    tests_require=parse_requirements('requirements/dev.txt'),
     keywords='django biblio bibliography bibtex publication',
 )

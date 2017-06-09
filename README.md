@@ -103,7 +103,7 @@ dependencies in a virtual environment:
 ```bash
 $ python -m venv venv  # create a virtualenv
 $ source venv/bin/activate  # activate this virtualenv
-(venv) $ pip install -r requirements-dev.txt
+(venv) $ pip install -r requirements/dev.txt
 ```
 
 And then install the package in development mode:
