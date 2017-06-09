@@ -1,7 +1,2 @@
-# Django
-Django>=1.7
-
-# Bibliography loaders
-bibtexparser
-eutils
-habanero>=0.3.0
+# Heroku defaults to root requirements.txt file to install dependencies
+-r requirements/heroku.txt

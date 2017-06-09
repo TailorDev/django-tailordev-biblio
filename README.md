@@ -98,18 +98,16 @@ $ python manage.py bibtex_import my_bibliography.bib
 ### Development installation
 
 If you intend to work on the code, clone this repository and install all
-dependencies in a virtual environment:
+dependencies in a virtual environment via:
 
 ```bash
-$ python -m venv venv  # create a virtualenv
-$ source venv/bin/activate  # activate this virtualenv
-(venv) $ pip install -r requirements-dev.txt
+$ make bootstrap
 ```
 
-And then install the package in development mode:
+And then start the development server via:
 
 ```bash
-(venv) $ python setup.py develop
+$ make dev
 ```
 
 ### Running the Tests
@@ -117,7 +115,29 @@ And then install the package in development mode:
 You can run the tests with via:
 
 ```bash
-(venv) $ py.test
+$ make test
+```
+
+### Deploy to Heroku
+
+To start playing with an Heroku instance, we suppose you have:
+
+* an Heroku account;
+* a functional SSH key imported for this account;
+* installed the [`heroku` client](https://devcenter.heroku.com/articles/heroku-cli).
+
+```bash
+# Log in to heroku
+$ heroku login
+
+# Configure current repository as a registered heroku app
+$ heroku git:remote -a tailordev-biblio
+
+# Push your code
+$ git push heroku master
+
+# Perform database migrations
+$ heroku run python sandbox/manage.py migrate
 ```
 
 ## License

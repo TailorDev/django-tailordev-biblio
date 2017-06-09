@@ -1,7 +1,13 @@
 # This file pulls in everything a developer needs. If it's a basic package
-# needed to run the site, it belongs in requirements/prod.txt. If it's a
+# needed to run the site, it belongs in `requirements/base.txt`. If it's a
 # package for developers (testing, docs, etc.), it goes in this file.
--r requirements.txt
+-r base.txt
+
+# Settings
+dj-database-url
+
+# Statics
+whitenoise
 
 # Testing
 pytest>=3.0.7
