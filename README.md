@@ -100,7 +100,7 @@ the bibliography list and item details, while the `javascripts` block contains
 eponym front-end dependencies. You will find an example base layout template at:
 [`td_biblio/templates/_layouts/base.html`](https://github.com/TailorDev/django-tailordev-biblio/blob/master/td_biblio/templates/_layouts/base.html)
 
-## Import BibTex bibliography
+## Import bibliography
 
 Once `td_biblio` is installed and configured, you may want to import your
 references stored in a BibTeX file. Hopefully, there is a command for that:
@@ -108,6 +108,9 @@ references stored in a BibTeX file. Hopefully, there is a command for that:
 ```bash
 $ python manage.py bibtex_import my_bibliography.bib
 ```
+
+Alternatively, you can browse to the `/import/` view with a superuser account
+to fetch references from their DOIs or PMIDs.
 
 ## Hack
 
