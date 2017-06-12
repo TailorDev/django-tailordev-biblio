@@ -73,12 +73,24 @@
         {% endfor %}
     </select>
 </form>
-
 {% endblock left_sidebar_extras %}
 
 {% block main_content %}
 
 <h2>{% trans "Publications" %}</h2>
+
+{% if request.user.is_superuser %}
+<div class="import-message">
+  Hi <strong>{{ request.user.username }}</strong>!
+  {% blocktrans %}
+  As an adminstrator of this application you can import new references with
+  DOIs or PubMed ids.
+  {% endblocktrans %}
+  <a href="{% url 'td_biblio:import' %}" class="button import">
+    Add references
+  </a>
+</div>
+{% endif %}
 
 {% include "td_biblio/partials/publication_list_by_year.html" with publications=entry_list %}
 
@@ -100,4 +112,3 @@
 {% endif %}
 
 {% endblock main_content %}
-

@@ -21,6 +21,23 @@ Django releases:
 
 Please note that for older Python and/or Django versions, you can still use the `0.3` release.
 
+## Sandbox
+
+Click on the screenshot below to browse the sandbox deployed on Heroku:
+
+[
+ ![Django TailorDev Biblio Screenshot](docs/images/preview.png "Checkout the demo!")
+](https://tailordev-biblio.herokuapp.com)
+
+_Nota bene:_ to test [references
+importation](https://tailordev-biblio.herokuapp.com/import/) from PMIDs or DOIs,
+you will need to login with these credentials:
+
+```
+login: rosalind
+password: idiscovereddnastructurefirst
+```
+
 ## Installation
 
 ### Install `td_biblio`
@@ -84,7 +101,7 @@ the bibliography list and item details, while the `javascripts` block contains
 eponym front-end dependencies. You will find an example base layout template at:
 [`td_biblio/templates/_layouts/base.html`](https://github.com/TailorDev/django-tailordev-biblio/blob/master/td_biblio/templates/_layouts/base.html)
 
-## Import BibTex bibliography
+## Import bibliography
 
 Once `td_biblio` is installed and configured, you may want to import your
 references stored in a BibTeX file. Hopefully, there is a command for that:
@@ -92,6 +109,9 @@ references stored in a BibTeX file. Hopefully, there is a command for that:
 ```bash
 $ python manage.py bibtex_import my_bibliography.bib
 ```
+
+Alternatively, you can browse to the `/import/` view with a superuser account
+to fetch references from their DOIs or PMIDs.
 
 ## Hack
 

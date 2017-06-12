@@ -21,15 +21,15 @@ pmid_validator = RegexValidator(
 
 
 def text_to_list(raw):
-    """Transform a raw text list to a python object list
+    """Transform a raw text list to a python sorted object list
     Supported separators: coma, space and carriage return
     """
-    return list(set(
+    return sorted(list(set(
         id.strip()
         for r in map(methodcaller('split', ','), raw.split())
         for id in r
         if len(id)
-    ))
+    )))
 
 
 class EntryBatchImportForm(forms.Form):
@@ -75,3 +75,14 @@ class EntryBatchImportForm(forms.Form):
         for doi in dois:
             doi_validator(doi)
         return dois
+
+    def clean(self):
+        super(EntryBatchImportForm, self).clean()
+
+        dois = self.cleaned_data.get('dois', [])
+        pmids = self.cleaned_data.get('pmids', [])
+
+        if not len(dois) and not len(pmids):
+            raise forms.ValidationError(
+                    _("You need to submit at least one valid DOI or PMID")
+                )

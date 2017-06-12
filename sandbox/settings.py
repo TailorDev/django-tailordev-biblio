@@ -6,6 +6,8 @@ import os
 
 import dj_database_url
 
+from django.core.urlresolvers import reverse_lazy
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -25,7 +27,8 @@ ALLOWED_HOSTS = [
     'tailordev-biblio.herokuapp.com',
 ]
 
-LOGIN_URL = '/admin/login/'
+LOGIN_URL = reverse_lazy('login')
+LOGIN_REDIRECT_URL = reverse_lazy('td_biblio:import')
 
 # Application definition
 INSTALLED_APPS = [
@@ -66,7 +69,7 @@ ROOT_URLCONF = 'sandbox.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,6 +81,9 @@ TEMPLATES = [
         },
     },
 ]
+
+# Django < 1.8 compat
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates'), ]
 
 WSGI_APPLICATION = 'sandbox.wsgi.application'
 

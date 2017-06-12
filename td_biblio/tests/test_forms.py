@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Django TailorDev Biblio
+
+Test forms
+"""
+from __future__ import unicode_literals
 from django.test import TestCase
 
 from ..forms import text_to_list, EntryBatchImportForm
@@ -93,3 +100,31 @@ class EntryBatchImportFormTests(TestCase):
         for input in inputs:
             form = EntryBatchImportForm(input)
             self.assertFalse(form.is_valid())
+
+    def test_clean_with_pmids_and_dois(self):
+        """Test clean method with DOIs & PMIDs"""
+
+        data = {
+            'dois': '10.1093/nar/gks419\n10.1093/nar/gkp323',
+            'pmids': '26588162\n19569182',
+        }
+
+        expected = {
+            'dois': ['10.1093/nar/gkp323', '10.1093/nar/gks419'],
+            'pmids': ['19569182', '26588162'],
+        }
+
+        form = EntryBatchImportForm(data)
+        self.assertTrue(form.is_valid())
+        self.assertDictEqual(expected, form.cleaned_data)
+
+    def test_clean_without_pmids_or_dois(self):
+        """Test clean method without DOIs or PMIDs"""
+
+        data = {
+            'dois': '',
+            'pmids': '',
+        }
+
+        form = EntryBatchImportForm(data)
+        self.assertFalse(form.is_valid())
