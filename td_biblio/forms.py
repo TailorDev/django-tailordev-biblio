@@ -75,3 +75,14 @@ class EntryBatchImportForm(forms.Form):
         for doi in dois:
             doi_validator(doi)
         return dois
+
+    def clean(self):
+        super(EntryBatchImportForm, self).clean()
+
+        dois = self.cleaned_data.get('dois', [])
+        pmids = self.cleaned_data.get('pmids', [])
+
+        if not len(dois) and not len(pmids):
+            raise forms.ValidationError(
+                    _("You need to submit at least one valid DOI or PMID")
+                )

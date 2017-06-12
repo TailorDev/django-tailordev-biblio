@@ -168,6 +168,11 @@ form.batch-import-form .form-actions .cancel {
   color: #9b4dca;
 }
 
+form.batch-import-form .errorlist {
+  list-style: none;
+  color: red;
+}
+
 footer#page-footer {
   width: 100%;
   margin-top: 2rem;
