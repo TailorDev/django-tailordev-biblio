@@ -7,21 +7,6 @@
 
 {% block left_sidebar_extras %}
 
-{% if request.user.is_superuser %}
-<div class="import-message">
-  <h4>Hi {{ request.user.username }}!</h4>
-  <p>
-    {% blocktrans %}
-    As an adminstrator of this application you can import new references with
-    DOIs or PubMed ids.
-    {% endblocktrans %}
-  </p>
-  <a href="{% url 'td_biblio:import' %}" class="button">
-    Add references
-  </a>
-  {% endif %}
-</div>
-
 <h3>{% trans "Metrics" %}</h3>
 
 <div id="publications-stats">
@@ -93,6 +78,19 @@
 {% block main_content %}
 
 <h2>{% trans "Publications" %}</h2>
+
+{% if request.user.is_superuser %}
+<div class="import-message">
+  Hi <strong>{{ request.user.username }}</strong>!
+  {% blocktrans %}
+  As an adminstrator of this application you can import new references with
+  DOIs or PubMed ids.
+  {% endblocktrans %}
+  <a href="{% url 'td_biblio:import' %}" class="button import">
+    Add references
+  </a>
+</div>
+{% endif %}
 
 {% include "td_biblio/partials/publication_list_by_year.html" with publications=entry_list %}
 
