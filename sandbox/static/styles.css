@@ -19,6 +19,10 @@ header#page-header h1 span {
   font-size: 2rem;
 }
 
+div[role="main"] {
+  width: 100%;
+}
+
 #content-wrapper {
   display: flex;
 }
@@ -39,6 +43,11 @@ header#page-header h1 span {
 
 #main-content {
   padding: 0 0 0 2rem;
+  width: 100%;
+}
+
+.import #main-content {
+  padding: 0;
 }
 
 .import-message {
@@ -110,6 +119,32 @@ ul.pagination li.current a {
   border-radius: 3rem;
   padding: 0.3rem 0.8rem;
   color: #fff;
+}
+
+form.batch-import-form {
+  width: 100%;
+}
+
+form.batch-import-form textarea {
+  min-height: 10rem;
+}
+
+form.batch-import-form .helptext {
+  position: relative;
+  top: -1.8rem;
+}
+
+form.batch-import-form label {
+  margin-top: 1rem;
+}
+
+form.batch-import-form .form-actions {
+  text-align: right;
+}
+
+form.batch-import-form .form-actions .cancel {
+  background-color: #fff;
+  color: #9b4dca;
 }
 
 footer#page-footer {

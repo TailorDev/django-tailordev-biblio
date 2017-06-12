@@ -16,20 +16,22 @@
 >
   {% csrf_token %}
 
-  <table>
-    {{ form.as_table }}
-  </table>
+  {{ form }}
 
-  <input
-    type="reset"
-    name="{% trans "Cancel" %}"
-    value="{% trans "cancel" %}"
-  >
-  <input
-    type="submit"
-    name="{% trans "Import" %}"
-    value="{% trans "submit" %}"
-  >
+  <div class="form-actions">
+    <input
+      type="reset"
+      name="{% trans "Cancel" %}"
+      value="{% trans "cancel" %}"
+      class="cancel"
+    >
+    <input
+      type="submit"
+      name="{% trans "Import" %}"
+      value="{% trans "submit" %}"
+      class="submit"
+    >
+  </div>
 </form>
 
 {% endblock main_content %}
