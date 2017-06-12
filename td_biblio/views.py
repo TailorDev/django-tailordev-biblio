@@ -169,7 +169,7 @@ class EntryBatchImportView(LoginRequiredMixin,
 
         messages.success(
             self.request,
-            _("We have successfully imported {} references.").format(
+            _("We have successfully imported {} reference(s).").format(
                 len(dois) + len(pmids)
             )
         )

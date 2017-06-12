@@ -46,6 +46,22 @@ div[role="main"] {
   width: 100%;
 }
 
+.messages {
+  list-style: none;
+  width: 100%;
+}
+
+.messages li {
+  background-color: #efefef;
+  padding: 1rem;
+  border-radius: 3px;
+}
+
+.messages li.success {
+  background-color: rgba(94,195,160,0.8);
+  color: #fff;
+}
+
 .import #main-content {
   padding: 0;
 }

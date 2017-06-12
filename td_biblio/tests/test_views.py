@@ -344,6 +344,6 @@ class EntryBatchImportViewTests(TestCase):
         for m in response_messages:
             self.assertEqual(
                 str(m),
-                'We have successfully imported 4 references.'
+                'We have successfully imported 4 reference(s).'
             )
             self.assertEqual(m.level, messages.SUCCESS)
