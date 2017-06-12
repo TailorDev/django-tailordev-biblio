@@ -82,6 +82,9 @@ TEMPLATES = [
     },
 ]
 
+# Django < 1.8 compat
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates'), ]
+
 WSGI_APPLICATION = 'sandbox.wsgi.application'
 
 
