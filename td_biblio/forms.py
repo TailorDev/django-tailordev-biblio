@@ -21,15 +21,15 @@ pmid_validator = RegexValidator(
 
 
 def text_to_list(raw):
-    """Transform a raw text list to a python object list
+    """Transform a raw text list to a python sorted object list
     Supported separators: coma, space and carriage return
     """
-    return list(set(
+    return sorted(list(set(
         id.strip()
         for r in map(methodcaller('split', ','), raw.split())
         for id in r
         if len(id)
-    ))
+    )))
 
 
 class EntryBatchImportForm(forms.Form):
