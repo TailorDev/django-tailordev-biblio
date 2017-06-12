@@ -16,11 +16,14 @@ header#page-header {
 }
 
 header#page-header h1 span {
-  font-size: 2rem;
+  display: block;
+  text-align: center;
+  font-size: 1.6rem;
 }
 
 div[role="main"] {
   width: 100%;
+  padding: 1rem;
 }
 
 #content-wrapper {
@@ -28,11 +31,12 @@ div[role="main"] {
 }
 
 #left-sidebar {
-  width: 25%;
+  display: none;
 }
 
 #left-sidebar #publications-stats {
   margin-bottom: 4rem;
+  overflow: scroll;
 }
 
 #left-sidebar #publications-stats .counter {
@@ -42,7 +46,7 @@ div[role="main"] {
 }
 
 #main-content {
-  padding: 0 0 0 2rem;
+  padding: 0;
   width: 100%;
 }
 
@@ -95,10 +99,11 @@ div[role="main"] {
 
 .publication-list-year .year {
   font-weight: bold;
-  font-size: 3rem;
+  font-size: 2rem;
 }
 
 .publication-list {
+  margin-left: 0;
   list-style: none;
 }
 
@@ -169,3 +174,33 @@ footer#page-footer {
   padding: 1rem 0 3rem;
   border-top: 1px solid
 }
+
+/* Mobile First Media Queries */
+
+/* Larger than mobile screen */
+@media (min-width: 40.0rem) {
+
+  header#page-header h1 span {
+    display: inline-block;
+    font-size: 2rem;
+  }
+
+  #left-sidebar {
+    display: block;
+    width: 25%;
+  }
+
+  #main-content {
+    padding: 0 0 0 2rem;
+  }
+
+  .publication-list-year .year {
+    font-size: 3rem;
+  }
+}
+
+/* Larger than tablet screen */
+@media (min-width: 80.0rem) {}
+
+/* Larger than desktop screen */
+@media (min-width: 120.0rem) {}
