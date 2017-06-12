@@ -29,8 +29,9 @@ Click on the screenshot below to browse the sandbox deployed on Heroku:
  ![Django TailorDev Biblio Screenshot](docs/images/preview.png "Checkout the demo!")
 ](https://tailordev-biblio.herokuapp.com)
 
-_Nota bene:_ to test references importation from PMIDs or DOIs, you will need to
-[login](https://tailordev-biblio.herokuapp.com/admin/) with these credentials:
+_Nota bene:_ to test [references
+importation](https://tailordev-biblio.herokuapp.com/import/) from PMIDs or DOIs,
+you will need to login with these credentials:
 
 ```
 login: rosalind
