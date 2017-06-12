@@ -21,6 +21,22 @@ Django releases:
 
 Please note that for older Python and/or Django versions, you can still use the `0.3` release.
 
+## Sandbox
+
+Click on the screenshot below to browse the sandbox deployed on Heroku:
+
+[
+ ![Django TailorDev Biblio Screenshot](docs/images/preview.png "Checkout the demo!")
+](https://tailordev-biblio.herokuapp.com)
+
+_Nota bene:_ to test references importation from PMIDs or DOIs, you will need to
+[login](https://tailordev-biblio.herokuapp.com/admin/) with these credentials:
+
+```
+login: rosalind
+password: idiscovereddnastructurefirst
+```
+
 ## Installation
 
 ### Install `td_biblio`
