@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Django TailorDev Biblio
+
+Test forms
+"""
+from __future__ import unicode_literals
 from django.test import TestCase
 
 from ..forms import text_to_list, EntryBatchImportForm
@@ -113,7 +120,7 @@ class EntryBatchImportFormTests(TestCase):
 
     def test_clean_without_pmids_or_dois(self):
         """Test clean method without DOIs or PMIDs"""
-        
+
         data = {
             'dois': '',
             'pmids': '',
