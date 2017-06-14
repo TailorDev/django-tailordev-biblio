@@ -1,5 +1,12 @@
 # TailorDev Biblio
 
+## 1.1.0 (June 14, 2017)
+
+* Add PMIDLoader & DOILoader
+* Add references importation view for admins (from PMIDs or DOIs)
+* Better integrate the sandbox
+* Make the sandbox deployable to Heroku
+
 ## 1.0.0 (March 23, 2017)
 
 * Add support for python 3.4+
