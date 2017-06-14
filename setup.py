@@ -55,6 +55,7 @@ setup(
         'Framework :: Django :: 1.8',
         'Framework :: Django :: 1.9',
         'Framework :: Django :: 1.10',
+        'Framework :: Django :: 1.11',
         'Development Status :: 5 - Production/Stable',
         'Operating System :: OS Independent',
     ],
