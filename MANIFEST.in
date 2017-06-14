@@ -2,10 +2,13 @@ include AUTHORS
 include LICENSE
 include README.md
 include CHANGELOG.md
+include Makefile
 include requirements.txt
 include requirements/base.txt
 include requirements/dev.txt
 include requirements/heroku.txt
+recursive-include sandbox *
+recursive-include docs *
 recursive-include td_biblio/static *
 recursive-include td_biblio/templates/td_biblio *
 recursive-include td_biblio/tests/fixtures *
