@@ -18,3 +18,7 @@ coveralls
 
 # Fixtures
 factory-boy>=2.6.0
+
+# PyPI
+twine
+wheel

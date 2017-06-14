@@ -160,6 +160,13 @@ $ git push heroku master
 $ heroku run python sandbox/manage.py migrate
 ```
 
+### Upload a new release to PyPI
+
+```bash
+$ python setup.py sdist bdist_wheel
+$ twine upload dist/*
+```
+
 ## License
 
 `django-tailordev-biblio` is released under the MIT License. See the bundled
