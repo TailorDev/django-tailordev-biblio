@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 import datetime
 import json
 import logging
+import sys
 
 import bibtexparser
 import eutils.client
@@ -19,6 +20,7 @@ from bibtexparser.latexenc import string_to_latex
 from django.utils.translation import ugettext_lazy as _
 from habanero import cn
 
+from ..exceptions import DOILoaderError
 from ..models import Author, Journal, Entry, AuthorEntryRank
 
 
@@ -320,4 +322,21 @@ class DOILoader(BaseLoader):
         # Records might be a str or unicode (python 2)
         if not isinstance(records, list):
             records = [records, ]
-        self.records = [self.to_record(json.loads(r)) for r in records]
+        self.records = []
+        for r in records:
+            data = json.loads(r)
+            try:
+                record = self.to_record(data)
+                self.records.append(records)
+            except:
+                e, v, tb = sys.exc_info()
+                msg = _(
+                    "An error occured while loading the following DOI: {}. "
+                    "Check logs for details."
+                ).format(
+                    data.get('DOI')
+                )
+                logger.error(
+                    '{}, error: {} [{}], data: {}'.format(msg, e, v, data)
+                )
+                raise DOILoaderError(msg)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import logging
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -7,9 +8,12 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView
 
+from .exceptions import DOILoaderError
 from .forms import EntryBatchImportForm
 from .models import Author, Collection, Entry, Journal
 from .utils.loaders import DOILoader, PubmedLoader
+
+logger = logging.getLogger('td_biblio')
 
 
 def superuser_required(function=None):
@@ -164,7 +168,13 @@ class EntryBatchImportView(LoginRequiredMixin,
         dois = form.cleaned_data['dois']
         if len(dois):
             doi_loader = DOILoader()
-            doi_loader.load_records(DOIs=dois)
+
+            try:
+                doi_loader.load_records(DOIs=dois)
+            except DOILoaderError as e:
+                messages.error(self.request, e)
+                return self.form_invalid(form)
+
             doi_loader.save_records()
 
         messages.success(
