@@ -206,7 +206,7 @@ class PubmedLoaderTests(TestCase):
         self.loader.load_records(PMIDs=FPMIDS)
         self.loader.save_records()
 
-        self.assertEqual(Entry.objects.count(), 21)
+        self.assertEqual(Entry.objects.count(), len(FPMIDS))
 
 
 @pytest.mark.django_db
@@ -321,4 +321,4 @@ class DOILoaderTests(TestCase):
         self.loader.load_records(DOIs=FDOIS)
         self.loader.save_records()
 
-        self.assertEqual(Entry.objects.count(), 25)
+        self.assertEqual(Entry.objects.count(), len(FDOIS))
