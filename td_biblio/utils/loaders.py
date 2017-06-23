@@ -300,9 +300,9 @@ class DOILoader(BaseLoader):
             'title': input.get('title', ''),
             'authors': [
                 {
-                    'first_name': a['given'],
-                    'last_name': a['family']
-                } for a in input['author']
+                    'first_name': a.get('given', ''),
+                    'last_name': a.get('family', '')
+                } for a in input.get('author')
             ],
             'journal': journal,
             'volume': input.get('volume', ''),
@@ -327,7 +327,7 @@ class DOILoader(BaseLoader):
             data = json.loads(r)
             try:
                 record = self.to_record(data)
-                self.records.append(records)
+                self.records.append(record)
             except:
                 e, v, tb = sys.exc_info()
                 msg = _(
