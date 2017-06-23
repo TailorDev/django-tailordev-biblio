@@ -66,6 +66,11 @@ div[role="main"] {
   color: #fff;
 }
 
+.messages li.error {
+  background-color: red;
+  color: #fff;
+}
+
 .import #main-content {
   padding: 0;
 }
