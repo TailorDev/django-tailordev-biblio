@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView
 
-from .exceptions import DOILoaderError
+from .exceptions import DOILoaderError, PMIDLoaderError
 from .forms import EntryBatchImportForm
 from .models import Author, Collection, Entry, Journal
 from .utils.loaders import DOILoader, PubmedLoader
@@ -161,7 +161,13 @@ class EntryBatchImportView(LoginRequiredMixin,
         pmids = form.cleaned_data['pmids']
         if len(pmids):
             pm_loader = PubmedLoader()
-            pm_loader.load_records(PMIDs=pmids)
+
+            try:
+                pm_loader.load_records(PMIDs=pmids)
+            except PMIDLoaderError as e:
+                messages.error(self.request, e)
+                return self.form_invalid(form)
+            
             pm_loader.save_records()
 
         # DOIs

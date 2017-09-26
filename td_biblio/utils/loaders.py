@@ -20,7 +20,7 @@ from bibtexparser.latexenc import string_to_latex
 from django.utils.translation import ugettext_lazy as _
 from habanero import cn
 
-from ..exceptions import DOILoaderError
+from ..exceptions import DOILoaderError, PMIDLoaderError
 from ..models import Author, Journal, Entry, AuthorEntryRank
 
 
@@ -157,7 +157,7 @@ class BibTeXLoader(BaseLoader):
 
     Usage:
 
-    >>> from td_biblio.utils.managers import BibTeXLoader
+    >>> from td_biblio.utils.loaders import BibTeXLoader
     >>> loader = BibTeXLoader()
     >>> loader.load_records(bibtex_filename='foo.bib')
     >>> loader.save_records()
@@ -223,7 +223,7 @@ class PubmedLoader(BaseLoader):
 
     Usage:
 
-    >>> from td_biblio.utils.managers import PubmedLoader
+    >>> from td_biblio.utils.loaders import PubmedLoader
     >>> loader = PubmedLoader()
     >>> loader.load_records(PMIDs=26588162)
     >>> loader.save_records()
@@ -263,7 +263,24 @@ class PubmedLoader(BaseLoader):
         """Load all PMIDs as valid records"""
 
         entries = self.client.efetch(db='pubmed', id=PMIDs)
-        self.records = [self.to_record(r) for r in entries]
+        self.records = []
+
+        for entry in entries:
+            try:
+                record = self.to_record(entry)
+                self.records.append(record)
+            except:
+                e, v, tb = sys.exc_info()
+                msg = _(
+                    "An error occured while loading the following PMID: {}. "
+                    "Check logs for details."
+                ).format(
+                    entry.pmid
+                )
+                logger.error(
+                    '{}, error: {} [{}], data: {}'.format(msg, e, v, r)
+                )
+                raise PMIDLoaderError(msg)
 
 
 class DOILoader(BaseLoader):
@@ -273,7 +290,7 @@ class DOILoader(BaseLoader):
 
     Usage:
 
-    >>> from td_biblio.utils.managers import DOILoader
+    >>> from td_biblio.utils.loaders import DOILoader
     >>> loader = DOILoader()
     >>> loader.load_records(DOIs='10.1021/ct500592m')
     >>> loader.save_records()
