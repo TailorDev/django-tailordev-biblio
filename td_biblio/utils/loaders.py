@@ -278,7 +278,7 @@ class PubmedLoader(BaseLoader):
                     entry.pmid
                 )
                 logger.error(
-                    '{}, error: {} [{}], data: {}'.format(msg, e, v, r)
+                    '{}, error: {} [{}], data: {}'.format(msg, e, v, record)
                 )
                 raise PMIDLoaderError(msg)
 

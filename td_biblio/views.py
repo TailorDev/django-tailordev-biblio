@@ -167,7 +167,7 @@ class EntryBatchImportView(LoginRequiredMixin,
             except PMIDLoaderError as e:
                 messages.error(self.request, e)
                 return self.form_invalid(form)
-            
+
             pm_loader.save_records()
 
         # DOIs
