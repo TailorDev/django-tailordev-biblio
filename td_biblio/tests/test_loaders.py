@@ -252,7 +252,7 @@ class DOILoaderTests(TestCase):
                     'last_name': 'Tufféry'
                 }
             ],
-            'journal': 'J. Chem. Theory Comput.',
+            'journal': 'Journal of Chemical Theory and Computation',
             'volume': '10',
             'number': '10',
             'pages': '4745-4758',
@@ -291,7 +291,6 @@ class DOILoaderTests(TestCase):
         self.assertEqual(Journal.objects.count(), 0)
 
         self.loader.load_records(DOIs=[self.doi, ])
-        print('type: {}'.format(self.doi.__class__.__name__))
         self.loader.save_records()
 
         self.assertEqual(Author.objects.count(), 4)
