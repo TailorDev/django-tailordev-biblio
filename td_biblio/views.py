@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import logging
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -7,9 +8,12 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView
 
+from .exceptions import DOILoaderError, PMIDLoaderError
 from .forms import EntryBatchImportForm
 from .models import Author, Collection, Entry, Journal
 from .utils.loaders import DOILoader, PubmedLoader
+
+logger = logging.getLogger('td_biblio')
 
 
 def superuser_required(function=None):
@@ -53,7 +57,7 @@ class EntryListView(ListView):
         # Is it an integer?
         try:
             self.current_publication_date = datetime.date(int(year), 1, 1)
-        except:
+        except TypeError:
             self.current_publication_date = None
 
         # -- Publication author
@@ -61,7 +65,7 @@ class EntryListView(ListView):
         # Is it an integer?
         try:
             self.current_publication_author = int(author)
-        except:
+        except TypeError:
             self.current_publication_author = None
 
         # -- Publication collection
@@ -69,7 +73,7 @@ class EntryListView(ListView):
         # Is it an integer?
         try:
             self.current_publication_collection = int(collection)
-        except:
+        except TypeError:
             self.current_publication_collection = None
 
         return super(EntryListView, self).get(request, *args, **kwargs)
@@ -157,14 +161,26 @@ class EntryBatchImportView(LoginRequiredMixin,
         pmids = form.cleaned_data['pmids']
         if len(pmids):
             pm_loader = PubmedLoader()
-            pm_loader.load_records(PMIDs=pmids)
+
+            try:
+                pm_loader.load_records(PMIDs=pmids)
+            except PMIDLoaderError as e:
+                messages.error(self.request, e)
+                return self.form_invalid(form)
+
             pm_loader.save_records()
 
         # DOIs
         dois = form.cleaned_data['dois']
         if len(dois):
             doi_loader = DOILoader()
-            doi_loader.load_records(DOIs=dois)
+
+            try:
+                doi_loader.load_records(DOIs=dois)
+            except DOILoaderError as e:
+                messages.error(self.request, e)
+                return self.form_invalid(form)
+
             doi_loader.save_records()
 
         messages.success(

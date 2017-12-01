@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 import datetime
 import json
 import logging
+import sys
 
 import bibtexparser
 import eutils.client
@@ -19,6 +20,7 @@ from bibtexparser.latexenc import string_to_latex
 from django.utils.translation import ugettext_lazy as _
 from habanero import cn
 
+from ..exceptions import DOILoaderError, PMIDLoaderError
 from ..models import Author, Journal, Entry, AuthorEntryRank
 
 
@@ -155,7 +157,7 @@ class BibTeXLoader(BaseLoader):
 
     Usage:
 
-    >>> from td_biblio.utils.managers import BibTeXLoader
+    >>> from td_biblio.utils.loaders import BibTeXLoader
     >>> loader = BibTeXLoader()
     >>> loader.load_records(bibtex_filename='foo.bib')
     >>> loader.save_records()
@@ -179,7 +181,7 @@ class BibTeXLoader(BaseLoader):
         # Check if month is numerical or not
         try:
             int(pub_date['month'])
-        except:
+        except ValueError:
             pub_date['month'] = strptime(pub_date['month'], '%b').tm_mon
         # Convert date fields to integers
         pub_date = dict(
@@ -221,7 +223,7 @@ class PubmedLoader(BaseLoader):
 
     Usage:
 
-    >>> from td_biblio.utils.managers import PubmedLoader
+    >>> from td_biblio.utils.loaders import PubmedLoader
     >>> loader = PubmedLoader()
     >>> loader.load_records(PMIDs=26588162)
     >>> loader.save_records()
@@ -261,7 +263,24 @@ class PubmedLoader(BaseLoader):
         """Load all PMIDs as valid records"""
 
         entries = self.client.efetch(db='pubmed', id=PMIDs)
-        self.records = [self.to_record(r) for r in entries]
+        self.records = []
+
+        for entry in entries:
+            try:
+                record = self.to_record(entry)
+            except Exception:
+                e, v, tb = sys.exc_info()
+                msg = _(
+                    "An error occured while loading the following PMID: {}. "
+                    "Check logs for details."
+                ).format(
+                    entry.pmid
+                )
+                logger.error(
+                    '{}, error: {} [{}], data: {}'.format(msg, e, v, entry)
+                )
+                raise PMIDLoaderError(msg)
+            self.records.append(record)
 
 
 class DOILoader(BaseLoader):
@@ -271,7 +290,7 @@ class DOILoader(BaseLoader):
 
     Usage:
 
-    >>> from td_biblio.utils.managers import DOILoader
+    >>> from td_biblio.utils.loaders import DOILoader
     >>> loader = DOILoader()
     >>> loader.load_records(DOIs='10.1021/ct500592m')
     >>> loader.save_records()
@@ -298,9 +317,9 @@ class DOILoader(BaseLoader):
             'title': input.get('title', ''),
             'authors': [
                 {
-                    'first_name': a['given'],
-                    'last_name': a['family']
-                } for a in input['author']
+                    'first_name': a.get('given', ''),
+                    'last_name': a.get('family', '')
+                } for a in input.get('author')
             ],
             'journal': journal,
             'volume': input.get('volume', ''),
@@ -320,4 +339,21 @@ class DOILoader(BaseLoader):
         # Records might be a str or unicode (python 2)
         if not isinstance(records, list):
             records = [records, ]
-        self.records = [self.to_record(json.loads(r)) for r in records]
+        self.records = []
+        for r in records:
+            data = json.loads(r)
+            try:
+                record = self.to_record(data)
+            except Exception:
+                e, v, tb = sys.exc_info()
+                msg = _(
+                    "An error occured while loading the following DOI: {}. "
+                    "Check logs for details."
+                ).format(
+                    data.get('DOI')
+                )
+                logger.error(
+                    '{}, error: {} [{}], data: {}'.format(msg, e, v, data)
+                )
+                raise DOILoaderError(msg)
+            self.records.append(record)

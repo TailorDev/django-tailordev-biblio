@@ -13,6 +13,7 @@ from django.test import TestCase
 from eutils.exceptions import EutilsNCBIError
 from requests.exceptions import HTTPError
 
+from ..exceptions import DOILoaderError, PMIDLoaderError
 from ..utils.loaders import BibTeXLoader, DOILoader, PubmedLoader
 from ..models import Author, Entry, Journal
 from .fixtures.entries import PMIDs as FPMIDS, DOIs as FDOIS
@@ -206,7 +207,33 @@ class PubmedLoaderTests(TestCase):
         self.loader.load_records(PMIDs=FPMIDS)
         self.loader.save_records()
 
-        self.assertEqual(Entry.objects.count(), 21)
+        self.assertEqual(Entry.objects.count(), len(FPMIDS))
+
+
+@pytest.mark.django_db
+class PubmedLoaderToRecordTests(TestCase):
+    """
+    Tests for the patched pubmed loader
+    """
+    def setUp(self):
+        """
+        Set object level vars
+        """
+        self.PMID = 26588162
+        self.loader = PubmedLoader()
+
+    @pytest.fixture(autouse=True)
+    def mock_to_record_with_exception(self, mocker):
+
+        def raise_exception(self, msg):
+            raise PMIDLoaderError('Patched PMIDLoaderError')
+
+        mocker.patch.object(PubmedLoader, 'to_record', raise_exception)
+
+    def test_load_records_with_to_record_exception(self):
+
+        with pytest.raises(PMIDLoaderError):
+            self.loader.load_records(PMIDs=self.PMID)
 
 
 @pytest.mark.django_db
@@ -252,7 +279,7 @@ class DOILoaderTests(TestCase):
                     'last_name': 'Tufféry'
                 }
             ],
-            'journal': 'J. Chem. Theory Comput.',
+            'journal': 'Journal of Chemical Theory and Computation',
             'volume': '10',
             'number': '10',
             'pages': '4745-4758',
@@ -291,7 +318,6 @@ class DOILoaderTests(TestCase):
         self.assertEqual(Journal.objects.count(), 0)
 
         self.loader.load_records(DOIs=[self.doi, ])
-        print('type: {}'.format(self.doi.__class__.__name__))
         self.loader.save_records()
 
         self.assertEqual(Author.objects.count(), 4)
@@ -321,4 +347,30 @@ class DOILoaderTests(TestCase):
         self.loader.load_records(DOIs=FDOIS)
         self.loader.save_records()
 
-        self.assertEqual(Entry.objects.count(), 25)
+        self.assertEqual(Entry.objects.count(), len(FDOIS))
+
+
+@pytest.mark.django_db
+class DOILoaderToRecordTests(TestCase):
+    """
+    Tests for the patched pubmed loader
+    """
+    def setUp(self):
+        """
+        Set object level vars
+        """
+        self.doi = '10.1021/ct500592m'
+        self.loader = DOILoader()
+
+    @pytest.fixture(autouse=True)
+    def mock_to_record_with_exception(self, mocker):
+
+        def raise_exception(self, msg):
+            raise DOILoaderError('Patched DOILoaderError')
+
+        mocker.patch.object(DOILoader, 'to_record', raise_exception)
+
+    def test_load_records_with_to_record_exception(self):
+
+        with pytest.raises(DOILoaderError):
+            self.loader.load_records(DOIs=self.doi)
