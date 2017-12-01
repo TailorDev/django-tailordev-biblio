@@ -48,6 +48,11 @@ class AbstractHuman(models.Model):
     def _set_user(self):
         """Look for local django user based on human name"""
 
+        if '' in (self.last_name, self.first_name):
+            return
+
+        self._set_first_initial()
+
         User = get_user_model()
         try:
             self.user = User.objects.get(
@@ -55,7 +60,9 @@ class AbstractHuman(models.Model):
                 models.Q(first_name__iexact=self.first_name) |
                 models.Q(first_name__istartswith=self.first_initial[0])
             )
-        except:
+        except User.DoesNotExist:
+            pass
+        except User.MultipleObjectsReturned:
             pass
 
 

@@ -181,7 +181,7 @@ class BibTeXLoader(BaseLoader):
         # Check if month is numerical or not
         try:
             int(pub_date['month'])
-        except:
+        except ValueError:
             pub_date['month'] = strptime(pub_date['month'], '%b').tm_mon
         # Convert date fields to integers
         pub_date = dict(
@@ -268,7 +268,7 @@ class PubmedLoader(BaseLoader):
         for entry in entries:
             try:
                 record = self.to_record(entry)
-            except:
+            except Exception:
                 e, v, tb = sys.exc_info()
                 msg = _(
                     "An error occured while loading the following PMID: {}. "
@@ -344,7 +344,7 @@ class DOILoader(BaseLoader):
             data = json.loads(r)
             try:
                 record = self.to_record(data)
-            except:
+            except Exception:
                 e, v, tb = sys.exc_info()
                 msg = _(
                     "An error occured while loading the following DOI: {}. "

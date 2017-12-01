@@ -57,7 +57,7 @@ class EntryListView(ListView):
         # Is it an integer?
         try:
             self.current_publication_date = datetime.date(int(year), 1, 1)
-        except:
+        except TypeError:
             self.current_publication_date = None
 
         # -- Publication author
@@ -65,7 +65,7 @@ class EntryListView(ListView):
         # Is it an integer?
         try:
             self.current_publication_author = int(author)
-        except:
+        except TypeError:
             self.current_publication_author = None
 
         # -- Publication collection
@@ -73,7 +73,7 @@ class EntryListView(ListView):
         # Is it an integer?
         try:
             self.current_publication_collection = int(collection)
-        except:
+        except TypeError:
             self.current_publication_collection = None
 
         return super(EntryListView, self).get(request, *args, **kwargs)
