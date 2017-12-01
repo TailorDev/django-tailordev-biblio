@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+VENV_PATH=$PWD/venv
+PYTHON=$VENV_PATH/bin/python
+DATABASE_URL="sqlite:///$PWD/sandbox/db.sqlite3"
+
+DATABASE_URL="$DATABASE_URL" \
+  VIRTUAL_ENV="$VENV_PATH" \
+  $PYTHON sandbox/manage.py "$@"
