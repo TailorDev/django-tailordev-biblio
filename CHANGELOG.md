@@ -1,5 +1,9 @@
 # TailorDev Biblio
 
+## 1.2.0 (December 1, 2017)
+
+* Make PMIDLoader & DOILoader bullet-proof
+
 ## 1.1.0 (June 14, 2017)
 
 * Add PMIDLoader & DOILoader
