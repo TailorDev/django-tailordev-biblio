@@ -268,7 +268,6 @@ class PubmedLoader(BaseLoader):
         for entry in entries:
             try:
                 record = self.to_record(entry)
-                self.records.append(record)
             except:
                 e, v, tb = sys.exc_info()
                 msg = _(
@@ -281,6 +280,7 @@ class PubmedLoader(BaseLoader):
                     '{}, error: {} [{}], data: {}'.format(msg, e, v, record)
                 )
                 raise PMIDLoaderError(msg)
+            self.records.append(record)
 
 
 class DOILoader(BaseLoader):
@@ -344,7 +344,6 @@ class DOILoader(BaseLoader):
             data = json.loads(r)
             try:
                 record = self.to_record(data)
-                self.records.append(record)
             except:
                 e, v, tb = sys.exc_info()
                 msg = _(
@@ -357,3 +356,4 @@ class DOILoader(BaseLoader):
                     '{}, error: {} [{}], data: {}'.format(msg, e, v, data)
                 )
                 raise DOILoaderError(msg)
+            self.records.append(record)
