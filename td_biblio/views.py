@@ -7,9 +7,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView
+from django.views.generic.edit import FormMixin
 
 from .exceptions import DOILoaderError, PMIDLoaderError
-from .forms import EntryBatchImportForm
+from .forms import AuthorDuplicatesForm, EntryBatchImportForm
 from .models import Author, Collection, Entry, Journal
 from .utils.loaders import DOILoader, PubmedLoader
 
@@ -191,3 +192,46 @@ class EntryBatchImportView(LoginRequiredMixin,
         )
 
         return super(EntryBatchImportView, self).form_valid(form)
+
+
+class FindDuplicatedAuthorsView(LoginRequiredMixin,
+                                SuperuserRequiredMixin,
+                                FormMixin,
+                                ListView):
+
+    form_class = AuthorDuplicatesForm
+    model = Author
+    ordering = ('last_name', 'first_name')
+    paginate_by = 30
+    queryset = Author.objects.filter(alias=None)
+    success_url = reverse_lazy('td_biblio:duplicates')
+    template_name = 'td_biblio/find_duplicated_authors.html'
+
+    def _add_aliases(self, authors, alias):
+        return authors.update(alias=alias)
+
+    def form_valid(self, form):
+
+        authors = form.cleaned_data['authors']
+        alias = form.cleaned_data['alias']
+        match = self._add_aliases(authors, alias)
+
+        messages.success(
+            self.request,
+            _("Added '{}' as alias for {} author(s).").format(
+                alias.get_formatted_name(),
+                match
+            )
+        )
+
+        return super(FindDuplicatedAuthorsView, self).form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+
+        self.object_list = self.get_queryset()
+
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)

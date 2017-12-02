@@ -16,4 +16,9 @@ urlpatterns = [
         views.EntryBatchImportView.as_view(),
         name='import'
     ),
+    url(
+        '^duplicates/$',
+        views.FindDuplicatedAuthorsView.as_view(),
+        name='duplicates'
+    )
 ]

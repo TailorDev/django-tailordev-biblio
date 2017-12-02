@@ -1,0 +1,77 @@
+{% extends "td_biblio/layouts/one_col.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Find duplicated authors" %}{% endblock page_title %}
+
+{% block page_class %}page biblio duplicated{% endblock page_class %}
+
+{% block main_content %}
+
+<h2>{% trans "Author duplicates manager" %}</h2>
+
+{% if form.errors %}
+<div class="form-errors">
+    <h5>{% trans "Unexpected errors" %}</h5>
+
+    {{ form.errors }}
+</div>
+{% endif %}
+
+<form name="duplicates" class="duplicates-form" action="" method="post">
+  {% csrf_token %}
+  <table>
+    <thead>
+      <tr>
+        <th>{% trans "Last name" %}</th>
+        <th>{% trans "First name" %}</th>
+        <th>{% trans "First Initial(s)" %}</th>
+        <th>{% trans "# Aliases" %}</th>
+        <th>{% trans "Selection" %}</th>
+        <th>{% trans "Alias" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for author in author_list  %}
+        <tr>
+          <td>{{ author.last_name }}</td>
+          <td>{{ author.first_name }}</td>
+          <td>{{ author.first_initial }}</td>
+          <td>{{ author.aliases.count | default:"-" }}</td>
+          <td>
+            <input type="checkbox" name="authors" value="{{ author.id }}">
+          </td>
+          <td>
+            <input type="radio" name="alias" value="{{ author.id }}">
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="form-actions">
+    <button type="reset" name="button" class="button button-outline">
+      {% trans "Reset" %}
+    </button>
+    <button type="submit" name="button" class="button">
+      {% trans "Submit" %}
+    </button>
+  </div>
+</form>
+
+{% if is_paginated %}
+<div class="pagination-centered">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="arrow"><a href="?page={{ page_obj.previous_page_number }}" class="pagination">&laquo;</a></li>
+        {% endif %}
+        <li class="current">
+            <a href="">{{ page_obj.number }}</a>
+            {{ page_obj.start_index }} - {{ page_obj.end_index }}</li>
+        {% if page_obj.has_next %}
+        <li class="arrow"><a href="?page={{ page_obj.next_page_number }}" class="pagination">&raquo;</a></li>
+        {% endif %}
+    </ul>
+</div>
+{% endif %}
+
+{% endblock main_content %}

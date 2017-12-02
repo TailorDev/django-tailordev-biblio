@@ -147,6 +147,17 @@ ul.pagination li.current a {
   color: #fff;
 }
 
+.form-errors {
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 1rem;
+  background-color: #f4f5f6;
+}
+
+.form-errors ul.errorlist {
+  color: red;
+}
+
 form.batch-import-form {
   width: 100%;
 }
@@ -164,6 +175,7 @@ form.batch-import-form label {
   margin-top: 1rem;
 }
 
+form.duplicates-form .form-actions,
 form.batch-import-form .form-actions {
   text-align: right;
 }
