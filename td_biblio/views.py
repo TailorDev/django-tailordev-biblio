@@ -5,6 +5,7 @@ import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.urlresolvers import reverse_lazy
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView
 from django.views.generic.edit import FormMixin
@@ -225,6 +226,13 @@ class FindDuplicatedAuthorsView(LoginRequiredMixin,
         )
 
         return super(FindDuplicatedAuthorsView, self).form_valid(form)
+
+    def get_success_url(self):
+        """Add get parameters"""
+        url = force_text(self.success_url)
+        if self.request.GET:
+            url = '{}?{}'.format(url, self.request.GET.urlencode())
+        return url
 
     def post(self, request, *args, **kwargs):
 
