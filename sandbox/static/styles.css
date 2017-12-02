@@ -36,7 +36,6 @@ div[role="main"] {
 
 #left-sidebar #publications-stats {
   margin-bottom: 4rem;
-  overflow: scroll;
 }
 
 #left-sidebar #publications-stats .counter {
@@ -116,11 +115,13 @@ div[role="main"] {
   text-align: justify;
 }
 
-.pagination-centered {
-  text-align: center;
+.pagination-wrapper {
+  display: flex;
+  align-items: center;
 }
 
 ul.pagination {
+  flex: 1;
   display: flex;
   align-items: center;
   list-style: none;
@@ -146,6 +147,27 @@ ul.pagination li.current a {
   padding: 0.3rem 0.8rem;
   color: #fff;
 }
+
+form.paginate-by-form {
+  flex: 1;
+}
+
+form.paginate-by-form fieldset {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+form.paginate-by-form fieldset label {
+  flex-basis: 50%;
+  margin: 0;
+}
+
+form.paginate-by-form fieldset select,
+form.paginate-by-form fieldset button {
+  margin: 0;
+}
+
 
 .form-errors {
   padding: 2rem;

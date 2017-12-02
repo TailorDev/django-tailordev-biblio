@@ -59,18 +59,34 @@
 </form>
 
 {% if is_paginated %}
-<div class="pagination-centered">
+<div class="pagination-wrapper">
     <ul class="pagination">
         {% if page_obj.has_previous %}
-        <li class="arrow"><a href="?page={{ page_obj.previous_page_number }}" class="pagination">&laquo;</a></li>
+        <li class="arrow"><a href="?page={{ page_obj.previous_page_number }}&amp;by={{ paginate_by }}" class="pagination">&laquo;</a></li>
         {% endif %}
         <li class="current">
             <a href="">{{ page_obj.number }}</a>
             {{ page_obj.start_index }} - {{ page_obj.end_index }}</li>
         {% if page_obj.has_next %}
-        <li class="arrow"><a href="?page={{ page_obj.next_page_number }}" class="pagination">&raquo;</a></li>
+        <li class="arrow"><a href="?page={{ page_obj.next_page_number }}&amp;by={{ paginate_by }}" class="pagination">&raquo;</a></li>
         {% endif %}
     </ul>
+
+    <form class="paginate-by-form" action="" method="get">
+      <input type="hidden" name="page" value="{{ page_obj.number }}">
+      <fieldset>
+        <label for="paginate-by">{% trans "Paginate by:" %}</label>
+        <select id="paginate-by" name="by">
+          <option value="30" {% if paginate_by == 30 %}selected="selected"{% endif %}>30</option>
+          <option value="50" {% if paginate_by == 50 %}selected="selected"{% endif %}>50</option>
+          <option value="100" {% if paginate_by == 100 %}selected="selected"{% endif %}>100</option>
+          <option value="200" {% if paginate_by == 200 %}selected="selected"{% endif %}>200</option>
+          <option value="500" {% if paginate_by == 500 %}selected="selected"{% endif %}>500</option>
+          <option value="1000" {% if paginate_by == 1000 %}selected="selected"{% endif %}>1000</option>
+        </select>
+        <button type="submit" class="button">{% trans "Reload" %}</button>
+      </fieldset>
+    </form>
 </div>
 {% endif %}
 

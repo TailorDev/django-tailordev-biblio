@@ -227,6 +227,24 @@ class FindDuplicatedAuthorsView(LoginRequiredMixin,
 
         return super(FindDuplicatedAuthorsView, self).form_valid(form)
 
+    def get_context_data(self, **kwargs):
+
+        ctx = super(FindDuplicatedAuthorsView, self).get_context_data(**kwargs)
+        ctx.update({
+            'paginate_by': self.get_paginate_by(self.queryset)
+        })
+        return ctx
+
+    def get_paginate_by(self, queryset):
+
+        by = self.request.GET.get('by', None)
+        if not by:
+            return self.paginate_by
+        try:
+            return int(by)
+        except ValueError:
+            pass
+
     def get_success_url(self):
         """Add get parameters"""
         url = force_text(self.success_url)
