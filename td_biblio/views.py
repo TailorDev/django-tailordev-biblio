@@ -96,7 +96,9 @@ class EntryListView(ListView):
 
         # Publication authors
         if self.current_publication_author:
-            filters['authors__id'] = self.current_publication_author
+            author = Author.objects.get(id=self.current_publication_author)
+            aliases = list(author.aliases.values_list('id', flat=True))
+            filters['authors__id__in'] = [author.id,] + aliases
 
         # Publication collection
         if self.current_publication_collection:
@@ -120,10 +122,13 @@ class EntryListView(ListView):
         ctx['n_publications_filter'] = self.get_queryset().count()
 
         # Authors (from selected entries)
-        ctx['n_authors_total'] = Author.objects.count()
+        ctx['n_authors_total'] = Author.objects.filter(alias=None).count()
         author_ids = self.get_queryset().values_list('authors__id', flat=True)
         author_ids = list(set(author_ids))
-        filtered_authors = Author.objects.filter(id__in=author_ids)
+        filtered_authors = Author.objects.filter(
+            id__in=author_ids,
+            alias=None,
+        )
         ctx['n_authors_filter'] = filtered_authors.count()
 
         # Journals (Entries)
