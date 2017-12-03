@@ -98,7 +98,7 @@ class EntryListView(ListView):
         if self.current_publication_author:
             author = Author.objects.get(id=self.current_publication_author)
             aliases = list(author.aliases.values_list('id', flat=True))
-            filters['authors__id__in'] = [author.id,] + aliases
+            filters['authors__id__in'] = [author.id, ] + aliases
 
         # Publication collection
         if self.current_publication_collection:
