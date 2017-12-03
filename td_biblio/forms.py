@@ -91,18 +91,19 @@ class EntryBatchImportForm(forms.Form):
 
 class AuthorDuplicatesForm(forms.Form):
 
-    AUTHOR_CHOICES = Author.objects.values_list('id', 'last_name')
+    def get_authors_choices():
+        return Author.objects.values_list('id', 'last_name')
 
     authors = forms.MultipleChoiceField(
         label=_("Authors pool"),
         help_text=_("Authors to merge"),
-        choices=AUTHOR_CHOICES,
+        choices=get_authors_choices,
     )
 
     alias = forms.ChoiceField(
         label=_("Target author"),
         help_text=_("Reference author for which we will define aliases"),
-        choices=AUTHOR_CHOICES,
+        choices=get_authors_choices,
     )
 
     def clean_authors(self):
