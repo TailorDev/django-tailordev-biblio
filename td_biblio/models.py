@@ -194,7 +194,7 @@ class Entry(models.Model):
         "Author", related_name="entries", through="AuthorEntryRank"
     )
     journal = models.ForeignKey(
-        "Journal", related_name="entries", on_delete=models.CASCADE
+        "Journal", related_name="entries", blank=True, on_delete=models.CASCADE
     )
     publication_date = models.DateField(_("Publication date"), null=True)
     is_partial_publication_date = models.BooleanField(
