@@ -10,38 +10,20 @@ from . import models
 
 
 JOURNAL_CHOICES = [
+    ("Bioinformatics", "Bioinformatics"),
+    ("BMC Bioinf.", "BMC Bioinformatics"),
+    ("JACS", "Journal of the American Chemical Society"),
+    ("J. Comput. Chem.", "Journal of Computational Chemistry"),
+    ("Nat. Biotechnol.", "Nature Biotechnology"),
+    ("Nucleic Acids Res.", "Nucleic Acids Research"),
     (
-        'Bioinformatics',
-        'Bioinformatics'
+        "PNAS",
+        "Proceedings of the National Academy of Sciences of the United "
+        "States of America",
     ),
     (
-        'BMC Bioinf.',
-        'BMC Bioinformatics'
-    ),
-    (
-        'JACS',
-        'Journal of the American Chemical Society'
-    ),
-    (
-        'J. Comput. Chem.',
-        'Journal of Computational Chemistry'
-    ),
-    (
-        'Nat. Biotechnol.',
-        'Nature Biotechnology'
-    ),
-    (
-        'Nucleic Acids Res.',
-        'Nucleic Acids Research'
-    ),
-    (
-        'PNAS',
-        'Proceedings of the National Academy of Sciences of the United '
-        'States of America'
-    ),
-    (
-        'Proteins Struct. Funct. Bioinf.',
-        'Proteins: Structure, Function, and Bioinformatics'
+        "Proteins Struct. Funct. Bioinf.",
+        "Proteins: Structure, Function, and Bioinformatics",
     ),
 ]
 
@@ -73,28 +55,25 @@ class FuzzyPages(BaseFuzzyAttribute):
 #
 class AbstractHumanFactory(DjangoModelFactory):
 
-    first_name = factory.Faker('first_name')
-    last_name = factory.Faker('last_name')
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
 
     class Meta:
-            model = models.AbstractHuman
-            abstract = True
+        model = models.AbstractHuman
+        abstract = True
 
 
 class AuthorFactory(AbstractHumanFactory):
-
     class Meta:
         model = models.Author
 
 
 class EditorFactory(AbstractHumanFactory):
-
     class Meta:
         model = models.Editor
 
 
 class AbstractEntityFactory(DjangoModelFactory):
-
     class Meta:
         model = models.AbstractEntity
         abstract = True
@@ -107,11 +86,10 @@ class JournalFactory(AbstractEntityFactory):
 
     class Meta:
         model = models.Journal
-        django_get_or_create = ('abbreviation', )
+        django_get_or_create = ("abbreviation",)
 
 
 class PublisherFactory(AbstractEntityFactory):
-
     class Meta:
         model = models.Publisher
 
@@ -119,7 +97,7 @@ class PublisherFactory(AbstractEntityFactory):
 class EntryFactory(DjangoModelFactory):
 
     type = factory.fuzzy.FuzzyChoice(ENTRY_TYPES_RAW_CHOICES)
-    title = factory.Sequence(lambda n: 'Entry title %s' % n)
+    title = factory.Sequence(lambda n: "Entry title %s" % n)
     journal = factory.SubFactory(JournalFactory)
     publication_date = factory.fuzzy.FuzzyDate(datetime.date(1942, 1, 1))
     volume = factory.fuzzy.FuzzyInteger(1, 10)
@@ -132,7 +110,7 @@ class EntryFactory(DjangoModelFactory):
 
 class CollectionFactory(DjangoModelFactory):
 
-    name = factory.Sequence(lambda n: 'Collection name %s' % n)
+    name = factory.Sequence(lambda n: "Collection name %s" % n)
     short_description = factory.fuzzy.FuzzyText(length=42)
 
     class Meta:
@@ -161,9 +139,9 @@ class AuthorEntryRankFactory(DjangoModelFactory):
 
 class EntryWithAuthorsFactory(EntryFactory):
 
-    author1 = factory.RelatedFactory(AuthorEntryRankFactory, 'entry')
-    author2 = factory.RelatedFactory(AuthorEntryRankFactory, 'entry')
-    author3 = factory.RelatedFactory(AuthorEntryRankFactory, 'entry')
+    author1 = factory.RelatedFactory(AuthorEntryRankFactory, "entry")
+    author2 = factory.RelatedFactory(AuthorEntryRankFactory, "entry")
+    author3 = factory.RelatedFactory(AuthorEntryRankFactory, "entry")
 
 
 class EntryWithStaticAuthorsFactory(EntryFactory):
@@ -171,14 +149,16 @@ class EntryWithStaticAuthorsFactory(EntryFactory):
 
     author1 = factory.RelatedFactory(
         AuthorEntryRankFactory,
-        'entry',
-        author__first_name='John',
-        author__last_name='McClane',
-        rank=1)
+        "entry",
+        author__first_name="John",
+        author__last_name="McClane",
+        rank=1,
+    )
 
     author2 = factory.RelatedFactory(
         AuthorEntryRankFactory,
-        'entry',
-        author__first_name='Holly',
-        author__last_name='Gennero',
-        rank=2)
+        "entry",
+        author__first_name="Holly",
+        author__last_name="Gennero",
+        rank=2,
+    )

@@ -15,7 +15,7 @@ from .forms import AuthorDuplicatesForm, EntryBatchImportForm
 from .models import Author, Collection, Entry, Journal
 from .utils.loaders import DOILoader, PubmedLoader
 
-logger = logging.getLogger('td_biblio')
+logger = logging.getLogger("td_biblio")
 
 
 def superuser_required(function=None):
@@ -47,15 +47,16 @@ class SuperuserRequiredMixin(object):
 
 class EntryListView(ListView):
     """Entry list view"""
+
     model = Entry
     paginate_by = 20
-    template = 'td_biblio/entry_list.html'
+    template = "td_biblio/entry_list.html"
 
     def get(self, request, *args, **kwargs):
         """Check GET request parameters validity and store them"""
 
         # -- Publication year
-        year = self.request.GET.get('year', None)
+        year = self.request.GET.get("year", None)
         if year is not None:
             try:
                 year = datetime.date(int(year), 1, 1)
@@ -64,7 +65,7 @@ class EntryListView(ListView):
         self.current_publication_date = year
 
         # -- Publication author
-        author = self.request.GET.get('author', None)
+        author = self.request.GET.get("author", None)
         if author is not None:
             try:
                 author = int(author)
@@ -73,7 +74,7 @@ class EntryListView(ListView):
         self.current_publication_author = author
 
         # -- Publication collection
-        collection = self.request.GET.get('collection', None)
+        collection = self.request.GET.get("collection", None)
         if collection is not None:
             try:
                 collection = int(collection)
@@ -92,17 +93,17 @@ class EntryListView(ListView):
         # Publication date
         if self.current_publication_date:
             year = self.current_publication_date.year
-            filters['publication_date__year'] = year
+            filters["publication_date__year"] = year
 
         # Publication authors
         if self.current_publication_author:
             author = Author.objects.get(id=self.current_publication_author)
-            aliases = list(author.aliases.values_list('id', flat=True))
-            filters['authors__id__in'] = [author.id, ] + aliases
+            aliases = list(author.aliases.values_list("id", flat=True))
+            filters["authors__id__in"] = [author.id] + aliases
 
         # Publication collection
         if self.current_publication_collection:
-            filters['collections__id'] = self.current_publication_collection
+            filters["collections__id"] = self.current_publication_collection
 
         # Base queryset
         qs = super(EntryListView, self).get_queryset()
@@ -118,57 +119,53 @@ class EntryListView(ListView):
 
         # -- Metrics
         # Publications (Entries)
-        ctx['n_publications_total'] = Entry.objects.count()
-        ctx['n_publications_filter'] = self.get_queryset().count()
+        ctx["n_publications_total"] = Entry.objects.count()
+        ctx["n_publications_filter"] = self.get_queryset().count()
 
         # Authors (from selected entries)
-        ctx['n_authors_total'] = Author.objects.filter(alias=None).count()
-        author_ids = self.get_queryset().values_list('authors__id', flat=True)
+        ctx["n_authors_total"] = Author.objects.filter(alias=None).count()
+        author_ids = self.get_queryset().values_list("authors__id", flat=True)
         author_ids = list(set(author_ids))
-        filtered_authors = Author.objects.filter(
-            id__in=author_ids,
-            alias=None,
-        )
-        ctx['n_authors_filter'] = filtered_authors.count()
+        filtered_authors = Author.objects.filter(id__in=author_ids, alias=None)
+        ctx["n_authors_filter"] = filtered_authors.count()
 
         # Journals (Entries)
-        ctx['n_journals_total'] = Journal.objects.count()
-        journal_ids = self.get_queryset().values_list('journal__id', flat=True)
+        ctx["n_journals_total"] = Journal.objects.count()
+        journal_ids = self.get_queryset().values_list("journal__id", flat=True)
         journal_ids = list(set(journal_ids))
-        ctx['n_journals_filter'] = len(journal_ids)
+        ctx["n_journals_filter"] = len(journal_ids)
 
         # -- Filters
         # publication date
-        ctx['publication_years'] = self.get_queryset().dates(
-            'publication_date',
-            'year', order='DESC'
+        ctx["publication_years"] = self.get_queryset().dates(
+            "publication_date", "year", order="DESC"
         )
-        ctx['current_publication_year'] = self.current_publication_date
+        ctx["current_publication_year"] = self.current_publication_date
 
         # Publication author
-        authors_order = ('last_name', 'first_name')
-        ctx['publication_authors'] = filtered_authors.order_by(*authors_order)
-        ctx['current_publication_author'] = self.current_publication_author
+        authors_order = ("last_name", "first_name")
+        ctx["publication_authors"] = filtered_authors.order_by(*authors_order)
+        ctx["current_publication_author"] = self.current_publication_author
 
         # Publication collection
-        ctx['publication_collections'] = Collection.objects.all()
-        ctx['current_publication_collection'] = self.current_publication_collection  # noqa
+        ctx["publication_collections"] = Collection.objects.all()
+        ctx[
+            "current_publication_collection"
+        ] = self.current_publication_collection  # noqa
 
         return ctx
 
 
-class EntryBatchImportView(LoginRequiredMixin,
-                           SuperuserRequiredMixin,
-                           FormView):
+class EntryBatchImportView(LoginRequiredMixin, SuperuserRequiredMixin, FormView):
 
     form_class = EntryBatchImportForm
-    template_name = 'td_biblio/entry_import.html'
-    success_url = reverse_lazy('td_biblio:entry_list')
+    template_name = "td_biblio/entry_import.html"
+    success_url = reverse_lazy("td_biblio:entry_list")
 
     def form_valid(self, form):
         """Save to database"""
         # PMIDs
-        pmids = form.cleaned_data['pmids']
+        pmids = form.cleaned_data["pmids"]
         if len(pmids):
             pm_loader = PubmedLoader()
 
@@ -181,7 +178,7 @@ class EntryBatchImportView(LoginRequiredMixin,
             pm_loader.save_records()
 
         # DOIs
-        dois = form.cleaned_data['dois']
+        dois = form.cleaned_data["dois"]
         if len(dois):
             doi_loader = DOILoader()
 
@@ -197,40 +194,38 @@ class EntryBatchImportView(LoginRequiredMixin,
             self.request,
             _("We have successfully imported {} reference(s).").format(
                 len(dois) + len(pmids)
-            )
+            ),
         )
 
         return super(EntryBatchImportView, self).form_valid(form)
 
 
-class FindDuplicatedAuthorsView(LoginRequiredMixin,
-                                SuperuserRequiredMixin,
-                                FormMixin,
-                                ListView):
+class FindDuplicatedAuthorsView(
+    LoginRequiredMixin, SuperuserRequiredMixin, FormMixin, ListView
+):
 
     form_class = AuthorDuplicatesForm
     model = Author
-    ordering = ('last_name', 'first_name')
+    ordering = ("last_name", "first_name")
     paginate_by = 30
     queryset = Author.objects.filter(alias=None)
-    success_url = reverse_lazy('td_biblio:duplicates')
-    template_name = 'td_biblio/find_duplicated_authors.html'
+    success_url = reverse_lazy("td_biblio:duplicates")
+    template_name = "td_biblio/find_duplicated_authors.html"
 
     def _add_aliases(self, authors, alias):
         return authors.update(alias=alias)
 
     def form_valid(self, form):
 
-        authors = form.cleaned_data['authors']
-        alias = form.cleaned_data['alias']
+        authors = form.cleaned_data["authors"]
+        alias = form.cleaned_data["alias"]
         match = self._add_aliases(authors, alias)
 
         messages.success(
             self.request,
             _("Added '{}' as alias for {} author(s).").format(
-                alias.get_formatted_name(),
-                match
-            )
+                alias.get_formatted_name(), match
+            ),
         )
 
         return super(FindDuplicatedAuthorsView, self).form_valid(form)
@@ -238,14 +233,12 @@ class FindDuplicatedAuthorsView(LoginRequiredMixin,
     def get_context_data(self, **kwargs):
 
         ctx = super(FindDuplicatedAuthorsView, self).get_context_data(**kwargs)
-        ctx.update({
-            'paginate_by': self.get_paginate_by(self.queryset)
-        })
+        ctx.update({"paginate_by": self.get_paginate_by(self.queryset)})
         return ctx
 
     def get_paginate_by(self, queryset):
 
-        by = self.request.GET.get('by', None)
+        by = self.request.GET.get("by", None)
         if not by:
             return self.paginate_by
         try:
@@ -257,7 +250,7 @@ class FindDuplicatedAuthorsView(LoginRequiredMixin,
         """Add get parameters"""
         url = force_text(self.success_url)
         if self.request.GET:
-            url = '{}?{}'.format(url, self.request.GET.urlencode())
+            url = "{}?{}".format(url, self.request.GET.urlencode())
         return url
 
     def post(self, request, *args, **kwargs):

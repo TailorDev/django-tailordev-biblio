@@ -15,7 +15,7 @@ from django.test import TestCase
 from ..management.commands import bibtex_import
 from ..models import Author, Entry, Journal
 
-FileNotFoundError = getattr(__builtins__, 'FileNotFoundError', IOError)
+FileNotFoundError = getattr(__builtins__, "FileNotFoundError", IOError)
 
 
 @pytest.mark.django_db
@@ -23,12 +23,13 @@ class BibTexImportCommandTests(TestCase):
     """
     Tests for the bibtex_import admin command
     """
+
     def setUp(self):
         """
         Set object level vars
         """
         self.bibtex_file = os.path.abspath(
-            os.path.dirname(__file__) + '/fixtures/biblio.bib'
+            os.path.dirname(__file__) + "/fixtures/biblio.bib"
         )
         self.cmd = bibtex_import.Command()
 
@@ -55,5 +56,5 @@ class BibTexImportCommandTests(TestCase):
     def test_command_with_a_wrong_path(self):
         """Test command with a wrong path"""
         with self.assertRaises(FileNotFoundError):
-            self.cmd.handle(bibtex='fake/path')
+            self.cmd.handle(bibtex="fake/path")
         self.assertEqual(Entry.objects.count(), 0)

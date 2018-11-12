@@ -24,7 +24,7 @@ from ..exceptions import DOILoaderError, PMIDLoaderError
 from ..models import Author, Journal, Entry, AuthorEntryRank
 
 
-logger = logging.getLogger('td_biblio')
+logger = logging.getLogger("td_biblio")
 
 
 def to_latex(record):
@@ -53,11 +53,16 @@ def td_biblio_customization(record):
 
 
 class BaseLoader(object):
-
     def __init__(self):
         self.entry_base_fields = (
-            'type', 'title', 'volume', 'number', 'pages', 'url',
-            'publication_date', 'is_partial_publication_date'
+            "type",
+            "title",
+            "volume",
+            "number",
+            "pages",
+            "url",
+            "publication_date",
+            "is_partial_publication_date",
         )
         self.records = []
 
@@ -121,27 +126,21 @@ class BaseLoader(object):
         )
 
         # Foreign keys
-        journal, is_new = Journal.objects.get_or_create(
-            name=record['journal']
-        )
-        entry_fields['journal'] = journal
+        journal, is_new = Journal.objects.get_or_create(name=record["journal"])
+        entry_fields["journal"] = journal
         logger.debug("Journal: {}".format(journal))
 
         # Save or Update this entry
         entry, is_new = Entry.objects.get_or_create(**entry_fields)
 
         # Authors
-        for rank, record_author in enumerate(record['authors']):
+        for rank, record_author in enumerate(record["authors"]):
             author, _ = Author.objects.get_or_create(
-                first_name=record_author['first_name'],
-                last_name=record_author['last_name'],
+                first_name=record_author["first_name"],
+                last_name=record_author["last_name"],
             )
 
-            AuthorEntryRank.objects.get_or_create(
-                entry=entry,
-                author=author,
-                rank=rank,
-            )
+            AuthorEntryRank.objects.get_or_create(entry=entry, author=author, rank=rank)
         logger.debug("(New) Entry imported with success: {}".format(entry))
 
     def save_records(self):
@@ -170,38 +169,31 @@ class BibTeXLoader(BaseLoader):
         record = input.copy()
 
         # Journal
-        record['journal'] = input['journal']
+        record["journal"] = input["journal"]
 
         # Publication date
-        pub_date = {'day': 1, 'month': 1, 'year': 1900}
-        input_date = dict(
-            (k, v) for (k, v) in input.items() if k in pub_date.keys()
-        )
+        pub_date = {"day": 1, "month": 1, "year": 1900}
+        input_date = dict((k, v) for (k, v) in input.items() if k in pub_date.keys())
         pub_date.update(input_date)
         # Check if month is numerical or not
         try:
-            int(pub_date['month'])
+            int(pub_date["month"])
         except ValueError:
-            pub_date['month'] = strptime(pub_date['month'], '%b').tm_mon
+            pub_date["month"] = strptime(pub_date["month"], "%b").tm_mon
         # Convert date fields to integers
-        pub_date = dict(
-            (k, int(v)) for k, v in pub_date.items()
-        )
-        record['publication_date'] = datetime.date(**pub_date)
+        pub_date = dict((k, int(v)) for k, v in pub_date.items())
+        record["publication_date"] = datetime.date(**pub_date)
 
-        record['is_partial_publication_date'] = not all(
+        record["is_partial_publication_date"] = not all(
             [True if k in input else False for k in pub_date.keys()]
         )
 
         # Authors
-        record['authors'] = []
-        for author in input['author']:
-            splited = author.split(', ')
-            record['authors'].append(
-                {
-                    'first_name': " ".join(splited[1:]),
-                    'last_name': splited[0],
-                }
+        record["authors"] = []
+        for author in input["author"]:
+            splited = author.split(", ")
+            record["authors"].append(
+                {"first_name": " ".join(splited[1:]), "last_name": splited[0]}
             )
         return record
 
@@ -237,24 +229,21 @@ class PubmedLoader(BaseLoader):
         """Convert eutils PubmedArticle xml facade to a valid record"""
 
         record = {
-            'title': input.title,
-            'authors': [],
-            'journal': input.jrnl,
-            'volume': input.volume,
-            'number': input.issue if input.issue is not None else '',
-            'pages': input.pages,
-            'year': input.year,
-            'publication_date': datetime.date(int(input.year), 1, 1),
-            'is_partial_publication_date': True
+            "title": input.title,
+            "authors": [],
+            "journal": input.jrnl,
+            "volume": input.volume,
+            "number": input.issue if input.issue is not None else "",
+            "pages": input.pages,
+            "year": input.year,
+            "publication_date": datetime.date(int(input.year), 1, 1),
+            "is_partial_publication_date": True,
         }
 
         for author in input.authors:
             splited = author.split()
-            record['authors'].append(
-                {
-                    'first_name': " ".join(splited[1:]),
-                    'last_name': splited[0],
-                }
+            record["authors"].append(
+                {"first_name": " ".join(splited[1:]), "last_name": splited[0]}
             )
 
         return record
@@ -262,7 +251,7 @@ class PubmedLoader(BaseLoader):
     def load_records(self, PMIDs=None):
         """Load all PMIDs as valid records"""
 
-        entries = self.client.efetch(db='pubmed', id=PMIDs)
+        entries = self.client.efetch(db="pubmed", id=PMIDs)
         self.records = []
 
         for entry in entries:
@@ -273,12 +262,8 @@ class PubmedLoader(BaseLoader):
                 msg = _(
                     "An error occured while loading the following PMID: {}. "
                     "Check logs for details."
-                ).format(
-                    entry.pmid
-                )
-                logger.error(
-                    '{}, error: {} [{}], data: {}'.format(msg, e, v, entry)
-                )
+                ).format(entry.pmid)
+                logger.error("{}, error: {} [{}], data: {}".format(msg, e, v, entry))
                 raise PMIDLoaderError(msg)
             self.records.append(record)
 
@@ -299,7 +284,7 @@ class DOILoader(BaseLoader):
     def to_record(self, input):
         """Convert crossref item to a valid record"""
 
-        date_parts = input['issued']['date-parts'][0]
+        date_parts = input["issued"]["date-parts"][0]
         is_partial_publication_date = len(date_parts) != 3
 
         # Fill date parts if only a year is given
@@ -308,26 +293,24 @@ class DOILoader(BaseLoader):
 
         # Journal name defaults to 'short-container-title'
         # It falls back to 'container-title'
-        if input.get('short-container-title'):
-            journal = input['short-container-title'][0]
+        if input.get("short-container-title"):
+            journal = input["short-container-title"][0]
         else:
-            journal = input.get('container-title', '')
+            journal = input.get("container-title", "")
 
         record = {
-            'title': input.get('title', ''),
-            'authors': [
-                {
-                    'first_name': a.get('given', ''),
-                    'last_name': a.get('family', '')
-                } for a in input.get('author')
+            "title": input.get("title", ""),
+            "authors": [
+                {"first_name": a.get("given", ""), "last_name": a.get("family", "")}
+                for a in input.get("author")
             ],
-            'journal': journal,
-            'volume': input.get('volume', ''),
-            'number': input.get('issue', ''),
-            'pages': input.get('page', ''),
-            'year': date_parts[0],
-            'publication_date': datetime.date(*date_parts),
-            'is_partial_publication_date': is_partial_publication_date
+            "journal": journal,
+            "volume": input.get("volume", ""),
+            "number": input.get("issue", ""),
+            "pages": input.get("page", ""),
+            "year": date_parts[0],
+            "publication_date": datetime.date(*date_parts),
+            "is_partial_publication_date": is_partial_publication_date,
         }
 
         return record
@@ -335,10 +318,10 @@ class DOILoader(BaseLoader):
     def load_records(self, DOIs=None):
         """Load all crossref items as valid records"""
 
-        records = cn.content_negotiation(ids=DOIs, format='citeproc-json')
+        records = cn.content_negotiation(ids=DOIs, format="citeproc-json")
         # Records might be a str or unicode (python 2)
         if not isinstance(records, list):
-            records = [records, ]
+            records = [records]
         self.records = []
         for r in records:
             data = json.loads(r)
@@ -349,11 +332,7 @@ class DOILoader(BaseLoader):
                 msg = _(
                     "An error occured while loading the following DOI: {}. "
                     "Check logs for details."
-                ).format(
-                    data.get('DOI')
-                )
-                logger.error(
-                    '{}, error: {} [{}], data: {}'.format(msg, e, v, data)
-                )
+                ).format(data.get("DOI"))
+                logger.error("{}, error: {} [{}], data: {}".format(msg, e, v, data))
                 raise DOILoaderError(msg)
             self.records.append(record)

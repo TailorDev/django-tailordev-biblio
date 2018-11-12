@@ -12,7 +12,6 @@ from ..factories import FuzzyPages, EntryFactory
 
 @pytest.mark.django_db
 class FuzzyPagesTestCase(TestCase):
-
     def test_simple_call(self):
         """Test the Fuzzy pages attribute implicit call"""
 
@@ -23,7 +22,7 @@ class FuzzyPagesTestCase(TestCase):
         """Test the Fuzzy pages attribute explicit call"""
 
         entry = EntryFactory(pages=FuzzyPages(1, 10))
-        page_min, page_max = map(int, entry.pages.split('--'))
+        page_min, page_max = map(int, entry.pages.split("--"))
         self.assertNotEqual(len(entry.pages), 0)
         self.assertLessEqual(page_min, 10)
         self.assertGreaterEqual(page_min, 1)
@@ -31,7 +30,7 @@ class FuzzyPagesTestCase(TestCase):
         self.assertGreaterEqual(page_max, 1)
 
         entry = EntryFactory(pages=FuzzyPages(10))
-        page_min, page_max = map(int, entry.pages.split('--'))
+        page_min, page_max = map(int, entry.pages.split("--"))
         self.assertNotEqual(len(entry.pages), 0)
         self.assertLessEqual(page_min, 10)
         self.assertGreaterEqual(page_min, 1)

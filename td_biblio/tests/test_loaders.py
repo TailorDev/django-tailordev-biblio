@@ -18,15 +18,16 @@ from ..utils.loaders import BibTeXLoader, DOILoader, PubmedLoader
 from ..models import Author, Entry, Journal
 from .fixtures.entries import PMIDs as FPMIDS, DOIs as FDOIS
 
-FileNotFoundError = getattr(__builtins__, 'FileNotFoundError', IOError)
+FileNotFoundError = getattr(__builtins__, "FileNotFoundError", IOError)
 
 
 @pytest.mark.django_db
-@pytest.mark.usefixtures('bibtex')
+@pytest.mark.usefixtures("bibtex")
 class BibTexLoaderTests(TestCase):
     """
     Tests for the BibTex loader
     """
+
     def setUp(self):
         """
         Set object level vars
@@ -46,7 +47,7 @@ class BibTexLoaderTests(TestCase):
     def test_load_records_with_a_wrong_path(self):
         """Test records loading from a wrong bibtex file path"""
         with self.assertRaises(FileNotFoundError):
-            self.loader.load_records(bibtex_filename='fake/path')
+            self.loader.load_records(bibtex_filename="fake/path")
 
         self.assertEqual(len(self.loader.records), 0)
 
@@ -62,10 +63,7 @@ class BibTexLoaderTests(TestCase):
 
     def _test_entry_authors(self, entry, expected_authors):
         for rank, author in enumerate(entry.get_authors()):
-            self.assertEqual(
-                author.get_formatted_name(),
-                expected_authors[rank]
-            )
+            self.assertEqual(author.get_formatted_name(), expected_authors[rank])
 
     def test_author_rank(self):
         """
@@ -75,29 +73,24 @@ class BibTexLoaderTests(TestCase):
 
         # Case 1
         entry = Entry.objects.get(
-            title='Mobyle: a new full web bioinformatics framework'
+            title="Mobyle: a new full web bioinformatics framework"
         )
         expected_authors = [
-            'Néron B',
-            'Ménager H',
-            'Maufrais C',
-            'Joly N',
-            'Maupetit J',
-            'Letort S',
-            'Carrere S',
-            'Tuffery P',
-            'Letondal C',
+            "Néron B",
+            "Ménager H",
+            "Maufrais C",
+            "Joly N",
+            "Maupetit J",
+            "Letort S",
+            "Carrere S",
+            "Tuffery P",
+            "Letondal C",
         ]
         self._test_entry_authors(entry, expected_authors)
 
         # Case 2
-        entry = Entry.objects.get(title__startswith='fpocket')
-        expected_authors = [
-            'Schmidtke P',
-            'Le Guilloux V',
-            'Maupetit J',
-            'Tufféry P'
-        ]
+        entry = Entry.objects.get(title__startswith="fpocket")
+        expected_authors = ["Schmidtke P", "Le Guilloux V", "Maupetit J", "Tufféry P"]
         self._test_entry_authors(entry, expected_authors)
 
     def test_partial_publication_date(self):
@@ -116,6 +109,7 @@ class PubmedLoaderTests(TestCase):
     """
     Tests for the pubmed loader
     """
+
     def setUp(self):
         """
         Set object level vars
@@ -132,57 +126,42 @@ class PubmedLoaderTests(TestCase):
 
         record = self.loader.records[0]
         expected = {
-            'title': (
-                'Improved PEP-FOLD Approach for Peptide and Miniprotein '
-                'Structure Prediction.'
+            "title": (
+                "Improved PEP-FOLD Approach for Peptide and Miniprotein "
+                "Structure Prediction."
             ),
-            'authors': [
-                {
-                    'first_name': 'Y',
-                    'last_name': 'Shen'
-                },
-                {
-                    'first_name': 'J',
-                    'last_name': 'Maupetit'
-                },
-                {
-                    'first_name': 'P',
-                    'last_name': 'Derreumaux'
-                },
-                {
-                    'first_name': 'P',
-                    'last_name': 'Tufféry'
-                }
+            "authors": [
+                {"first_name": "Y", "last_name": "Shen"},
+                {"first_name": "J", "last_name": "Maupetit"},
+                {"first_name": "P", "last_name": "Derreumaux"},
+                {"first_name": "P", "last_name": "Tufféry"},
             ],
-            'journal': 'J Chem Theory Comput',
-            'volume': '10',
-            'number': '10',
-            'pages': '4745-58',
-            'year': '2014',
-            'publication_date': datetime.date(2014, 1, 1),
-            'is_partial_publication_date': True
+            "journal": "J Chem Theory Comput",
+            "volume": "10",
+            "number": "10",
+            "pages": "4745-58",
+            "year": "2014",
+            "publication_date": datetime.date(2014, 1, 1),
+            "is_partial_publication_date": True,
         }
-        self.assertEqual(record['title'], expected['title'])
-        self.assertEqual(record['authors'], expected['authors'])
-        self.assertEqual(record['journal'], expected['journal'])
-        self.assertEqual(record['volume'], expected['volume'])
-        self.assertEqual(record['number'], expected['number'])
-        self.assertEqual(record['pages'], expected['pages'])
-        self.assertEqual(record['year'], expected['year'])
+        self.assertEqual(record["title"], expected["title"])
+        self.assertEqual(record["authors"], expected["authors"])
+        self.assertEqual(record["journal"], expected["journal"])
+        self.assertEqual(record["volume"], expected["volume"])
+        self.assertEqual(record["number"], expected["number"])
+        self.assertEqual(record["pages"], expected["pages"])
+        self.assertEqual(record["year"], expected["year"])
+        self.assertEqual(record["publication_date"], expected["publication_date"])
         self.assertEqual(
-            record['publication_date'],
-            expected['publication_date']
-        )
-        self.assertEqual(
-            record['is_partial_publication_date'],
-            expected['is_partial_publication_date']
+            record["is_partial_publication_date"],
+            expected["is_partial_publication_date"],
         )
 
     def test_load_records_given_a_fake_string_as_pmid(self):
         """Test single import given a fake PMID"""
 
         with pytest.raises(EutilsNCBIError):
-            self.loader.load_records(PMIDs='fakePMID')
+            self.loader.load_records(PMIDs="fakePMID")
         self.assertEqual(len(self.loader.records), 0)
 
     def test_save_records_from_an_existing_pmid(self):
@@ -215,6 +194,7 @@ class PubmedLoaderToRecordTests(TestCase):
     """
     Tests for the patched pubmed loader
     """
+
     def setUp(self):
         """
         Set object level vars
@@ -224,11 +204,10 @@ class PubmedLoaderToRecordTests(TestCase):
 
     @pytest.fixture(autouse=True)
     def mock_to_record_with_exception(self, mocker):
-
         def raise_exception(self, msg):
-            raise PMIDLoaderError('Patched PMIDLoaderError')
+            raise PMIDLoaderError("Patched PMIDLoaderError")
 
-        mocker.patch.object(PubmedLoader, 'to_record', raise_exception)
+        mocker.patch.object(PubmedLoader, "to_record", raise_exception)
 
     def test_load_records_with_to_record_exception(self):
 
@@ -241,73 +220,59 @@ class DOILoaderTests(TestCase):
     """
     Tests for the doi loader
     """
+
     def setUp(self):
         """
         Set object level vars
         """
-        self.doi = '10.1021/ct500592m'
+        self.doi = "10.1021/ct500592m"
         self.loader = DOILoader()
 
     def test_load_records_from_an_existing_doi(self):
         """Test single import given an existing DOI"""
 
-        self.loader.load_records(DOIs=[self.doi, ])
+        self.loader.load_records(DOIs=[self.doi])
 
         self.assertEqual(len(self.loader.records), 1)
 
         record = self.loader.records[0]
         expected = {
-            'title': (
-                'Improved PEP-FOLD Approach for Peptide and Miniprotein '
-                'Structure Prediction'
+            "title": (
+                "Improved PEP-FOLD Approach for Peptide and Miniprotein "
+                "Structure Prediction"
             ),
-            'authors': [
-                {
-                    'first_name': 'Yimin',
-                    'last_name': 'Shen'
-                },
-                {
-                    'first_name': 'Julien',
-                    'last_name': 'Maupetit'
-                },
-                {
-                    'first_name': 'Philippe',
-                    'last_name': 'Derreumaux'
-                },
-                {
-                    'first_name': 'Pierre',
-                    'last_name': 'Tufféry'
-                }
+            "authors": [
+                {"first_name": "Yimin", "last_name": "Shen"},
+                {"first_name": "Julien", "last_name": "Maupetit"},
+                {"first_name": "Philippe", "last_name": "Derreumaux"},
+                {"first_name": "Pierre", "last_name": "Tufféry"},
             ],
-            'journal': 'Journal of Chemical Theory and Computation',
-            'volume': '10',
-            'number': '10',
-            'pages': '4745-4758',
-            'year': 2014,
-            'publication_date': datetime.date(2014, 10, 14),
-            'is_partial_publication_date': False
+            "journal": "Journal of Chemical Theory and Computation",
+            "volume": "10",
+            "number": "10",
+            "pages": "4745-4758",
+            "year": 2014,
+            "publication_date": datetime.date(2014, 10, 14),
+            "is_partial_publication_date": False,
         }
-        self.assertEqual(record['title'], expected['title'])
-        self.assertEqual(record['authors'], expected['authors'])
-        self.assertEqual(record['journal'], expected['journal'])
-        self.assertEqual(record['volume'], expected['volume'])
-        self.assertEqual(record['number'], expected['number'])
-        self.assertEqual(record['pages'], expected['pages'])
-        self.assertEqual(record['year'], expected['year'])
+        self.assertEqual(record["title"], expected["title"])
+        self.assertEqual(record["authors"], expected["authors"])
+        self.assertEqual(record["journal"], expected["journal"])
+        self.assertEqual(record["volume"], expected["volume"])
+        self.assertEqual(record["number"], expected["number"])
+        self.assertEqual(record["pages"], expected["pages"])
+        self.assertEqual(record["year"], expected["year"])
+        self.assertEqual(record["publication_date"], expected["publication_date"])
         self.assertEqual(
-            record['publication_date'],
-            expected['publication_date']
-        )
-        self.assertEqual(
-            record['is_partial_publication_date'],
-            expected['is_partial_publication_date']
+            record["is_partial_publication_date"],
+            expected["is_partial_publication_date"],
         )
 
     def test_load_records_given_a_fake_string_as_doi(self):
         """Test single import given a fake DOI"""
 
         with pytest.raises(HTTPError):
-            self.loader.load_records(DOIs=['fakeDOI', ])
+            self.loader.load_records(DOIs=["fakeDOI"])
         self.assertEqual(len(self.loader.records), 0)
 
     def test_save_records_from_an_existing_doi(self):
@@ -317,7 +282,7 @@ class DOILoaderTests(TestCase):
         self.assertEqual(Entry.objects.count(), 0)
         self.assertEqual(Journal.objects.count(), 0)
 
-        self.loader.load_records(DOIs=[self.doi, ])
+        self.loader.load_records(DOIs=[self.doi])
         self.loader.save_records()
 
         self.assertEqual(Author.objects.count(), 4)
@@ -331,7 +296,7 @@ class DOILoaderTests(TestCase):
         self.assertEqual(Entry.objects.count(), 0)
         self.assertEqual(Journal.objects.count(), 0)
 
-        DOIs = ['10.1093/nar/gks419', '10.1093/nar/gkp323']
+        DOIs = ["10.1093/nar/gks419", "10.1093/nar/gkp323"]
         self.loader.load_records(DOIs=DOIs)
         self.loader.save_records()
 
@@ -355,20 +320,20 @@ class DOILoaderToRecordTests(TestCase):
     """
     Tests for the patched pubmed loader
     """
+
     def setUp(self):
         """
         Set object level vars
         """
-        self.doi = '10.1021/ct500592m'
+        self.doi = "10.1021/ct500592m"
         self.loader = DOILoader()
 
     @pytest.fixture(autouse=True)
     def mock_to_record_with_exception(self, mocker):
-
         def raise_exception(self, msg):
-            raise DOILoaderError('Patched DOILoaderError')
+            raise DOILoaderError("Patched DOILoaderError")
 
-        mocker.patch.object(DOILoader, 'to_record', raise_exception)
+        mocker.patch.object(DOILoader, "to_record", raise_exception)
 
     def test_load_records_with_to_record_exception(self):
 

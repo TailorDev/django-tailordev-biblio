@@ -8,19 +8,31 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('td_biblio', '0001_initial'),
-    ]
+    dependencies = [("td_biblio", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='author',
-            name='alias',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='aliases', related_query_name='alias_human', to='td_biblio.Author'),
+            model_name="author",
+            name="alias",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="aliases",
+                related_query_name="alias_human",
+                to="td_biblio.Author",
+            ),
         ),
         migrations.AddField(
-            model_name='editor',
-            name='alias',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='aliases', related_query_name='alias_human', to='td_biblio.Editor'),
+            model_name="editor",
+            name="alias",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="aliases",
+                related_query_name="alias_human",
+                to="td_biblio.Editor",
+            ),
         ),
     ]
