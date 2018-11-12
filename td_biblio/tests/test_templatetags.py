@@ -2,7 +2,11 @@
 import datetime
 import pytest
 
-from django.core.urlresolvers import reverse
+try:
+    from django.core.urlresolvers import reverse
+except:
+    from django.urls import reverse
+
 from django.test import TestCase
 
 from ..factories import EntryFactory
