@@ -252,7 +252,7 @@ class DOILoaderTests(TestCase):
             "number": "10",
             "pages": "4745-4758",
             "year": 2014,
-            "publication_date": datetime.date(2014, 10, 14),
+            "publication_date": datetime.date(2014, 9, 15),
             "is_partial_publication_date": False,
         }
         self.assertEqual(record["title"], expected["title"])
