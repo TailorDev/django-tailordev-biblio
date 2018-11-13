@@ -12,12 +12,12 @@ Bibliography management with Django.
 Since the `1.0.0` release, we have added full support for recent python and
 Django releases:
 
-|            | Django 1.7         | Django 1.8         | Django 1.9         | Django 1.10        | Django 1.11        |
-| --         | --                 | --                 | --                 | --                 | --                 |
-| Python 2.7 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Python 3.4 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Python 3.5 |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Python 3.6 |                    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+|            | Django 1.8         | Django 1.9         | Django 1.10        | Django 1.11        | Django 2.0         | Django 2.1         |
+| ---------- | ------------------ | ------------------ | ------------------ | ------------------ | ------------------ | ------------------ |
+| Python 2.7 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    |                    |
+| Python 3.4 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |                    |
+| Python 3.5 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Python 3.6 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
 Please note that for older Python and/or Django versions, you can still use the `0.3` release.
 
@@ -26,7 +26,7 @@ Please note that for older Python and/or Django versions, you can still use the 
 Click on the screenshot below to browse the sandbox deployed on Heroku:
 
 [
- ![Django TailorDev Biblio Screenshot](docs/images/preview.png "Checkout the demo!")
+![Django TailorDev Biblio Screenshot](docs/images/preview.png "Checkout the demo!")
 ](https://tailordev-biblio.herokuapp.com)
 
 _Nota bene:_ to test [references
@@ -90,8 +90,8 @@ and contains at least the following blocks:
     <title>Publication list</title>
   </head>
   <body>
-    {% block content %}{% endblock content %}
-    {% block javascripts %}{% endblock javascripts %}
+    {% block content %}{% endblock content %} {% block javascripts %}{% endblock
+    javascripts %}
   </body>
 </html>
 ```
@@ -142,9 +142,9 @@ $ make test
 
 To start playing with an Heroku instance, we suppose you have:
 
-* an Heroku account;
-* a functional SSH key imported for this account;
-* installed the [`heroku` client](https://devcenter.heroku.com/articles/heroku-cli).
+- an Heroku account;
+- a functional SSH key imported for this account;
+- installed the [`heroku` client](https://devcenter.heroku.com/articles/heroku-cli).
 
 ```bash
 # Log in to heroku

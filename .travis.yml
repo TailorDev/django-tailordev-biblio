@@ -5,11 +5,12 @@ python:
   - 3.5
   - 3.6
 env:
-  - DJANGO_RELEASE='Django>=1.7,<1.8'
   - DJANGO_RELEASE='Django>=1.8,<1.9'
   - DJANGO_RELEASE='Django>=1.9,<1.10'
   - DJANGO_RELEASE='Django>=1.10,<1.11'
   - DJANGO_RELEASE='Django>=1.11,<1.12'
+  - DJANGO_RELEASE='Django>=2.0,<2.1'
+  - DJANGO_RELEASE='Django>=2.1,<2.2'
 matrix:
   exclude:
     ### These older Django version don't support Python 3.5+:
@@ -18,11 +19,18 @@ matrix:
       env: DJANGO_RELEASE='Django>=1.7,<1.8'
     - python: 3.6
       env: DJANGO_RELEASE='Django>=1.7,<1.8'
+    # Django 2.0+ dropped support for python 2
+    - python: 2.7
+      env: DJANGO_RELEASE='Django>=2.0,<2.1'
+    - python: 2.7
+      env: DJANGO_RELEASE='Django>=2.1,<2.2'
+    # Django 2.1+ dropped support for python 3.4
+    - python: 3.4
+      env: DJANGO_RELEASE='Django>=2.1,<2.2'
 install:
   - pip install "$DJANGO_RELEASE"
   - pip install -r requirements/dev.txt
 script:
   - flake8 td_biblio/
   - PYTHONPATH=$(pwd) DATABASE_URL="sqlite:///:memory:" py.test
-after_success:
-  coveralls
+after_success: coveralls
