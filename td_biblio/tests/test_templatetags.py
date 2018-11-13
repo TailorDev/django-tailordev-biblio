@@ -4,7 +4,7 @@ import pytest
 
 try:
     from django.core.urlresolvers import reverse
-except:
+except ImportError:
     from django.urls import reverse
 
 from django.test import TestCase

@@ -13,7 +13,7 @@ from django.contrib.auth import get_user_model
 
 try:
     from django.core.urlresolvers import reverse
-except:
+except ImportError:
     from django.urls import reverse
 
 from django.test import TestCase

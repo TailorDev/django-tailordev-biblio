@@ -97,7 +97,7 @@ class BaseLoader(object):
             'is_partial_publication_date': True
         }
         """
-        raise NotImplemented(
+        raise NotImplementedError(
             _(
                 "You should implement a to_record method for {}".format(
                     self.__class__.__name__
@@ -108,7 +108,7 @@ class BaseLoader(object):
     def load_records(self, **kwargs):
         """Load all records in self.records"""
 
-        raise NotImplemented(
+        raise NotImplementedError(
             _(
                 "You should implement a load_records method for {}".format(
                     self.__class__.__name__

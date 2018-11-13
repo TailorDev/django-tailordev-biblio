@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 try:
     from django.core.urlresolvers import reverse_lazy
-except:
+except ImportError:
     from django.urls import reverse_lazy
 
 from django.utils.encoding import force_text
