@@ -3,6 +3,7 @@ __pycache__
 .cache
 .project
 .pydevproject
+.vscode
 *~
 *.db
 *.orig
