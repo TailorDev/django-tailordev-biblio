@@ -10,7 +10,11 @@ import datetime
 import pytest
 
 from django.test import TestCase
-from eutils.exceptions import EutilsNCBIError
+try:
+    from eutils.exceptions import EutilsNCBIError
+except ImportError:
+    from eutils import EutilsNCBIError
+
 from requests.exceptions import HTTPError
 
 from ..exceptions import DOILoaderError, PMIDLoaderError
